@@ -24,47 +24,44 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../cJSON_Utils.h"
+#include "common.h"
 #include "unity/examples/unity_config.h"
 #include "unity/src/unity.h"
-#include "common.h"
-#include "../cJSON_Utils.h"
+
 
 /* JSON Apply Merge tests: */
-static const char *merges[15][3] =
-{
-    {"{\"a\":\"b\"}", "{\"a\":\"c\"}", "{\"a\":\"c\"}"},
-    {"{\"a\":\"b\"}", "{\"b\":\"c\"}", "{\"a\":\"b\",\"b\":\"c\"}"},
-    {"{\"a\":\"b\"}", "{\"a\":null}", "{}"},
-    {"{\"a\":\"b\",\"b\":\"c\"}", "{\"a\":null}", "{\"b\":\"c\"}"},
-    {"{\"a\":[\"b\"]}", "{\"a\":\"c\"}", "{\"a\":\"c\"}"},
-    {"{\"a\":\"c\"}", "{\"a\":[\"b\"]}", "{\"a\":[\"b\"]}"},
-    {"{\"a\":{\"b\":\"c\"}}", "{\"a\":{\"b\":\"d\",\"c\":null}}", "{\"a\":{\"b\":\"d\"}}"},
-    {"{\"a\":[{\"b\":\"c\"}]}", "{\"a\":[1]}", "{\"a\":[1]}"},
-    {"[\"a\",\"b\"]", "[\"c\",\"d\"]", "[\"c\",\"d\"]"},
-    {"{\"a\":\"b\"}", "[\"c\"]", "[\"c\"]"},
-    {"{\"a\":\"foo\"}", "null", "null"},
-    {"{\"a\":\"foo\"}", "\"bar\"", "\"bar\""},
-    {"{\"e\":null}", "{\"a\":1}", "{\"e\":null,\"a\":1}"},
-    {"[1,2]", "{\"a\":\"b\",\"c\":null}", "{\"a\":\"b\"}"},
-    {"{}","{\"a\":{\"bb\":{\"ccc\":null}}}", "{\"a\":{\"bb\":{}}}"}
-};
+static const char* merges[15][3] = {{"{\"a\":\"b\"}", "{\"a\":\"c\"}", "{\"a\":\"c\"}"},
+                                    {"{\"a\":\"b\"}", "{\"b\":\"c\"}", "{\"a\":\"b\",\"b\":\"c\"}"},
+                                    {"{\"a\":\"b\"}", "{\"a\":null}", "{}"},
+                                    {"{\"a\":\"b\",\"b\":\"c\"}", "{\"a\":null}", "{\"b\":\"c\"}"},
+                                    {"{\"a\":[\"b\"]}", "{\"a\":\"c\"}", "{\"a\":\"c\"}"},
+                                    {"{\"a\":\"c\"}", "{\"a\":[\"b\"]}", "{\"a\":[\"b\"]}"},
+                                    {"{\"a\":{\"b\":\"c\"}}", "{\"a\":{\"b\":\"d\",\"c\":null}}", "{\"a\":{\"b\":\"d\"}}"},
+                                    {"{\"a\":[{\"b\":\"c\"}]}", "{\"a\":[1]}", "{\"a\":[1]}"},
+                                    {"[\"a\",\"b\"]", "[\"c\",\"d\"]", "[\"c\",\"d\"]"},
+                                    {"{\"a\":\"b\"}", "[\"c\"]", "[\"c\"]"},
+                                    {"{\"a\":\"foo\"}", "null", "null"},
+                                    {"{\"a\":\"foo\"}", "\"bar\"", "\"bar\""},
+                                    {"{\"e\":null}", "{\"a\":1}", "{\"e\":null,\"a\":1}"},
+                                    {"[1,2]", "{\"a\":\"b\",\"c\":null}", "{\"a\":\"b\"}"},
+                                    {"{}", "{\"a\":{\"bb\":{\"ccc\":null}}}", "{\"a\":{\"bb\":{}}}"}};
 
 static void json_pointer_tests(void)
 {
-    cJSON *root = NULL;
-    const char *json=
-        "{"
-        "\"foo\": [\"bar\", \"baz\"],"
-        "\"\": 0,"
-        "\"a/b\": 1,"
-        "\"c%d\": 2,"
-        "\"e^f\": 3,"
-        "\"g|h\": 4,"
-        "\"i\\\\j\": 5,"
-        "\"k\\\"l\": 6,"
-        "\" \": 7,"
-        "\"m~n\": 8"
-        "}";
+    cJSON* root = NULL;
+    const char* json = "{"
+                       "\"foo\": [\"bar\", \"baz\"],"
+                       "\"\": 0,"
+                       "\"a/b\": 1,"
+                       "\"c%d\": 2,"
+                       "\"e^f\": 3,"
+                       "\"g|h\": 4,"
+                       "\"i\\\\j\": 5,"
+                       "\"k\\\"l\": 6,"
+                       "\" \": 7,"
+                       "\"m~n\": 8"
+                       "}";
 
     root = cJSON_Parse(json);
 
@@ -89,14 +86,14 @@ static void misc_tests(void)
 {
     /* Misc tests */
     int numbers[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    cJSON *object = NULL;
-    cJSON *object1 = NULL;
-    cJSON *object2 = NULL;
-    cJSON *object3 = NULL;
-    cJSON *object4 = NULL;
-    cJSON *nums = NULL;
-    cJSON *num6 = NULL;
-    char *pointer = NULL;
+    cJSON* object = NULL;
+    cJSON* object1 = NULL;
+    cJSON* object2 = NULL;
+    cJSON* object3 = NULL;
+    cJSON* object4 = NULL;
+    cJSON* nums = NULL;
+    cJSON* num6 = NULL;
+    char* pointer = NULL;
 
     printf("JSON Pointer construct\n");
     object = cJSON_CreateObject();
@@ -120,14 +117,14 @@ static void misc_tests(void)
     object2 = cJSON_CreateString("m~n");
     cJSON_AddItemToObject(object1, "m~n", object2);
     pointer = cJSONUtils_FindPointerFromObjectTo(object1, object2);
-    TEST_ASSERT_EQUAL_STRING("/m~0n",pointer);
+    TEST_ASSERT_EQUAL_STRING("/m~0n", pointer);
     free(pointer);
 
     object3 = cJSON_CreateObject();
     object4 = cJSON_CreateString("m/n");
     cJSON_AddItemToObject(object3, "m/n", object4);
     pointer = cJSONUtils_FindPointerFromObjectTo(object3, object4);
-    TEST_ASSERT_EQUAL_STRING("/m~1n",pointer);
+    TEST_ASSERT_EQUAL_STRING("/m~1n", pointer);
     free(pointer);
 
     cJSON_Delete(object);
@@ -138,16 +135,15 @@ static void misc_tests(void)
 static void sort_tests(void)
 {
     /* Misc tests */
-    const char *random = "QWERTYUIOPASDFGHJKLZXCVBNM";
+    const char* random = "QWERTYUIOPASDFGHJKLZXCVBNM";
     char buf[2] = {'\0', '\0'};
-    cJSON *sortme = NULL;
+    cJSON* sortme = NULL;
     size_t i = 0;
-    cJSON *current_element = NULL;
+    cJSON* current_element = NULL;
 
     /* JSON Sort test: */
     sortme = cJSON_CreateObject();
-    for (i = 0; i < 26; i++)
-    {
+    for (i = 0; i < 26; i++) {
         buf[0] = random[i];
         cJSON_AddItemToObject(sortme, buf, cJSON_CreateNumber(1));
     }
@@ -156,8 +152,7 @@ static void sort_tests(void)
 
     /* check sorting */
     current_element = sortme->child->next;
-    for (i = 1; (i < 26) && (current_element != NULL) && (current_element->prev != NULL); i++)
-    {
+    for (i = 1; (i < 26) && (current_element != NULL) && (current_element->prev != NULL); i++) {
         TEST_ASSERT_TRUE(current_element->string[0] >= current_element->prev->string[0]);
         current_element = current_element->next;
     }
@@ -168,15 +163,14 @@ static void sort_tests(void)
 static void merge_tests(void)
 {
     size_t i = 0;
-    char *patchtext = NULL;
-    char *after = NULL;
+    char* patchtext = NULL;
+    char* after = NULL;
 
     /* Merge tests: */
     printf("JSON Merge Patch tests\n");
-    for (i = 0; i < 15; i++)
-    {
-        cJSON *object_to_be_merged = cJSON_Parse(merges[i][0]);
-        cJSON *patch = cJSON_Parse(merges[i][1]);
+    for (i = 0; i < 15; i++) {
+        cJSON* object_to_be_merged = cJSON_Parse(merges[i][0]);
+        cJSON* patch = cJSON_Parse(merges[i][1]);
         patchtext = cJSON_PrintUnformatted(patch);
         object_to_be_merged = cJSONUtils_MergePatch(object_to_be_merged, patch);
         after = cJSON_PrintUnformatted(object_to_be_merged);
@@ -192,15 +186,14 @@ static void merge_tests(void)
 static void generate_merge_tests(void)
 {
     size_t i = 0;
-    char *patchedtext = NULL;
+    char* patchedtext = NULL;
 
     /* Generate Merge tests: */
-    for (i = 0; i < 15; i++)
-    {
-        cJSON *from = cJSON_Parse(merges[i][0]);
-        cJSON *to = cJSON_Parse(merges[i][2]);
-        cJSON *patch = cJSONUtils_GenerateMergePatch(from,to);
-        from = cJSONUtils_MergePatch(from,patch);
+    for (i = 0; i < 15; i++) {
+        cJSON* from = cJSON_Parse(merges[i][0]);
+        cJSON* to = cJSON_Parse(merges[i][2]);
+        cJSON* patch = cJSONUtils_GenerateMergePatch(from, to);
+        from = cJSONUtils_MergePatch(from, patch);
         patchedtext = cJSON_PrintUnformatted(from);
         TEST_ASSERT_EQUAL_STRING(merges[i][2], patchedtext);
 

@@ -10,7 +10,6 @@
 #include "lv_math.h"
 #include "lv_txt.h"
 
-
 /*********************
  *      DEFINES
  *********************/

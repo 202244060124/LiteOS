@@ -19,7 +19,6 @@ extern "C" {
 #include "../lv_conf_internal.h"
 #include "lv_mem.h"
 
-
 /*********************
  *      DEFINES
  *********************/

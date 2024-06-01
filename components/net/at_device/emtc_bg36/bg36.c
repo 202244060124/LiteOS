@@ -26,9 +26,10 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --------------------------------------------------------------------------- */
 
-#include <string.h>
 #include <ctype.h>
+#include <string.h>
 #include "bg36.h"
+
 
 #define MAX_BG36_SOCK_NUM 11
 
@@ -46,15 +47,15 @@ at_config at_user_conf = {
 
 emtc_socket_info sockinfo[MAX_BG36_SOCK_NUM];
 
-int bg36_cmd(char *cmd, int32_t len, const char *suffix, char *resp_buf, int *resp_len)
+int bg36_cmd(char* cmd, int32_t len, const char* suffix, char* resp_buf, int* resp_len)
 {
     AT_LOG("bg36 cmd:%s len:%d", cmd, (int)len);
-    return at.cmd((int8_t *)cmd, len, suffix, resp_buf, resp_len);
+    return at.cmd((int8_t*)cmd, len, suffix, resp_buf, resp_len);
 }
 
 static int bg36_close_sock(int sockid)
 {
-    char *cmd = "AT+QICLOSE=";
+    char* cmd = "AT+QICLOSE=";
     char buf[64];
     int cmd_len;
 
@@ -63,18 +64,18 @@ static int bg36_close_sock(int sockid)
 }
 
 // Direct Push Mode
-int32_t bg36_data_handler(void *arg, int8_t *buf, int32_t len)
+int32_t bg36_data_handler(void* arg, int8_t* buf, int32_t len)
 {
     int32_t sockid = 0;
     int32_t data_len = 0;
-    const char *p1 = NULL;
-    const char *p2 = NULL;
+    const char* p1 = NULL;
+    const char* p2 = NULL;
     QUEUE_BUFF qbuf;
     int32_t ret = 0;
     int32_t offset = 0;
 
     while (offset < len) {
-        p1 = strstr((char *)(buf + offset), "recv");
+        p1 = strstr((char*)(buf + offset), "recv");
         if (p1 == NULL) {
             AT_LOG("buf done, offset:%ld len:%ld", offset, len);
             return AT_OK;
@@ -87,7 +88,7 @@ int32_t bg36_data_handler(void *arg, int8_t *buf, int32_t len)
             return AT_FAILED;
         }
 
-        p2 = strstr((char *)(p1 + 1), ",");
+        p2 = strstr((char*)(p1 + 1), ",");
         if (p2 == NULL) {
             AT_LOG("invalid data %ld", sockid);
             return AT_FAILED;
@@ -123,19 +124,19 @@ int32_t bg36_data_handler(void *arg, int8_t *buf, int32_t len)
     return AT_OK;
 }
 
-int32_t bg36_cmd_match(const char *buf, char *featurestr, int len)
+int32_t bg36_cmd_match(const char* buf, char* featurestr, int len)
 {
-    return (strstr((char *)buf, featurestr) != NULL) ? 0 : -1;
+    return (strstr((char*)buf, featurestr) != NULL) ? 0 : -1;
 }
 
-int32_t bg36_create_socket(const int8_t *host, const int8_t *port, int32_t proto, char *service_type)
+int32_t bg36_create_socket(const int8_t* host, const int8_t* port, int32_t proto, char* service_type)
 {
     int rbuflen = 64;
     char inbuf[64] = {0};
     char tmpbuf[32] = {0};
     int conid = 0;
     int err = 0;
-    char *str = NULL;
+    char* str = NULL;
     int id = 0;
     int ret = 0;
     char cmd[64] = {0};
@@ -189,14 +190,14 @@ int32_t bg36_create_socket(const int8_t *host, const int8_t *port, int32_t proto
     return id;
 }
 
-int32_t bg36_bind(const int8_t *host, const int8_t *port, int32_t proto)
+int32_t bg36_bind(const int8_t* host, const int8_t* port, int32_t proto)
 {
     return bg36_create_socket(host, port, proto, "TCP");
 }
 
-int32_t bg36_connect(const int8_t *host, const int8_t *port, int32_t proto)
+int32_t bg36_connect(const int8_t* host, const int8_t* port, int32_t proto)
 {
-    char *cmd2 = "AT+QISTATE=1,";
+    char* cmd2 = "AT+QISTATE=1,";
     char cmd[64] = {0};
     int sockid;
     sockid = bg36_create_socket(host, port, proto, "TCP");
@@ -208,9 +209,9 @@ int32_t bg36_connect(const int8_t *host, const int8_t *port, int32_t proto)
     return sockid;
 }
 
-int32_t bg36_send(int32_t id, const uint8_t *buf, uint32_t len)
+int32_t bg36_send(int32_t id, const uint8_t* buf, uint32_t len)
 {
-    char *cmd1 = "AT+QISEND=";
+    char* cmd1 = "AT+QISEND=";
     char cmd[64] = {0};
     int ret;
     if ((id < 0) || (id >= MAX_BG36_SOCK_NUM) || (len >= MAX_SEND_DATA_LEN)) {
@@ -223,7 +224,7 @@ int32_t bg36_send(int32_t id, const uint8_t *buf, uint32_t len)
         AT_LOG("socket invalid,no >");
         return AT_FAILED;
     }
-    ret = bg36_cmd((char *)buf, len, "OK", NULL, NULL);
+    ret = bg36_cmd((char*)buf, len, "OK", NULL, NULL);
     if (ret) {
         AT_LOG("data send failed");
         return AT_FAILED;
@@ -231,7 +232,7 @@ int32_t bg36_send(int32_t id, const uint8_t *buf, uint32_t len)
     return len;
 }
 
-static int32_t bg36_recv_timeout(int32_t id, uint8_t *buf, uint32_t len, char *ipaddr, int *port, int32_t timeout)
+static int32_t bg36_recv_timeout(int32_t id, uint8_t* buf, uint32_t len, char* ipaddr, int* port, int32_t timeout)
 {
     int rlen = 0;
     int copylen = 0;
@@ -250,7 +251,7 @@ static int32_t bg36_recv_timeout(int32_t id, uint8_t *buf, uint32_t len, char *i
             return AT_TIMEOUT;
         }
         AT_LOG("Read queue len:%d", (int)qbuf.len);
-        sockinfo[id].buf = (char *)qbuf.addr;
+        sockinfo[id].buf = (char*)qbuf.addr;
         sockinfo[id].len = qbuf.len;
         sockinfo[id].offset = 0;
     }
@@ -270,7 +271,7 @@ static int32_t bg36_recv_timeout(int32_t id, uint8_t *buf, uint32_t len, char *i
         while (rlen < len) {
             ret = LOS_QueueReadCopy(at.linkid[id].qid, &qbuf, &qlen, 0);
             if (ret == LOS_OK) {
-                sockinfo[id].buf = (char *)qbuf.addr;
+                sockinfo[id].buf = (char*)qbuf.addr;
                 sockinfo[id].len = qbuf.len;
                 sockinfo[id].offset = 0;
                 if (len - rlen < qbuf.len) {
@@ -294,7 +295,7 @@ static int32_t bg36_recv_timeout(int32_t id, uint8_t *buf, uint32_t len, char *i
     }
 }
 
-static int32_t bg36_recv(int32_t id, uint8_t *buf, uint32_t len)
+static int32_t bg36_recv(int32_t id, uint8_t* buf, uint32_t len)
 {
     return bg36_recv_timeout(id, buf, len, NULL, NULL, LOS_WAIT_FOREVER);
 }
@@ -303,7 +304,7 @@ static int32_t bg36_close(int32_t id)
 {
     int ret;
     QUEUE_BUFF qbuf = {0};
-    char *cmd2 = "AT+QISTATE=1,";
+    char* cmd2 = "AT+QISTATE=1,";
     char cmd[64] = {0};
 
     UINT32 qlen = sizeof(QUEUE_BUFF);

@@ -55,22 +55,21 @@
 #else
 #include <stdio.h>
 #include <stdlib.h>
-#define mbedtls_snprintf        snprintf
-#define mbedtls_printf          printf
-#define mbedtls_exit            exit
-#define MBEDTLS_EXIT_SUCCESS    EXIT_SUCCESS
-#define MBEDTLS_EXIT_FAILURE    EXIT_FAILURE
+#define mbedtls_snprintf     snprintf
+#define mbedtls_printf       printf
+#define mbedtls_exit         exit
+#define MBEDTLS_EXIT_SUCCESS EXIT_SUCCESS
+#define MBEDTLS_EXIT_FAILURE EXIT_FAILURE
 #endif /* MBEDTLS_PLATFORM_C */
 
-#if !defined(MBEDTLS_BIGNUM_C) || !defined(MBEDTLS_MD_C) || \
-    !defined(MBEDTLS_SHA256_C) || !defined(MBEDTLS_PK_PARSE_C) ||   \
-    !defined(MBEDTLS_FS_IO)
-int main( void )
+#if !defined(MBEDTLS_BIGNUM_C) || !defined(MBEDTLS_MD_C) || !defined(MBEDTLS_SHA256_C) || !defined(MBEDTLS_PK_PARSE_C) \
+    || !defined(MBEDTLS_FS_IO)
+int main(void)
 {
     mbedtls_printf("MBEDTLS_BIGNUM_C and/or MBEDTLS_MD_C and/or "
-           "MBEDTLS_SHA256_C and/or MBEDTLS_PK_PARSE_C and/or "
-           "MBEDTLS_FS_IO not defined.\n");
-    mbedtls_exit( 0 );
+                   "MBEDTLS_SHA256_C and/or MBEDTLS_PK_PARSE_C and/or "
+                   "MBEDTLS_FS_IO not defined.\n");
+    mbedtls_exit(0);
 }
 #else
 
@@ -81,10 +80,9 @@ int main( void )
 #include <stdio.h>
 #include <string.h>
 
-
-int main( int argc, char *argv[] )
+int main(int argc, char* argv[])
 {
-    FILE *f;
+    FILE* f;
     int ret = 1;
     int exit_code = MBEDTLS_EXIT_FAILURE;
     size_t i;
@@ -93,86 +91,78 @@ int main( int argc, char *argv[] )
     unsigned char buf[MBEDTLS_MPI_MAX_SIZE];
     char filename[512];
 
-    mbedtls_pk_init( &pk );
+    mbedtls_pk_init(&pk);
 
-    if( argc != 3 )
-    {
-        mbedtls_printf( "usage: mbedtls_pk_verify <key_file> <filename>\n" );
+    if (argc != 3) {
+        mbedtls_printf("usage: mbedtls_pk_verify <key_file> <filename>\n");
 
 #if defined(_WIN32)
-        mbedtls_printf( "\n" );
+        mbedtls_printf("\n");
 #endif
 
         goto exit;
     }
 
-    mbedtls_printf( "\n  . Reading public key from '%s'", argv[1] );
-    fflush( stdout );
+    mbedtls_printf("\n  . Reading public key from '%s'", argv[1]);
+    fflush(stdout);
 
-    if( ( ret = mbedtls_pk_parse_public_keyfile( &pk, argv[1] ) ) != 0 )
-    {
-        mbedtls_printf( " failed\n  ! mbedtls_pk_parse_public_keyfile returned -0x%04x\n", -ret );
+    if ((ret = mbedtls_pk_parse_public_keyfile(&pk, argv[1])) != 0) {
+        mbedtls_printf(" failed\n  ! mbedtls_pk_parse_public_keyfile returned -0x%04x\n", -ret);
         goto exit;
     }
 
     /*
      * Extract the signature from the file
      */
-    mbedtls_snprintf( filename, sizeof(filename), "%s.sig", argv[2] );
+    mbedtls_snprintf(filename, sizeof(filename), "%s.sig", argv[2]);
 
-    if( ( f = fopen( filename, "rb" ) ) == NULL )
-    {
-        mbedtls_printf( "\n  ! Could not open %s\n\n", filename );
+    if ((f = fopen(filename, "rb")) == NULL) {
+        mbedtls_printf("\n  ! Could not open %s\n\n", filename);
         goto exit;
     }
 
-    i = fread( buf, 1, sizeof(buf), f );
+    i = fread(buf, 1, sizeof(buf), f);
 
-    fclose( f );
+    fclose(f);
 
     /*
      * Compute the SHA-256 hash of the input file and
      * verify the signature
      */
-    mbedtls_printf( "\n  . Verifying the SHA-256 signature" );
-    fflush( stdout );
+    mbedtls_printf("\n  . Verifying the SHA-256 signature");
+    fflush(stdout);
 
-    if( ( ret = mbedtls_md_file(
-                    mbedtls_md_info_from_type( MBEDTLS_MD_SHA256 ),
-                    argv[2], hash ) ) != 0 )
-    {
-        mbedtls_printf( " failed\n  ! Could not open or read %s\n\n", argv[2] );
+    if ((ret = mbedtls_md_file(mbedtls_md_info_from_type(MBEDTLS_MD_SHA256), argv[2], hash)) != 0) {
+        mbedtls_printf(" failed\n  ! Could not open or read %s\n\n", argv[2]);
         goto exit;
     }
 
-    if( ( ret = mbedtls_pk_verify( &pk, MBEDTLS_MD_SHA256, hash, 0,
-                           buf, i ) ) != 0 )
-    {
-        mbedtls_printf( " failed\n  ! mbedtls_pk_verify returned -0x%04x\n", -ret );
+    if ((ret = mbedtls_pk_verify(&pk, MBEDTLS_MD_SHA256, hash, 0, buf, i)) != 0) {
+        mbedtls_printf(" failed\n  ! mbedtls_pk_verify returned -0x%04x\n", -ret);
         goto exit;
     }
 
-    mbedtls_printf( "\n  . OK (the signature is valid)\n\n" );
+    mbedtls_printf("\n  . OK (the signature is valid)\n\n");
 
     exit_code = MBEDTLS_EXIT_SUCCESS;
 
 exit:
-    mbedtls_pk_free( &pk );
+    mbedtls_pk_free(&pk);
 
 #if defined(MBEDTLS_ERROR_C)
-    if( exit_code != MBEDTLS_EXIT_SUCCESS )
-    {
-        mbedtls_strerror( ret, (char *) buf, sizeof(buf) );
-        mbedtls_printf( "  !  Last error was: %s\n", buf );
+    if (exit_code != MBEDTLS_EXIT_SUCCESS) {
+        mbedtls_strerror(ret, (char*)buf, sizeof(buf));
+        mbedtls_printf("  !  Last error was: %s\n", buf);
     }
 #endif
 
 #if defined(_WIN32)
-    mbedtls_printf( "  + Press Enter to exit this program.\n" );
-    fflush( stdout ); getchar();
+    mbedtls_printf("  + Press Enter to exit this program.\n");
+    fflush(stdout);
+    getchar();
 #endif
 
-    mbedtls_exit( exit_code );
+    mbedtls_exit(exit_code);
 }
-#endif /* MBEDTLS_BIGNUM_C && MBEDTLS_SHA256_C &&
+#endif /* MBEDTLS_BIGNUM_C && MBEDTLS_SHA256_C && \
           MBEDTLS_PK_PARSE_C && MBEDTLS_FS_IO */

@@ -21,7 +21,6 @@ extern "C" {
 #include "lv_btn.h"
 #include "lv_label.h"
 
-
 /*********************
  *      DEFINES
  *********************/

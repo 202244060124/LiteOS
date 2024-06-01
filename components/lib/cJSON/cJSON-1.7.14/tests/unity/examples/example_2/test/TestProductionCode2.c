@@ -7,7 +7,7 @@ TEST_GROUP(ProductionCode2);
 /* These should be ignored because they are commented out in various ways:
 #include "whatever.h"
 */
-//#include "somethingelse.h"
+// #include "somethingelse.h"
 
 TEST_SETUP(ProductionCode2)
 {
@@ -29,5 +29,5 @@ TEST(ProductionCode2, AnotherIgnoredTest)
 
 TEST(ProductionCode2, ThisFunctionHasNotBeenTested_NeedsToBeImplemented)
 {
-    TEST_IGNORE(); //Like This
+    TEST_IGNORE(); // Like This
 }

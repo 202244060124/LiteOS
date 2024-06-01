@@ -24,13 +24,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "common.h"
 #include "unity/examples/unity_config.h"
 #include "unity/src/unity.h"
-#include "common.h"
+
 
 static cJSON item[1];
 
-static void assert_is_value(cJSON *value_item, int type)
+static void assert_is_value(cJSON* value_item, int type)
 {
     TEST_ASSERT_NOT_NULL_MESSAGE(value_item, "Item is NULL.");
 
@@ -41,10 +42,10 @@ static void assert_is_value(cJSON *value_item, int type)
     assert_has_no_string(value_item);
 }
 
-static void assert_parse_value(const char *string, int type)
+static void assert_parse_value(const char* string, int type)
 {
-    parse_buffer buffer = { 0, 0, 0, 0, { 0, 0, 0 } };
-    buffer.content = (const unsigned char*) string;
+    parse_buffer buffer = {0, 0, 0, 0, {0, 0, 0}};
+    buffer.content = (const unsigned char*)string;
     buffer.length = strlen(string) + sizeof("");
     buffer.hooks = global_hooks;
 

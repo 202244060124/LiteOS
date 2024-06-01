@@ -1,8 +1,9 @@
 /* This Test File Is Used To Verify Many Combinations Of Using the Generate Test Runner Script */
 
 #include <stdio.h>
-#include "unity.h"
 #include "Defs.h"
+#include "unity.h"
+
 
 TEST_FILE("some_file.c")
 
@@ -13,7 +14,10 @@ TEST_FILE("some_file.c")
 
 /* Support for Meta Test Rig */
 #define TEST_CASE(a)
-void putcharSpy(int c) { (void)putchar(c);} // include passthrough for linking tests
+void putcharSpy(int c)
+{
+    (void)putchar(c);
+} // include passthrough for linking tests
 
 /* Global Variables Used During These Tests */
 int CounterSetup = 0;
@@ -64,4 +68,3 @@ void spec_ThisTestPassesWhenNormalTeardownRan(void)
 {
     TEST_ASSERT_EQUAL_MESSAGE(1, CounterTeardown, "Normal Teardown Wasn't Run");
 }
-

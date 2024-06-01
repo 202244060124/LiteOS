@@ -5,10 +5,11 @@
  *  [Released under MIT License. Please refer to license.txt for details]
  * ========================================== */
 
-#include "unity_fixture.h"
-#include "unity_output_Spy.h"
 #include <stdlib.h>
 #include <string.h>
+#include "unity_fixture.h"
+#include "unity_output_Spy.h"
+
 
 TEST_GROUP(UnityFixture);
 
@@ -109,8 +110,8 @@ TEST(UnityFixture, CallocFillsWithZero)
     free(m);
 }
 
-static char *p1;
-static char *p2;
+static char* p1;
+static char* p2;
 
 TEST(UnityFixture, PointerSet)
 {
@@ -172,15 +173,12 @@ TEST_SETUP(UnityCommandOptions)
 TEST_TEAR_DOWN(UnityCommandOptions)
 {
     UnityFixture.Verbose = savedVerbose;
-    UnityFixture.RepeatCount= savedRepeat;
+    UnityFixture.RepeatCount = savedRepeat;
     UnityFixture.NameFilter = savedName;
     UnityFixture.GroupFilter = savedGroup;
 }
 
-
-static const char* noOptions[] = {
-        "testrunner.exe"
-};
+static const char* noOptions[] = {"testrunner.exe"};
 
 TEST(UnityCommandOptions, DefaultOptions)
 {
@@ -191,10 +189,7 @@ TEST(UnityCommandOptions, DefaultOptions)
     TEST_ASSERT_EQUAL(1, UnityFixture.RepeatCount);
 }
 
-static const char* verbose[] = {
-        "testrunner.exe",
-        "-v"
-};
+static const char* verbose[] = {"testrunner.exe", "-v"};
 
 TEST(UnityCommandOptions, OptionVerbose)
 {
@@ -202,10 +197,7 @@ TEST(UnityCommandOptions, OptionVerbose)
     TEST_ASSERT_EQUAL(1, UnityFixture.Verbose);
 }
 
-static const char* group[] = {
-        "testrunner.exe",
-        "-g", "groupname"
-};
+static const char* group[] = {"testrunner.exe", "-g", "groupname"};
 
 TEST(UnityCommandOptions, OptionSelectTestByGroup)
 {
@@ -213,10 +205,7 @@ TEST(UnityCommandOptions, OptionSelectTestByGroup)
     STRCMP_EQUAL("groupname", UnityFixture.GroupFilter);
 }
 
-static const char* name[] = {
-        "testrunner.exe",
-        "-n", "testname"
-};
+static const char* name[] = {"testrunner.exe", "-n", "testname"};
 
 TEST(UnityCommandOptions, OptionSelectTestByName)
 {
@@ -224,10 +213,7 @@ TEST(UnityCommandOptions, OptionSelectTestByName)
     STRCMP_EQUAL("testname", UnityFixture.NameFilter);
 }
 
-static const char* repeat[] = {
-        "testrunner.exe",
-        "-r", "99"
-};
+static const char* repeat[] = {"testrunner.exe", "-r", "99"};
 
 TEST(UnityCommandOptions, OptionSelectRepeatTestsDefaultCount)
 {
@@ -241,13 +227,7 @@ TEST(UnityCommandOptions, OptionSelectRepeatTestsSpecificCount)
     TEST_ASSERT_EQUAL(99, UnityFixture.RepeatCount);
 }
 
-static const char* multiple[] = {
-        "testrunner.exe",
-        "-v",
-        "-g", "groupname",
-        "-n", "testname",
-        "-r", "98"
-};
+static const char* multiple[] = {"testrunner.exe", "-v", "-g", "groupname", "-n", "testname", "-r", "98"};
 
 TEST(UnityCommandOptions, MultipleOptions)
 {
@@ -259,11 +239,7 @@ TEST(UnityCommandOptions, MultipleOptions)
 }
 
 static const char* dashRNotLast[] = {
-        "testrunner.exe",
-        "-v",
-        "-g", "gggg",
-        "-r",
-        "-n", "tttt",
+    "testrunner.exe", "-v", "-g", "gggg", "-r", "-n", "tttt",
 };
 
 TEST(UnityCommandOptions, MultipleOptionsDashRNotLastAndNoValueSpecified)
@@ -275,14 +251,7 @@ TEST(UnityCommandOptions, MultipleOptionsDashRNotLastAndNoValueSpecified)
     TEST_ASSERT_EQUAL(2, UnityFixture.RepeatCount);
 }
 
-static const char* unknownCommand[] = {
-        "testrunner.exe",
-        "-v",
-        "-g", "groupname",
-        "-n", "testname",
-        "-r", "98",
-        "-z"
-};
+static const char* unknownCommand[] = {"testrunner.exe", "-v", "-g", "groupname", "-n", "testname", "-r", "98", "-z"};
 TEST(UnityCommandOptions, UnknownCommandIsIgnored)
 {
     TEST_ASSERT_EQUAL(0, UnityGetCommandLineOptions(9, unknownCommand));
@@ -330,36 +299,34 @@ TEST_TEAR_DOWN(LeakDetection)
     UnityOutputCharSpy_Destroy();
 }
 
-#define EXPECT_ABORT_BEGIN \
-  { \
-    jmp_buf TestAbortFrame;   \
-    memcpy(TestAbortFrame, Unity.AbortFrame, sizeof(jmp_buf)); \
-    if (TEST_PROTECT()) \
-    {
-
-#define EXPECT_ABORT_END \
-    } \
+#define EXPECT_ABORT_BEGIN                                         \
+    {                                                              \
+        jmp_buf TestAbortFrame;                                    \
+        memcpy(TestAbortFrame, Unity.AbortFrame, sizeof(jmp_buf)); \
+        if (TEST_PROTECT()) {
+#define EXPECT_ABORT_END                                       \
+    }                                                          \
     memcpy(Unity.AbortFrame, TestAbortFrame, sizeof(jmp_buf)); \
-  }
+    }
 
 /* This tricky set of defines lets us see if we are using the Spy, returns 1 if true */
 #ifdef __STDC_VERSION__
 
 #if __STDC_VERSION__ >= 199901L
-#define USING_SPY_AS(a)                    EXPAND_AND_USE_2ND(ASSIGN_VALUE(a), 0)
-#define ASSIGN_VALUE(a)                    VAL_##a
-#define VAL_UnityOutputCharSpy_OutputChar  0, 1
-#define EXPAND_AND_USE_2ND(a, b)           SECOND_PARAM(a, b, throwaway)
-#define SECOND_PARAM(a, b, ...)            b
+#define USING_SPY_AS(a)                   EXPAND_AND_USE_2ND(ASSIGN_VALUE(a), 0)
+#define ASSIGN_VALUE(a)                   VAL_##a
+#define VAL_UnityOutputCharSpy_OutputChar 0, 1
+#define EXPAND_AND_USE_2ND(a, b)          SECOND_PARAM(a, b, throwaway)
+#define SECOND_PARAM(a, b, ...)           b
 #if USING_SPY_AS(UNITY_OUTPUT_CHAR)
-  #define USING_OUTPUT_SPY /* UNITY_OUTPUT_CHAR = UnityOutputCharSpy_OutputChar */
+#define USING_OUTPUT_SPY                               /* UNITY_OUTPUT_CHAR = UnityOutputCharSpy_OutputChar */
 #endif
-#endif /* >= 199901 */
+#endif                                                 /* >= 199901 */
 
-#else  /* __STDC_VERSION__ else */
+#else                                                  /* __STDC_VERSION__ else */
 #define UnityOutputCharSpy_OutputChar 42
 #if UNITY_OUTPUT_CHAR == UnityOutputCharSpy_OutputChar /* Works if no -Wundef -Werror */
-  #define USING_OUTPUT_SPY
+#define USING_OUTPUT_SPY
 #endif
 #undef UnityOutputCharSpy_OutputChar
 #endif /* __STDC_VERSION__ */
@@ -465,7 +432,8 @@ TEST(LeakDetection, PointerSettingMax)
     TEST_IGNORE();
 #else
     int i;
-    for (i = 0; i < UNITY_MAX_POINTERS; i++) UT_PTR_SET(pointer1, &int1);
+    for (i = 0; i < UNITY_MAX_POINTERS; i++)
+        UT_PTR_SET(pointer1, &int1);
     UnityOutputCharSpy_Enable(1);
     EXPECT_ABORT_BEGIN
     UT_PTR_SET(pointer1, &int1);
@@ -480,18 +448,22 @@ TEST(LeakDetection, PointerSettingMax)
 
 TEST_GROUP(InternalMalloc);
 #define TEST_ASSERT_MEMORY_ALL_FREE_LIFO_ORDER(first_mem_ptr, ptr) \
-    ptr = malloc(10); free(ptr);                                   \
+    ptr = malloc(10);                                              \
+    free(ptr);                                                     \
     TEST_ASSERT_EQUAL_PTR_MESSAGE(first_mem_ptr, ptr, "Memory was stranded, free in LIFO order");
 
-
-TEST_SETUP(InternalMalloc) { }
-TEST_TEAR_DOWN(InternalMalloc) { }
+TEST_SETUP(InternalMalloc)
+{
+}
+TEST_TEAR_DOWN(InternalMalloc)
+{
+}
 
 TEST(InternalMalloc, MallocPastBufferFails)
 {
 #ifdef UNITY_EXCLUDE_STDLIB_MALLOC
-    void* m = malloc(UNITY_INTERNAL_HEAP_SIZE_BYTES/2 + 1);
-    void* n = malloc(UNITY_INTERNAL_HEAP_SIZE_BYTES/2);
+    void* m = malloc(UNITY_INTERNAL_HEAP_SIZE_BYTES / 2 + 1);
+    void* n = malloc(UNITY_INTERNAL_HEAP_SIZE_BYTES / 2);
     free(m);
     TEST_ASSERT_NOT_NULL(m);
     TEST_ASSERT_NULL(n);
@@ -502,8 +474,8 @@ TEST(InternalMalloc, MallocPastBufferFails)
 TEST(InternalMalloc, CallocPastBufferFails)
 {
 #ifdef UNITY_EXCLUDE_STDLIB_MALLOC
-    void* m = calloc(1, UNITY_INTERNAL_HEAP_SIZE_BYTES/2 + 1);
-    void* n = calloc(1, UNITY_INTERNAL_HEAP_SIZE_BYTES/2);
+    void* m = calloc(1, UNITY_INTERNAL_HEAP_SIZE_BYTES / 2 + 1);
+    void* n = calloc(1, UNITY_INTERNAL_HEAP_SIZE_BYTES / 2);
     free(m);
     TEST_ASSERT_NOT_NULL(m);
     TEST_ASSERT_NULL(n);
@@ -514,8 +486,8 @@ TEST(InternalMalloc, CallocPastBufferFails)
 TEST(InternalMalloc, MallocThenReallocGrowsMemoryInPlace)
 {
 #ifdef UNITY_EXCLUDE_STDLIB_MALLOC
-    void* m = malloc(UNITY_INTERNAL_HEAP_SIZE_BYTES/2 + 1);
-    void* n = realloc(m, UNITY_INTERNAL_HEAP_SIZE_BYTES/2 + 9);
+    void* m = malloc(UNITY_INTERNAL_HEAP_SIZE_BYTES / 2 + 1);
+    void* n = realloc(m, UNITY_INTERNAL_HEAP_SIZE_BYTES / 2 + 9);
     free(n);
     TEST_ASSERT_NOT_NULL(m);
     TEST_ASSERT_EQUAL(m, n);
@@ -526,13 +498,14 @@ TEST(InternalMalloc, MallocThenReallocGrowsMemoryInPlace)
 TEST(InternalMalloc, ReallocFailDoesNotFreeMem)
 {
 #ifdef UNITY_EXCLUDE_STDLIB_MALLOC
-    void* m = malloc(UNITY_INTERNAL_HEAP_SIZE_BYTES/2);
+    void* m = malloc(UNITY_INTERNAL_HEAP_SIZE_BYTES / 2);
     void* n1 = malloc(10);
-    void* out_of_mem = realloc(n1, UNITY_INTERNAL_HEAP_SIZE_BYTES/2 + 1);
+    void* out_of_mem = realloc(n1, UNITY_INTERNAL_HEAP_SIZE_BYTES / 2 + 1);
     void* n2 = malloc(10);
 
     free(n2);
-    if (out_of_mem == NULL) free(n1);
+    if (out_of_mem == NULL)
+        free(n1);
     free(m);
 
     TEST_ASSERT_NOT_NULL(m);       /* Got a real memory location */

@@ -24,15 +24,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../cJSON_Utils.h"
+#include "common.h"
 #include "unity/examples/unity_config.h"
 #include "unity/src/unity.h"
-#include "common.h"
-#include "../cJSON_Utils.h"
 
-static cJSON *parse_test_file(const char * const filename)
+
+static cJSON* parse_test_file(const char* const filename)
 {
-    char *file = NULL;
-    cJSON *json = NULL;
+    char* file = NULL;
+    cJSON* json = NULL;
 
     file = read_file(filename);
     TEST_ASSERT_NOT_NULL_MESSAGE(file, "Failed to read file.");
@@ -46,32 +47,28 @@ static cJSON *parse_test_file(const char * const filename)
     return json;
 }
 
-static cJSON_bool test_apply_patch(const cJSON * const test)
+static cJSON_bool test_apply_patch(const cJSON* const test)
 {
-    cJSON *doc = NULL;
-    cJSON *patch = NULL;
-    cJSON *expected = NULL;
-    cJSON *error_element = NULL;
-    cJSON *comment = NULL;
-    cJSON *disabled = NULL;
+    cJSON* doc = NULL;
+    cJSON* patch = NULL;
+    cJSON* expected = NULL;
+    cJSON* error_element = NULL;
+    cJSON* comment = NULL;
+    cJSON* disabled = NULL;
 
-    cJSON *object = NULL;
+    cJSON* object = NULL;
     cJSON_bool successful = false;
 
     /* extract all the data out of the test */
     comment = cJSON_GetObjectItemCaseSensitive(test, "comment");
-    if (cJSON_IsString(comment))
-    {
+    if (cJSON_IsString(comment)) {
         printf("Testing \"%s\"\n", comment->valuestring);
-    }
-    else
-    {
+    } else {
         printf("Testing unkown\n");
     }
 
     disabled = cJSON_GetObjectItemCaseSensitive(test, "disabled");
-    if (cJSON_IsTrue(disabled))
-    {
+    if (cJSON_IsTrue(disabled)) {
         printf("SKIPPED\n");
         return true;
     }
@@ -86,54 +83,46 @@ static cJSON_bool test_apply_patch(const cJSON * const test)
 
     expected = cJSON_GetObjectItemCaseSensitive(test, "expected");
     error_element = cJSON_GetObjectItemCaseSensitive(test, "error");
-    if (error_element != NULL)
-    {
+    if (error_element != NULL) {
         /* excepting an error */
         TEST_ASSERT_TRUE_MESSAGE(0 != cJSONUtils_ApplyPatchesCaseSensitive(object, patch), "Test didn't fail as it's supposed to.");
 
         successful = true;
-    }
-    else
-    {
+    } else {
         /* apply the patch */
         TEST_ASSERT_EQUAL_INT_MESSAGE(0, cJSONUtils_ApplyPatchesCaseSensitive(object, patch), "Failed to apply patches.");
         successful = true;
 
-        if (expected != NULL)
-        {
+        if (expected != NULL) {
             successful = cJSON_Compare(object, expected, true);
         }
     }
 
     cJSON_Delete(object);
 
-    if (successful)
-    {
+    if (successful) {
         printf("OK\n");
-    }
-    else
-    {
+    } else {
         printf("FAILED\n");
     }
 
     return successful;
 }
 
-static cJSON_bool test_generate_test(cJSON *test)
+static cJSON_bool test_generate_test(cJSON* test)
 {
-    cJSON *doc = NULL;
-    cJSON *patch = NULL;
-    cJSON *expected = NULL;
-    cJSON *disabled = NULL;
+    cJSON* doc = NULL;
+    cJSON* patch = NULL;
+    cJSON* expected = NULL;
+    cJSON* disabled = NULL;
 
-    cJSON *object = NULL;
+    cJSON* object = NULL;
     cJSON_bool successful = false;
 
-    char *printed_patch = NULL;
+    char* printed_patch = NULL;
 
     disabled = cJSON_GetObjectItemCaseSensitive(test, "disabled");
-    if (cJSON_IsTrue(disabled))
-    {
+    if (cJSON_IsTrue(disabled)) {
         printf("SKIPPED\n");
         return true;
     }
@@ -146,8 +135,7 @@ static cJSON_bool test_generate_test(cJSON *test)
     TEST_ASSERT_NOT_NULL(object);
 
     expected = cJSON_GetObjectItemCaseSensitive(test, "expected");
-    if (expected == NULL)
-    {
+    if (expected == NULL) {
         cJSON_Delete(object);
         /* if there is no expected output, this test doesn't make sense */
         return true;
@@ -168,12 +156,9 @@ static cJSON_bool test_generate_test(cJSON *test)
     cJSON_Delete(patch);
     cJSON_Delete(object);
 
-    if (successful)
-    {
+    if (successful) {
         printf("generated patch: OK\n");
-    }
-    else
-    {
+    } else {
         printf("generated patch: FAILED\n");
     }
 
@@ -182,8 +167,8 @@ static cJSON_bool test_generate_test(cJSON *test)
 
 static void cjson_utils_should_pass_json_patch_test_tests(void)
 {
-    cJSON *tests = parse_test_file("json-patch-tests/tests.json");
-    cJSON *test = NULL;
+    cJSON* tests = parse_test_file("json-patch-tests/tests.json");
+    cJSON* test = NULL;
 
     cJSON_bool failed = false;
     cJSON_ArrayForEach(test, tests)
@@ -199,8 +184,8 @@ static void cjson_utils_should_pass_json_patch_test_tests(void)
 
 static void cjson_utils_should_pass_json_patch_test_spec_tests(void)
 {
-    cJSON *tests = parse_test_file("json-patch-tests/spec_tests.json");
-    cJSON *test = NULL;
+    cJSON* tests = parse_test_file("json-patch-tests/spec_tests.json");
+    cJSON* test = NULL;
 
     cJSON_bool failed = false;
     cJSON_ArrayForEach(test, tests)
@@ -216,8 +201,8 @@ static void cjson_utils_should_pass_json_patch_test_spec_tests(void)
 
 static void cjson_utils_should_pass_json_patch_test_cjson_utils_tests(void)
 {
-    cJSON *tests = parse_test_file("json-patch-tests/cjson-utils-tests.json");
-    cJSON *test = NULL;
+    cJSON* tests = parse_test_file("json-patch-tests/cjson-utils-tests.json");
+    cJSON* test = NULL;
 
     cJSON_bool failed = false;
     cJSON_ArrayForEach(test, tests)

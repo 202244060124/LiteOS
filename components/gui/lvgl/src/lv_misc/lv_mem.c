@@ -12,7 +12,6 @@
 #include "lv_math.h"
 #include "lv_mem.h"
 
-
 #if LV_MEM_CUSTOM != 0
 #include LV_MEM_CUSTOM_INCLUDE
 #endif

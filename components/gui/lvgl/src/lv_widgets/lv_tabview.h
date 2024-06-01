@@ -30,7 +30,6 @@ extern "C" {
 #include "../lv_widgets/lv_page.h"
 #include "../lv_widgets/lv_win.h"
 
-
 /*********************
  *      DEFINES
  *********************/

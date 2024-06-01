@@ -18,7 +18,6 @@
 #include "../lv_themes/lv_theme.h"
 #include "lv_img.h"
 
-
 /*********************
  *      DEFINES
  *********************/

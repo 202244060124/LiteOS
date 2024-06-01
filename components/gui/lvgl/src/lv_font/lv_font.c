@@ -11,7 +11,6 @@
 #include "../lv_misc/lv_utils.h"
 #include "lv_font.h"
 
-
 /*********************
  *      DEFINES
  *********************/

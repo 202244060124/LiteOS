@@ -17,7 +17,6 @@ extern "C" {
 #include "../lv_draw/lv_draw.h"
 #include "lv_txt.h"
 
-
 #if LV_USE_ARABIC_PERSIAN_CHARS == 1
 
 /*********************

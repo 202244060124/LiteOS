@@ -14,7 +14,6 @@
 #include "../lv_themes/lv_theme.h"
 #include "lv_canvas.h"
 
-
 #if LV_USE_CANVAS != 0
 
 /*********************

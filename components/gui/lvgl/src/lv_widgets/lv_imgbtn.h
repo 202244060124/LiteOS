@@ -26,7 +26,6 @@ extern "C" {
 #include "../lv_draw/lv_draw_img.h"
 #include "lv_btn.h"
 
-
 /*********************
  *      DEFINES
  *********************/

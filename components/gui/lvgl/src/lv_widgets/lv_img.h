@@ -22,7 +22,6 @@ extern "C" {
 #include "../lv_misc/lv_fs.h"
 #include "lv_label.h"
 
-
 /*********************
  *      DEFINES
  *********************/

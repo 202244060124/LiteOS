@@ -24,13 +24,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "common.h"
 #include "unity/examples/unity_config.h"
 #include "unity/src/unity.h"
-#include "common.h"
+
 
 static cJSON item[1];
 
-static void assert_is_array(cJSON *array_item)
+static void assert_is_array(cJSON* array_item)
 {
     TEST_ASSERT_NOT_NULL_MESSAGE(array_item, "Item is NULL.");
 
@@ -42,9 +43,9 @@ static void assert_is_array(cJSON *array_item)
     assert_has_no_string(array_item);
 }
 
-static void assert_not_array(const char *json)
+static void assert_not_array(const char* json)
 {
-    parse_buffer buffer = { 0, 0, 0, 0, { 0, 0, 0 } };
+    parse_buffer buffer = {0, 0, 0, 0, {0, 0, 0}};
     buffer.content = (const unsigned char*)json;
     buffer.length = strlen(json) + sizeof("");
     buffer.hooks = global_hooks;
@@ -53,9 +54,9 @@ static void assert_not_array(const char *json)
     assert_is_invalid(item);
 }
 
-static void assert_parse_array(const char *json)
+static void assert_parse_array(const char* json)
 {
-    parse_buffer buffer = { 0, 0, 0, 0, { 0, 0, 0 } };
+    parse_buffer buffer = {0, 0, 0, 0, {0, 0, 0}};
     buffer.content = (const unsigned char*)json;
     buffer.length = strlen(json) + sizeof("");
     buffer.hooks = global_hooks;
@@ -73,10 +74,8 @@ static void parse_array_should_parse_empty_arrays(void)
     assert_has_no_child(item);
 }
 
-
 static void parse_array_should_parse_arrays_with_one_element(void)
 {
-
     assert_parse_array("[1]");
     assert_has_child(item);
     assert_has_type(item->child, cJSON_Number);
@@ -115,26 +114,12 @@ static void parse_array_should_parse_arrays_with_multiple_elements(void)
 
     {
         size_t i = 0;
-        cJSON *node = NULL;
-        int expected_types[7] =
-        {
-            cJSON_Number,
-            cJSON_NULL,
-            cJSON_True,
-            cJSON_False,
-            cJSON_Array,
-            cJSON_String,
-            cJSON_Object
-        };
+        cJSON* node = NULL;
+        int expected_types[7] = {cJSON_Number, cJSON_NULL, cJSON_True, cJSON_False, cJSON_Array, cJSON_String, cJSON_Object};
         assert_parse_array("[1, null, true, false, [], \"hello\", {}]");
 
         node = item->child;
-        for (
-                i = 0;
-                (i < (sizeof(expected_types)/sizeof(int)))
-                && (node != NULL);
-                (void)i++, node = node->next)
-        {
+        for (i = 0; (i < (sizeof(expected_types) / sizeof(int))) && (node != NULL); (void)i++, node = node->next) {
             TEST_ASSERT_BITS(0xFF, expected_types[i], node->type);
         }
         TEST_ASSERT_EQUAL_INT(i, 7);

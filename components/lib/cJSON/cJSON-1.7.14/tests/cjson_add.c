@@ -24,31 +24,29 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "common.h"
 #include "unity/examples/unity_config.h"
 #include "unity/src/unity.h"
-#include "common.h"
 
-static void * CJSON_CDECL failing_malloc(size_t size)
+
+static void* CJSON_CDECL failing_malloc(size_t size)
 {
     (void)size;
     return NULL;
 }
 
 /* work around MSVC error C2322: '...' address of dillimport '...' is not static */
-static void CJSON_CDECL normal_free(void *pointer)
+static void CJSON_CDECL normal_free(void* pointer)
 {
     free(pointer);
 }
 
-static cJSON_Hooks failing_hooks = {
-    failing_malloc,
-    normal_free
-};
+static cJSON_Hooks failing_hooks = {failing_malloc, normal_free};
 
 static void cjson_add_null_should_add_null(void)
 {
-    cJSON *root = cJSON_CreateObject();
-    cJSON *null = NULL;
+    cJSON* root = cJSON_CreateObject();
+    cJSON* null = NULL;
 
     cJSON_AddNullToObject(root, "null");
 
@@ -60,7 +58,7 @@ static void cjson_add_null_should_add_null(void)
 
 static void cjson_add_null_should_fail_with_null_pointers(void)
 {
-    cJSON *root = cJSON_CreateObject();
+    cJSON* root = cJSON_CreateObject();
 
     TEST_ASSERT_NULL(cJSON_AddNullToObject(NULL, "null"));
     TEST_ASSERT_NULL(cJSON_AddNullToObject(root, NULL));
@@ -70,7 +68,7 @@ static void cjson_add_null_should_fail_with_null_pointers(void)
 
 static void cjson_add_null_should_fail_on_allocation_failure(void)
 {
-    cJSON *root = cJSON_CreateObject();
+    cJSON* root = cJSON_CreateObject();
 
     cJSON_InitHooks(&failing_hooks);
 
@@ -83,8 +81,8 @@ static void cjson_add_null_should_fail_on_allocation_failure(void)
 
 static void cjson_add_true_should_add_true(void)
 {
-    cJSON *root = cJSON_CreateObject();
-    cJSON *true_item = NULL;
+    cJSON* root = cJSON_CreateObject();
+    cJSON* true_item = NULL;
 
     cJSON_AddTrueToObject(root, "true");
 
@@ -96,7 +94,7 @@ static void cjson_add_true_should_add_true(void)
 
 static void cjson_add_true_should_fail_with_null_pointers(void)
 {
-    cJSON *root = cJSON_CreateObject();
+    cJSON* root = cJSON_CreateObject();
 
     TEST_ASSERT_NULL(cJSON_AddTrueToObject(NULL, "true"));
     TEST_ASSERT_NULL(cJSON_AddTrueToObject(root, NULL));
@@ -106,7 +104,7 @@ static void cjson_add_true_should_fail_with_null_pointers(void)
 
 static void cjson_add_true_should_fail_on_allocation_failure(void)
 {
-    cJSON *root = cJSON_CreateObject();
+    cJSON* root = cJSON_CreateObject();
 
     cJSON_InitHooks(&failing_hooks);
 
@@ -119,8 +117,8 @@ static void cjson_add_true_should_fail_on_allocation_failure(void)
 
 static void cjson_add_false_should_add_false(void)
 {
-    cJSON *root = cJSON_CreateObject();
-    cJSON *false_item = NULL;
+    cJSON* root = cJSON_CreateObject();
+    cJSON* false_item = NULL;
 
     cJSON_AddFalseToObject(root, "false");
 
@@ -132,7 +130,7 @@ static void cjson_add_false_should_add_false(void)
 
 static void cjson_add_false_should_fail_with_null_pointers(void)
 {
-    cJSON *root = cJSON_CreateObject();
+    cJSON* root = cJSON_CreateObject();
 
     TEST_ASSERT_NULL(cJSON_AddFalseToObject(NULL, "false"));
     TEST_ASSERT_NULL(cJSON_AddFalseToObject(root, NULL));
@@ -142,7 +140,7 @@ static void cjson_add_false_should_fail_with_null_pointers(void)
 
 static void cjson_add_false_should_fail_on_allocation_failure(void)
 {
-    cJSON *root = cJSON_CreateObject();
+    cJSON* root = cJSON_CreateObject();
 
     cJSON_InitHooks(&failing_hooks);
 
@@ -155,9 +153,9 @@ static void cjson_add_false_should_fail_on_allocation_failure(void)
 
 static void cjson_add_bool_should_add_bool(void)
 {
-    cJSON *root = cJSON_CreateObject();
-    cJSON *true_item = NULL;
-    cJSON *false_item = NULL;
+    cJSON* root = cJSON_CreateObject();
+    cJSON* true_item = NULL;
+    cJSON* false_item = NULL;
 
     /* true */
     cJSON_AddBoolToObject(root, "true", true);
@@ -174,7 +172,7 @@ static void cjson_add_bool_should_add_bool(void)
 
 static void cjson_add_bool_should_fail_with_null_pointers(void)
 {
-    cJSON *root = cJSON_CreateObject();
+    cJSON* root = cJSON_CreateObject();
 
     TEST_ASSERT_NULL(cJSON_AddBoolToObject(NULL, "false", false));
     TEST_ASSERT_NULL(cJSON_AddBoolToObject(root, NULL, false));
@@ -184,7 +182,7 @@ static void cjson_add_bool_should_fail_with_null_pointers(void)
 
 static void cjson_add_bool_should_fail_on_allocation_failure(void)
 {
-    cJSON *root = cJSON_CreateObject();
+    cJSON* root = cJSON_CreateObject();
 
     cJSON_InitHooks(&failing_hooks);
 
@@ -197,8 +195,8 @@ static void cjson_add_bool_should_fail_on_allocation_failure(void)
 
 static void cjson_add_number_should_add_number(void)
 {
-    cJSON *root = cJSON_CreateObject();
-    cJSON *number = NULL;
+    cJSON* root = cJSON_CreateObject();
+    cJSON* number = NULL;
 
     cJSON_AddNumberToObject(root, "number", 42);
 
@@ -213,7 +211,7 @@ static void cjson_add_number_should_add_number(void)
 
 static void cjson_add_number_should_fail_with_null_pointers(void)
 {
-    cJSON *root = cJSON_CreateObject();
+    cJSON* root = cJSON_CreateObject();
 
     TEST_ASSERT_NULL(cJSON_AddNumberToObject(NULL, "number", 42));
     TEST_ASSERT_NULL(cJSON_AddNumberToObject(root, NULL, 42));
@@ -223,7 +221,7 @@ static void cjson_add_number_should_fail_with_null_pointers(void)
 
 static void cjson_add_number_should_fail_on_allocation_failure(void)
 {
-    cJSON *root = cJSON_CreateObject();
+    cJSON* root = cJSON_CreateObject();
 
     cJSON_InitHooks(&failing_hooks);
 
@@ -236,8 +234,8 @@ static void cjson_add_number_should_fail_on_allocation_failure(void)
 
 static void cjson_add_string_should_add_string(void)
 {
-    cJSON *root = cJSON_CreateObject();
-    cJSON *string = NULL;
+    cJSON* root = cJSON_CreateObject();
+    cJSON* string = NULL;
 
     cJSON_AddStringToObject(root, "string", "Hello World!");
 
@@ -250,7 +248,7 @@ static void cjson_add_string_should_add_string(void)
 
 static void cjson_add_string_should_fail_with_null_pointers(void)
 {
-    cJSON *root = cJSON_CreateObject();
+    cJSON* root = cJSON_CreateObject();
 
     TEST_ASSERT_NULL(cJSON_AddStringToObject(NULL, "string", "string"));
     TEST_ASSERT_NULL(cJSON_AddStringToObject(root, NULL, "string"));
@@ -260,7 +258,7 @@ static void cjson_add_string_should_fail_with_null_pointers(void)
 
 static void cjson_add_string_should_fail_on_allocation_failure(void)
 {
-    cJSON *root = cJSON_CreateObject();
+    cJSON* root = cJSON_CreateObject();
 
     cJSON_InitHooks(&failing_hooks);
 
@@ -273,8 +271,8 @@ static void cjson_add_string_should_fail_on_allocation_failure(void)
 
 static void cjson_add_raw_should_add_raw(void)
 {
-    cJSON *root = cJSON_CreateObject();
-    cJSON *raw = NULL;
+    cJSON* root = cJSON_CreateObject();
+    cJSON* raw = NULL;
 
     cJSON_AddRawToObject(root, "raw", "{}");
 
@@ -287,7 +285,7 @@ static void cjson_add_raw_should_add_raw(void)
 
 static void cjson_add_raw_should_fail_with_null_pointers(void)
 {
-    cJSON *root = cJSON_CreateObject();
+    cJSON* root = cJSON_CreateObject();
 
     TEST_ASSERT_NULL(cJSON_AddRawToObject(NULL, "raw", "{}"));
     TEST_ASSERT_NULL(cJSON_AddRawToObject(root, NULL, "{}"));
@@ -297,7 +295,7 @@ static void cjson_add_raw_should_fail_with_null_pointers(void)
 
 static void cjson_add_raw_should_fail_on_allocation_failure(void)
 {
-    cJSON *root = cJSON_CreateObject();
+    cJSON* root = cJSON_CreateObject();
 
     cJSON_InitHooks(&failing_hooks);
 
@@ -310,8 +308,8 @@ static void cjson_add_raw_should_fail_on_allocation_failure(void)
 
 static void cJSON_add_object_should_add_object(void)
 {
-    cJSON *root = cJSON_CreateObject();
-    cJSON *object = NULL;
+    cJSON* root = cJSON_CreateObject();
+    cJSON* object = NULL;
 
     cJSON_AddObjectToObject(root, "object");
     TEST_ASSERT_NOT_NULL(object = cJSON_GetObjectItemCaseSensitive(root, "object"));
@@ -322,7 +320,7 @@ static void cJSON_add_object_should_add_object(void)
 
 static void cjson_add_object_should_fail_with_null_pointers(void)
 {
-    cJSON *root = cJSON_CreateObject();
+    cJSON* root = cJSON_CreateObject();
 
     TEST_ASSERT_NULL(cJSON_AddObjectToObject(NULL, "object"));
     TEST_ASSERT_NULL(cJSON_AddObjectToObject(root, NULL));
@@ -332,7 +330,7 @@ static void cjson_add_object_should_fail_with_null_pointers(void)
 
 static void cjson_add_object_should_fail_on_allocation_failure(void)
 {
-    cJSON *root = cJSON_CreateObject();
+    cJSON* root = cJSON_CreateObject();
 
     cJSON_InitHooks(&failing_hooks);
 
@@ -345,8 +343,8 @@ static void cjson_add_object_should_fail_on_allocation_failure(void)
 
 static void cJSON_add_array_should_add_array(void)
 {
-    cJSON *root = cJSON_CreateObject();
-    cJSON *array = NULL;
+    cJSON* root = cJSON_CreateObject();
+    cJSON* array = NULL;
 
     cJSON_AddArrayToObject(root, "array");
     TEST_ASSERT_NOT_NULL(array = cJSON_GetObjectItemCaseSensitive(root, "array"));
@@ -357,7 +355,7 @@ static void cJSON_add_array_should_add_array(void)
 
 static void cjson_add_array_should_fail_with_null_pointers(void)
 {
-    cJSON *root = cJSON_CreateObject();
+    cJSON* root = cJSON_CreateObject();
 
     TEST_ASSERT_NULL(cJSON_AddArrayToObject(NULL, "array"));
     TEST_ASSERT_NULL(cJSON_AddArrayToObject(root, NULL));
@@ -367,7 +365,7 @@ static void cjson_add_array_should_fail_with_null_pointers(void)
 
 static void cjson_add_array_should_fail_on_allocation_failure(void)
 {
-    cJSON *root = cJSON_CreateObject();
+    cJSON* root = cJSON_CreateObject();
 
     cJSON_InitHooks(&failing_hooks);
 

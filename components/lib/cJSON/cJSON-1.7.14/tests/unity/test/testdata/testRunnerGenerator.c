@@ -1,8 +1,9 @@
 /* This Test File Is Used To Verify Many Combinations Of Using the Generate Test Runner Script */
 
 #include <stdio.h>
-#include "unity.h"
 #include "Defs.h"
+#include "unity.h"
+
 
 #ifdef USE_CEXCEPTION
 #include "CException.h"
@@ -21,7 +22,10 @@
 
 /* Support for Meta Test Rig */
 #define TEST_CASE(a)
-void putcharSpy(int c) { (void)putchar(c);} // include passthrough for linking tests
+void putcharSpy(int c)
+{
+    (void)putchar(c);
+} // include passthrough for linking tests
 
 /* Global Variables Used During These Tests */
 int CounterSetup = 0;
@@ -105,14 +109,15 @@ void custtest_ThisTestPassesWhenCustomTeardownRan(void)
     TEST_ASSERT_EQUAL_MESSAGE(2, CounterTeardown, "Custom Teardown Wasn't Run");
 }
 
-//void test_NewStyleCommentsShouldBeIgnored(void)
+// void test_NewStyleCommentsShouldBeIgnored(void)
 //{
-//    TEST_ASSERT_FAIL("New Style Comments Should Be Ignored");
-//}
+//     TEST_ASSERT_FAIL("New Style Comments Should Be Ignored");
+// }
 
 void test_NotBeConfusedByLongComplicatedStrings(void)
 {
-    const char* crazyString = "GET / HTTP/1.1\r\nHost: 127.0.0.1:8081\r\nConnection: keep-alive\r\nCache-Control: no-cache\r\nUser-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36\r\nPostman-Token: 768c7149-c3fb-f704-71a2-63918d9195b2\r\nAccept: */*\r\nAccept-Encoding: gzip, deflate, sdch\r\nAccept-Language: en-GB,en-US;q=0.8,en;q=0.6\r\n\r\n";
+    const char* crazyString =
+        "GET / HTTP/1.1\r\nHost: 127.0.0.1:8081\r\nConnection: keep-alive\r\nCache-Control: no-cache\r\nUser-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36\r\nPostman-Token: 768c7149-c3fb-f704-71a2-63918d9195b2\r\nAccept: */*\r\nAccept-Encoding: gzip, deflate, sdch\r\nAccept-Language: en-GB,en-US;q=0.8,en;q=0.6\r\n\r\n";
 
     TEST_ASSERT_EQUAL_STRING_MESSAGE(crazyString, crazyString, "These Strings Are The Same");
 }
@@ -124,7 +129,8 @@ void test_NotDisappearJustBecauseTheTestBeforeAndAfterHaveCrazyStrings(void)
 
 void test_StillNotBeConfusedByLongComplicatedStrings(void)
 {
-    const char* crazyString = "GET / HTTP/1.1\r\nHost: 127.0.0.1:8081\r\nConnection: keep-alive\r\nCache-Control: no-cache\r\nUser-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36\r\nPostman-Token: 768c7149-c3fb-f704-71a2-63918d9195b2\r\nAccept: */*\r\nAccept-Encoding: gzip, deflate, sdch\r\nAccept-Language: en-GB,en-US;q=0.8,en;q=0.6\r\n\r\n";
+    const char* crazyString =
+        "GET / HTTP/1.1\r\nHost: 127.0.0.1:8081\r\nConnection: keep-alive\r\nCache-Control: no-cache\r\nUser-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36\r\nPostman-Token: 768c7149-c3fb-f704-71a2-63918d9195b2\r\nAccept: */*\r\nAccept-Encoding: gzip, deflate, sdch\r\nAccept-Language: en-GB,en-US;q=0.8,en;q=0.6\r\n\r\n";
 
     TEST_ASSERT_EQUAL_STRING_MESSAGE(crazyString, crazyString, "These Strings Are Still The Same");
 }
@@ -179,5 +185,3 @@ void suitetest_ThisTestPassesWhenCustomSuiteSetupAndTeardownRan(void)
 {
     TEST_ASSERT_EQUAL_MESSAGE(1, CounterSuiteSetup, "Suite Setup Should Have Run");
 }
-
-

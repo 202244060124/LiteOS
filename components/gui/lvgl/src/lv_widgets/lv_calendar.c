@@ -17,7 +17,6 @@
 #include "../lv_misc/lv_utils.h"
 #include "../lv_themes/lv_theme.h"
 
-
 /*********************
  *      DEFINES
  *********************/

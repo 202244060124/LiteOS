@@ -27,9 +27,10 @@
  * --------------------------------------------------------------------------- */
 
 #include <stddef.h>
-#include "upgrade_flag.h"
 #include "flag_manager.h"
 #include "ota_crc.h"
+#include "upgrade_flag.h"
+
 
 typedef struct {
     upgrade_type_e upgrade_type;
@@ -82,8 +83,7 @@ int flag_set_info(upgrade_type_e upgrade_type, uint32_t image_size)
     return save_flag();
 }
 
-void flag_get_info(upgrade_type_e *upgrade_type, uint32_t *image_size, uint32_t *old_image_size,
-                   upgrade_state_e *upgrade_state)
+void flag_get_info(upgrade_type_e* upgrade_type, uint32_t* image_size, uint32_t* old_image_size, upgrade_state_e* upgrade_state)
 {
     if (upgrade_type != NULL) {
         *upgrade_type = g_flag.upgrade_type;
@@ -107,7 +107,7 @@ int flag_upgrade_set_result(upgrade_state_e state, uint32_t image_size)
     return save_flag();
 }
 
-int flag_upgrade_get_result(upgrade_state_e *state)
+int flag_upgrade_get_result(upgrade_state_e* state)
 {
     if (state != NULL) {
         *state = g_flag.upgrade_state;
@@ -129,7 +129,7 @@ int flag_set_recover_verify(uint32_t recover_verify, uint32_t verify_length)
     return save_flag();
 }
 
-void flag_get_recover_verify(uint32_t *recover_verify, uint32_t *verify_length)
+void flag_get_recover_verify(uint32_t* recover_verify, uint32_t* verify_length)
 {
     if (recover_verify != NULL) {
         *recover_verify = g_flag.recover_verify;

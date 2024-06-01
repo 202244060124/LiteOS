@@ -13,7 +13,6 @@
 #include "lv_gc.h"
 #include "lv_task.h"
 
-
 #if defined(LV_GC_INCLUDE)
 #include LV_GC_INCLUDE
 #endif /* LV_ENABLE_GC */

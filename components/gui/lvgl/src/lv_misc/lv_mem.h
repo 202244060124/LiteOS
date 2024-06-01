@@ -20,7 +20,6 @@ extern "C" {
 #include "lv_log.h"
 #include "lv_types.h"
 
-
 /*********************
  *      DEFINES
  *********************/

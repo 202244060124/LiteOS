@@ -13,7 +13,6 @@
 #include "lv_txt.h"
 #include "lv_utils.h"
 
-
 /*********************
  *      DEFINES
  *********************/

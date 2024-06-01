@@ -20,7 +20,6 @@ extern "C" {
 #include <string.h>
 #include "lv_mem.h"
 
-
 /*********************
  *      DEFINES
  *********************/

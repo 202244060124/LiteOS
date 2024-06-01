@@ -70,7 +70,7 @@
 #define X32_F "8lx"
 
 /* define compiler specific symbols */
-#if defined (__ICCARM__)
+#if defined(__ICCARM__)
 
 #define PACK_STRUCT_BEGIN
 #define PACK_STRUCT_STRUCT
@@ -78,21 +78,21 @@
 #define PACK_STRUCT_FIELD(x) x
 #define PACK_STRUCT_USE_INCLUDES
 
-#elif defined (__CC_ARM)
+#elif defined(__CC_ARM)
 
 #define PACK_STRUCT_BEGIN __packed
 #define PACK_STRUCT_STRUCT
 #define PACK_STRUCT_END
 #define PACK_STRUCT_FIELD(x) x
 
-#elif defined (__GNUC__)
+#elif defined(__GNUC__)
 
 #define PACK_STRUCT_BEGIN
-#define PACK_STRUCT_STRUCT __attribute__ ((__packed__))
+#define PACK_STRUCT_STRUCT __attribute__((__packed__))
 #define PACK_STRUCT_END
 #define PACK_STRUCT_FIELD(x) x
 
-#elif defined (__TASKING__)
+#elif defined(__TASKING__)
 
 #define PACK_STRUCT_BEGIN
 #define PACK_STRUCT_STRUCT
@@ -101,18 +101,28 @@
 
 #endif
 
-#include <stdio.h>  // use the printf
+#include <stdio.h> // use the printf
 #include <stdlib.h>
 
-
 #define LWIP_RAND() ((u32_t)rand())
-#define LWIP_PLATFORM_DIAG(x)  {printf x;}
+#define LWIP_PLATFORM_DIAG(x) \
+    {                         \
+        printf x;             \
+    }
 
-#define LWIP_PLATFORM_ASSERT(x) do { printf("Assertion \"%s\" failed at  \
-    line %d in %s\n",x, __LINE__, __FILE__);} while(0)
+#define LWIP_PLATFORM_ASSERT(x)        \
+    do {                               \
+        printf("Assertion \"%s\" failed at  \
+    line %d in %s\n",                  \
+               x, __LINE__, __FILE__); \
+    } while (0)
 
-#define LWIP_ERROR(message, expression, handler) do { if (!(expression)) { \
-  printf("Assertion \"%s\" failed at line %d in %s\n", message, \
-    __LINE__, __FILE__); handler;} } while(0)
+#define LWIP_ERROR(message, expression, handler)                                               \
+    do {                                                                                       \
+        if (!(expression)) {                                                                   \
+            printf("Assertion \"%s\" failed at line %d in %s\n", message, __LINE__, __FILE__); \
+            handler;                                                                           \
+        }                                                                                      \
+    } while (0)
 
 #endif /* __CC_H__ */

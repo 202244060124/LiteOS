@@ -26,7 +26,6 @@ extern "C" {
 #include "../lv_misc/lv_anim.h"
 #include "lv_cont.h"
 
-
 /*********************
  *      DEFINES
  *********************/

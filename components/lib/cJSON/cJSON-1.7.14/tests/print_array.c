@@ -20,21 +20,22 @@
   THE SOFTWARE.
 */
 
+#include "common.h"
 #include "unity/examples/unity_config.h"
 #include "unity/src/unity.h"
-#include "common.h"
 
-static void assert_print_array(const char * const expected, const char * const input)
+
+static void assert_print_array(const char* const expected, const char* const input)
 {
     unsigned char printed_unformatted[1024];
     unsigned char printed_formatted[1024];
 
     cJSON item[1];
 
-    printbuffer formatted_buffer = { 0, 0, 0, 0, 0, 0, { 0, 0, 0 } };
-    printbuffer unformatted_buffer = { 0, 0, 0, 0, 0, 0, { 0, 0, 0 } };
+    printbuffer formatted_buffer = {0, 0, 0, 0, 0, 0, {0, 0, 0}};
+    printbuffer unformatted_buffer = {0, 0, 0, 0, 0, 0, {0, 0, 0}};
 
-    parse_buffer parsebuffer = { 0, 0, 0, 0, { 0, 0, 0 } };
+    parse_buffer parsebuffer = {0, 0, 0, 0, {0, 0, 0}};
     parsebuffer.content = (const unsigned char*)input;
     parsebuffer.length = strlen(input) + sizeof("");
     parsebuffer.hooks = global_hooks;
@@ -74,7 +75,6 @@ static void print_array_should_print_empty_arrays(void)
 
 static void print_array_should_print_arrays_with_one_element(void)
 {
-
     assert_print_array("[1]", "[1]");
     assert_print_array("[\"hello!\"]", "[\"hello!\"]");
     assert_print_array("[[]]", "[[]]");

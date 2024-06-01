@@ -5,9 +5,9 @@
  *  [Released under MIT License. Please refer to license.txt for details]
  * ========================================== */
 
-
-#include "unity_output_Spy.h"
 #include "unity_fixture.h"
+#include "unity_output_Spy.h"
+
 
 #include <stdio.h>
 #include <string.h>
@@ -35,18 +35,15 @@ void UnityOutputCharSpy_Destroy(void)
 
 void UnityOutputCharSpy_OutputChar(int c)
 {
-    if (spy_enable)
-    {
-        if (count < (size-1))
+    if (spy_enable) {
+        if (count < (size - 1))
             buffer[count++] = (char)c;
-    }
-    else
-    {
+    } else {
         putchar(c);
     }
 }
 
-const char * UnityOutputCharSpy_Get(void)
+const char* UnityOutputCharSpy_Get(void)
 {
     return buffer;
 }

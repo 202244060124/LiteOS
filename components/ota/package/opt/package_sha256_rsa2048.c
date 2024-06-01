@@ -26,19 +26,19 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --------------------------------------------------------------------------- */
 #ifdef INCLUDE_PACK_OPTION_FILE
-#include "package_sha256_rsa2048.h"
 #include <string.h>
 #include "mbedtls/rsa.h"
+#include "package_sha256_rsa2048.h"
+
 
 #define PACK_SHA256_RSA2048_CHECKSUM_LEN 256
-#define PACK_SHA256_CHECKSUM_LEN 32
+#define PACK_SHA256_CHECKSUM_LEN         32
 
-
-static int pack_sha256_rsa2048_check(pack_checksum_alg_s *thi, const uint8_t *checksum, uint16_t checksum_len)
+static int pack_sha256_rsa2048_check(pack_checksum_alg_s* thi, const uint8_t* checksum, uint16_t checksum_len)
 {
-    pack_sha256_rsa2048_s *rsa = (pack_sha256_rsa2048_s *)thi;
-    mbedtls_rsa_context *dtls_rsa = NULL;
-    ota_key_s *key = NULL;
+    pack_sha256_rsa2048_s* rsa = (pack_sha256_rsa2048_s*)thi;
+    mbedtls_rsa_context* dtls_rsa = NULL;
+    ota_key_s* key = NULL;
     uint8_t real_sha256[PACK_SHA256_CHECKSUM_LEN];
     int ret = PACK_ERR;
 
@@ -53,7 +53,7 @@ static int pack_sha256_rsa2048_check(pack_checksum_alg_s *thi, const uint8_t *ch
         return PACK_ERR;
     }
 
-    dtls_rsa = (mbedtls_rsa_context *)PACK_MALLOC(sizeof(*dtls_rsa));
+    dtls_rsa = (mbedtls_rsa_context*)PACK_MALLOC(sizeof(*dtls_rsa));
     if (dtls_rsa == NULL) {
         PACK_LOG("PACK_MALLOC null");
         return PACK_ERR;
@@ -78,8 +78,7 @@ static int pack_sha256_rsa2048_check(pack_checksum_alg_s *thi, const uint8_t *ch
 
     mbedtls_sha256_finish(&rsa->sha256.sha256_context, real_sha256);
 
-    if (mbedtls_rsa_pkcs1_verify(dtls_rsa, NULL, NULL, MBEDTLS_RSA_PUBLIC, MBEDTLS_MD_SHA256, 0, real_sha256,
-        checksum) != PACK_OK) {
+    if (mbedtls_rsa_pkcs1_verify(dtls_rsa, NULL, NULL, MBEDTLS_RSA_PUBLIC, MBEDTLS_MD_SHA256, 0, real_sha256, checksum) != PACK_OK) {
         PACK_LOG("mbedtls_rsa_pkcs1_verify fail");
         goto EXIT;
     }
@@ -92,7 +91,7 @@ EXIT:
     return ret;
 }
 
-int pack_sha256_rsa2048_init(pack_sha256_rsa2048_s *thi, pack_head_s *head)
+int pack_sha256_rsa2048_init(pack_sha256_rsa2048_s* thi, pack_head_s* head)
 {
     (void)pack_sha256_init(&thi->sha256);
     thi->sha256.base.check = pack_sha256_rsa2048_check;

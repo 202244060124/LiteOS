@@ -11,7 +11,6 @@
 #include <string.h>
 #include "lv_math.h"
 
-
 /*********************
  *      DEFINES
  *********************/

@@ -34,14 +34,14 @@
 #ifndef _PACKAGE_SHA256_RSA2048_H
 #define _PACKAGE_SHA256_RSA2048_H
 
-#include "package_sha256.h"
 #include "../package_head.h"
+#include "package_sha256.h"
+
 
 typedef struct {
     pack_sha256_s sha256;
-    pack_head_s *head;
+    pack_head_s* head;
 } pack_sha256_rsa2048_s;
-
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -49,8 +49,7 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-int pack_sha256_rsa2048_init(pack_sha256_rsa2048_s *thi, pack_head_s *head);
-
+int pack_sha256_rsa2048_init(pack_sha256_rsa2048_s* thi, pack_head_s* head);
 
 #ifdef __cplusplus
 #if __cplusplus

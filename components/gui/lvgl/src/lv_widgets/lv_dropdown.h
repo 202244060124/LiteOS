@@ -29,7 +29,6 @@ extern "C" {
 #include "../lv_widgets/lv_label.h"
 #include "../lv_widgets/lv_page.h"
 
-
 /*********************
  *      DEFINES
  *********************/

@@ -24,7 +24,6 @@ extern "C" {
 #include "../lv_font/lv_symbol_def.h"
 #include "../lv_misc/lv_txt.h"
 
-
 /*********************
  *      DEFINES
  *********************/

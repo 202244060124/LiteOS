@@ -28,42 +28,42 @@
 
 #include "esp8266.h"
 
-int esp8266_cmd(int8_t *cmd, int32_t len, const char *suffix, char *resp_buf, int *resp_len)
+int esp8266_cmd(int8_t* cmd, int32_t len, const char* suffix, char* resp_buf, int* resp_len)
 {
     return at.cmd(cmd, len, suffix, resp_buf, resp_len);
 }
 
 int32_t esp8266_echo_off(void)
 {
-    return esp8266_cmd((int8_t *)AT_CMD_ECHO_OFF, strlen(AT_CMD_ECHO_OFF), "OK\r\n", NULL, NULL);
+    return esp8266_cmd((int8_t*)AT_CMD_ECHO_OFF, strlen(AT_CMD_ECHO_OFF), "OK\r\n", NULL, NULL);
 }
 
 int32_t esp8266_reset(void)
 {
-    return esp8266_cmd((int8_t *)AT_CMD_RST, strlen(AT_CMD_RST), "ready\r\n", NULL, NULL);
+    return esp8266_cmd((int8_t*)AT_CMD_RST, strlen(AT_CMD_RST), "ready\r\n", NULL, NULL);
 }
 
 int32_t esp8266_choose_net_mode(enum_net_mode m)
 {
     char cmd[64] = {0};
     snprintf(cmd, 64, "%s=%d", AT_CMD_CWMODE, (int)m);
-    return esp8266_cmd((int8_t *)cmd, strlen(cmd), "OK\r\n", NULL, NULL);
+    return esp8266_cmd((int8_t*)cmd, strlen(cmd), "OK\r\n", NULL, NULL);
 }
 
 int32_t esp8266_set_mux_mode(int32_t m)
 {
     char cmd[64] = {0};
     snprintf(cmd, 64, "%s=%d", AT_CMD_MUX, (int)m);
-    return esp8266_cmd((int8_t *)cmd, strlen(cmd), "OK\r\n", NULL, NULL);
+    return esp8266_cmd((int8_t*)cmd, strlen(cmd), "OK\r\n", NULL, NULL);
 }
-int32_t esp8266_joinap(char *pssid, char *ppasswd)
+int32_t esp8266_joinap(char* pssid, char* ppasswd)
 {
     char cmd[64] = {0};
     snprintf(cmd, 64, "%s=\"%s\",\"%s\"", AT_CMD_JOINAP, pssid, ppasswd);
-    return esp8266_cmd((int8_t *)cmd, strlen(cmd), "OK\r\n", NULL, NULL);
+    return esp8266_cmd((int8_t*)cmd, strlen(cmd), "OK\r\n", NULL, NULL);
 }
 
-int32_t esp8266_connect(const int8_t *host, const int8_t *port, int32_t proto)
+int32_t esp8266_connect(const int8_t* host, const int8_t* port, int32_t proto)
 {
     int32_t ret = AT_FAILED;
     int32_t id = 0;
@@ -79,13 +79,12 @@ int32_t esp8266_connect(const int8_t *host, const int8_t *port, int32_t proto)
             AT_LOG("no vailed linkid for use(id = %ld)", id);
             return AT_FAILED;
         }
-        snprintf(cmd, 64, "%s=%ld,\"%s\",\"%s\",%s", AT_CMD_CONN, id, proto == ATINY_PROTO_UDP ? "UDP" : "TCP", host,
-            port);
+        snprintf(cmd, 64, "%s=%ld,\"%s\",\"%s\",%s", AT_CMD_CONN, id, proto == ATINY_PROTO_UDP ? "UDP" : "TCP", host, port);
     }
 
     // init at_link
     memcpy(at.linkid[id].remote_ip, host, sizeof(at.linkid[id].remote_ip));
-    (void)sscanf((char *)port, "%d", &at.linkid[id].remote_port);
+    (void)sscanf((char*)port, "%d", &at.linkid[id].remote_port);
 
     ret = LOS_QueueCreate("dataQueue", 16, &at.linkid[id].qid, 0, sizeof(QUEUE_BUFF));
     if (ret != LOS_OK) {
@@ -93,7 +92,7 @@ int32_t esp8266_connect(const int8_t *host, const int8_t *port, int32_t proto)
         at.linkid[id].usable = AT_LINK_UNUSE;
         return AT_FAILED;
     }
-    ret = esp8266_cmd((int8_t *)cmd, strlen(cmd), "OK\r\n", NULL, NULL);
+    ret = esp8266_cmd((int8_t*)cmd, strlen(cmd), "OK\r\n", NULL, NULL);
     if (ret == AT_FAILED) {
         AT_LOG("at.cmd return failed!");
         (void)LOS_QueueDelete(at.linkid[id].qid);
@@ -103,28 +102,27 @@ int32_t esp8266_connect(const int8_t *host, const int8_t *port, int32_t proto)
     return id;
 }
 
-int32_t esp8266_send(int32_t id, const uint8_t *buf, uint32_t len)
+int32_t esp8266_send(int32_t id, const uint8_t* buf, uint32_t len)
 {
     int32_t ret = AT_FAILED;
     char cmd[64] = {0};
     if (at.mux_mode == AT_MUXMODE_SINGLE) {
         snprintf(cmd, 64, "%s=%lu,\"%s\",%d", AT_CMD_SEND, len, at.linkid[0].remote_ip, at.linkid[0].remote_port);
     } else {
-        snprintf(cmd, 64, "%s=%ld,%lu,\"%s\",%d", AT_CMD_SEND, id, len, at.linkid[id].remote_ip,
-            at.linkid[id].remote_port);
+        snprintf(cmd, 64, "%s=%ld,%lu,\"%s\",%d", AT_CMD_SEND, id, len, at.linkid[id].remote_ip, at.linkid[id].remote_port);
     }
-    ret = at.write((int8_t *)cmd, (int8_t *)"SEND OK\r\n", (int8_t *)buf, len);
+    ret = at.write((int8_t*)cmd, (int8_t*)"SEND OK\r\n", (int8_t*)buf, len);
 
     return ret;
 }
 
-int32_t esp8266_recv_timeout(int32_t id, uint8_t *buf, uint32_t len, char *host, int *port, int32_t timeout)
+int32_t esp8266_recv_timeout(int32_t id, uint8_t* buf, uint32_t len, char* host, int* port, int32_t timeout)
 {
     uint32_t qlen = sizeof(QUEUE_BUFF);
     uint32_t rxlen = 0;
 
     QUEUE_BUFF qbuf = {0, NULL};
-    int ret = LOS_QueueReadCopy(at.linkid[id].qid, (void *)&qbuf, (UINT32 *)&qlen, timeout);
+    int ret = LOS_QueueReadCopy(at.linkid[id].qid, (void*)&qbuf, (UINT32*)&qlen, timeout);
     if (ret != LOS_OK) {
         return AT_FAILED;
     }
@@ -137,7 +135,7 @@ int32_t esp8266_recv_timeout(int32_t id, uint8_t *buf, uint32_t len, char *host,
     return rxlen;
 }
 
-int32_t esp8266_recv(int32_t id, uint8_t *buf, uint32_t len)
+int32_t esp8266_recv(int32_t id, uint8_t* buf, uint32_t len)
 {
     return esp8266_recv_timeout(id, buf, len, NULL, NULL, LOS_WAIT_FOREVER);
 }
@@ -155,7 +153,7 @@ int32_t esp8266_close(int32_t id)
     } else {
         uint32_t qlen = sizeof(QUEUE_BUFF);
         QUEUE_BUFF qbuf = {0, NULL};
-        while (LOS_QueueReadCopy(at.linkid[id].qid, (void *)&qbuf, (UINT32 *)&qlen, 10) == LOS_OK) {
+        while (LOS_QueueReadCopy(at.linkid[id].qid, (void*)&qbuf, (UINT32*)&qlen, 10) == LOS_OK) {
             if (qbuf.len) {
                 at_free(qbuf.addr);
                 memset(&qbuf, 0, sizeof(QUEUE_BUFF)); // don't use qlen
@@ -165,10 +163,10 @@ int32_t esp8266_close(int32_t id)
         memset(&at.linkid[id], 0, sizeof(at_link));
         snprintf(cmd, 64, "%s=%ld", AT_CMD_CLOSE, id);
     }
-    return esp8266_cmd((int8_t *)cmd, strlen(cmd), "OK\r\n", NULL, NULL);
+    return esp8266_cmd((int8_t*)cmd, strlen(cmd), "OK\r\n", NULL, NULL);
 }
 
-int32_t esp8266_data_handler(void *arg, int8_t *buf, int32_t len)
+int32_t esp8266_data_handler(void* arg, int8_t* buf, int32_t len)
 {
     if ((buf == NULL) || (len <= 0)) {
         AT_LOG("param invailed!");
@@ -180,10 +178,10 @@ int32_t esp8266_data_handler(void *arg, int8_t *buf, int32_t len)
     int32_t ret = -1;
     int32_t linkid = 0, data_len = 0;
     int32_t remote_port = 0;
-    char *remote_ip;
+    char* remote_ip;
     char *p1, *p2;
     QUEUE_BUFF qbuf;
-    p1 = (char *)buf;
+    p1 = (char*)buf;
 
 LOOP:
     if (memcmp(p1, AT_DATAF_PREFIX, strlen(AT_DATAF_PREFIX)) == 0) {
@@ -206,7 +204,7 @@ LOOP:
         }
 
         // remote ip:str
-        remote_ip = (char *)at.linkid[linkid].remote_ip;
+        remote_ip = (char*)at.linkid[linkid].remote_ip;
         for (p2++; *p2 != ','; p2++) {
             *(remote_ip++) = *p2;
         }
@@ -236,7 +234,7 @@ LOOP:
         }
         p1 = (p2 + data_len);
 
-        if ((p1 - (char *)buf) < len)
+        if ((p1 - (char*)buf) < len)
             goto LOOP;
     }
 END:
@@ -244,11 +242,11 @@ END:
 }
 
 /* get local IP */
-int8_t esp8266_get_localip(int8_t *ip, int8_t *gw, int8_t *mask)
+int8_t esp8266_get_localip(int8_t* ip, int8_t* gw, int8_t* mask)
 {
     char resp[512] = {0};
     int len = 512;
-    esp8266_cmd((int8_t *)AT_CMD_CHECK_IP, strlen((char *)AT_CMD_CHECK_IP), "OK", resp, &len);
+    esp8266_cmd((int8_t*)AT_CMD_CHECK_IP, strlen((char*)AT_CMD_CHECK_IP), "OK", resp, &len);
 
     AT_LOG("resp:%s", resp);
     char *p1, *p2;
@@ -277,13 +275,13 @@ int8_t esp8266_get_localip(int8_t *ip, int8_t *gw, int8_t *mask)
 }
 
 /* get local mac */
-int8_t esp8266_get_localmac(int8_t *mac)
+int8_t esp8266_get_localmac(int8_t* mac)
 {
     char resp[512] = {0};
     char *p1, *p2;
     int len = 512;
 
-    esp8266_cmd((int8_t *)AT_CMD_CHECK_MAC, strlen((char *)AT_CMD_CHECK_MAC), "OK", resp, &len);
+    esp8266_cmd((int8_t*)AT_CMD_CHECK_MAC, strlen((char*)AT_CMD_CHECK_MAC), "OK", resp, &len);
     AT_LOG("resp:%s", resp);
 
     p1 = strstr(resp, ":");
@@ -296,13 +294,13 @@ int8_t esp8266_get_localmac(int8_t *mac)
     return AT_OK;
 }
 
-int32_t esp8266_bind(const int8_t *host, const int8_t *port, int32_t proto)
+int32_t esp8266_bind(const int8_t* host, const int8_t* port, int32_t proto)
 {
     int ret = AT_FAILED;
     int port_i = 0;
     char cmd[64] = {0};
 
-    (void)sscanf((char *)port, "%d", &port_i);
+    (void)sscanf((char*)port, "%d", &port_i);
     AT_LOG("get port = %d\r\n", port_i);
 
     if (at.mux_mode != AT_MUXMODE_MULTI) {
@@ -318,10 +316,9 @@ int32_t esp8266_bind(const int8_t *host, const int8_t *port, int32_t proto)
         return AT_FAILED;
     }
 
-    snprintf(cmd, 64, "%s=%d,\"%s\",\"0.0.0.0\",0,%d,0", AT_CMD_CONN, id, proto == ATINY_PROTO_UDP ? "UDP" : "TCP",
-        port_i);
+    snprintf(cmd, 64, "%s=%d,\"%s\",\"0.0.0.0\",0,%d,0", AT_CMD_CONN, id, proto == ATINY_PROTO_UDP ? "UDP" : "TCP", port_i);
 
-    esp8266_cmd((int8_t *)cmd, strlen(cmd), "OK\r\n", NULL, NULL);
+    esp8266_cmd((int8_t*)cmd, strlen(cmd), "OK\r\n", NULL, NULL);
     return id;
 }
 
@@ -352,10 +349,10 @@ int32_t esp8266_show_dinfo(int32_t s)
 {
     char cmd[64] = {0};
     snprintf(cmd, 64, "%s=%ld", AT_CMD_SHOW_DINFO, s);
-    return esp8266_cmd((int8_t *)cmd, strlen(cmd), "OK\r\n", NULL, NULL);
+    return esp8266_cmd((int8_t*)cmd, strlen(cmd), "OK\r\n", NULL, NULL);
 }
 
-int32_t esp8266_cmd_match(const char *buf, char *featurestr, int len)
+int32_t esp8266_cmd_match(const char* buf, char* featurestr, int len)
 {
     return memcmp(buf, featurestr, len);
 }

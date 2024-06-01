@@ -25,60 +25,56 @@
  *---------------------------------------------------------------------------*/
 #include <string.h>
 #include "osport.h"
-//ring:which to be initialized
-//buf:you supplied for the ring
-//len:the buf length
-//return:0 means ok while -1 failed
-s32_t ring_init(tagRingBuf *ring, u8_t *buf, s32_t buflen, s32_t offset, s32_t datalen)
+// ring:which to be initialized
+// buf:you supplied for the ring
+// len:the buf length
+// return:0 means ok while -1 failed
+s32_t ring_init(tagRingBuf* ring, u8_t* buf, s32_t buflen, s32_t offset, s32_t datalen)
 {
     int ret = -1;
-    if((NULL == ret))
-    {
+    if ((NULL == ret)) {
         return ret;
     }
-    ring->buf     = buf;
-    ring->buflen  = buflen;
+    ring->buf = buf;
+    ring->buflen = buflen;
     ring->datalen = datalen;
     ring->dataoff = offset;
     ret = 0;
     return ret;
 }
-//write len bytes data to the ring
-//return:how many bytes has been written while -1 means something err
-//write only changes the datalen and  data in  the ring
-s32_t ring_write(tagRingBuf *ring, u8_t *buf, s32_t len)
+// write len bytes data to the ring
+// return:how many bytes has been written while -1 means something err
+// write only changes the datalen and  data in  the ring
+s32_t ring_write(tagRingBuf* ring, u8_t* buf, s32_t len)
 {
     int ret = -1;
-    int cpylen;  //the current time we should move
-    int lenleft;  //and how many data still left to move
+    int cpylen;  // the current time we should move
+    int lenleft; // and how many data still left to move
     int offset;
-    unsigned char *src;
-    unsigned char *dst;
-    if((NULL == ring) || (NULL == buf) || (0 == len))
-    {
-        return ret;//which means parameters error
+    unsigned char* src;
+    unsigned char* dst;
+    if ((NULL == ring) || (NULL == buf) || (0 == len)) {
+        return ret; // which means parameters error
     }
-    if(ring->datalen == ring->buflen)
-    {
+    if (ring->datalen == ring->buflen) {
         ret = 0;
-        return  ret;//which means you could copy nothing here
+        return ret; // which means you could copy nothing here
     }
     ret = len > (ring->buflen - ring->datalen) ? (ring->buflen - ring->datalen) : len;
-    //now let us think the method to fill the data,take care of the roll back
+    // now let us think the method to fill the data,take care of the roll back
     lenleft = ret;
     src = buf;
-    if((ring->dataoff + ring->datalen) > ring->buflen) //which means the data has roll back
+    if ((ring->dataoff + ring->datalen) > ring->buflen)          // which means the data has roll back
     {
-        offset = (ring->dataoff + ring->datalen) % ring->buflen; //we could move it one time
+        offset = (ring->dataoff + ring->datalen) % ring->buflen; // we could move it one time
         cpylen = lenleft;
         dst = ring->buf + offset;
         memcpy(dst, src, cpylen);
         ring->datalen += cpylen;
         lenleft -= cpylen;
-    }
-    else if((ring->dataoff + ring->datalen + lenleft) > ring->buflen) //which means the data will be roll back
+    } else if ((ring->dataoff + ring->datalen + lenleft) > ring->buflen) // which means the data will be roll back
     {
-        //which means roll back,we should copy some here to the tail
+        // which means roll back,we should copy some here to the tail
         offset = ring->dataoff + ring->datalen;
         cpylen = ring->buflen - offset;
         dst = ring->buf + offset;
@@ -87,10 +83,9 @@ s32_t ring_write(tagRingBuf *ring, u8_t *buf, s32_t len)
         ring->datalen += cpylen;
         lenleft -= cpylen;
     }
-    //here means we could move it by one time
-    if(lenleft > 0)
-    {
-        offset = (ring->dataoff + ring->datalen) % ring->buflen; //we could move it one time
+    // here means we could move it by one time
+    if (lenleft > 0) {
+        offset = (ring->dataoff + ring->datalen) % ring->buflen; // we could move it one time
         cpylen = lenleft;
         dst = ring->buf + offset;
         memcpy(dst, src, cpylen);
@@ -98,33 +93,31 @@ s32_t ring_write(tagRingBuf *ring, u8_t *buf, s32_t len)
     }
     return ret;
 }
-//read len bytes data from the ring
-//return:how many bytes has been read while -1 means something err
-//read effect the offset datalen and data in the ring
-s32_t ring_read(tagRingBuf *ring, u8_t *buf, s32_t len)
+// read len bytes data from the ring
+// return:how many bytes has been read while -1 means something err
+// read effect the offset datalen and data in the ring
+s32_t ring_read(tagRingBuf* ring, u8_t* buf, s32_t len)
 {
     int ret = -1;
-    int cpylen;  //the current time we should move
-    int lenleft;  //and how many data still left to move
+    int cpylen;  // the current time we should move
+    int lenleft; // and how many data still left to move
     int offset;
-    unsigned char *src;
-    unsigned char *dst;
-    if((NULL == ring) || (NULL == buf) || (0 == len))
-    {
-        return ret;//which means parameters error
+    unsigned char* src;
+    unsigned char* dst;
+    if ((NULL == ring) || (NULL == buf) || (0 == len)) {
+        return ret; // which means parameters error
     }
-    if(ring->datalen == 0)
-    {
+    if (ring->datalen == 0) {
         ret = 0;
-        return  ret;//which means you could copy nothing here
+        return ret; // which means you could copy nothing here
     }
     ret = len > ring->datalen ? ring->datalen : len;
-    //now let us think the method to fill the data,take care of the roll back
+    // now let us think the method to fill the data,take care of the roll back
     lenleft = ret;
     dst = buf;
-    if((ring->dataoff + lenleft) >= ring->buflen) //which means the data has roll back
+    if ((ring->dataoff + lenleft) >= ring->buflen) // which means the data has roll back
     {
-        offset = ring->dataoff; //we cpy part
+        offset = ring->dataoff;                    // we cpy part
         cpylen = ring->buflen - ring->dataoff;
         src = ring->buf + offset;
         memcpy(dst, src, cpylen);
@@ -133,10 +126,9 @@ s32_t ring_read(tagRingBuf *ring, u8_t *buf, s32_t len)
         lenleft -= cpylen;
         dst += cpylen;
     }
-    //here means we could move it by one time
-    if(lenleft > 0)
-    {
-        offset = ring->dataoff; //we cpy part
+    // here means we could move it by one time
+    if (lenleft > 0) {
+        offset = ring->dataoff; // we cpy part
         cpylen = lenleft;
         src = ring->buf + offset;
         memcpy(dst, src, cpylen);
@@ -145,37 +137,33 @@ s32_t ring_read(tagRingBuf *ring, u8_t *buf, s32_t len)
     }
     return ret;
 }
-//check how many data in the ring while -1 means someting error
-s32_t ring_datalen(tagRingBuf *ring)
+// check how many data in the ring while -1 means someting error
+s32_t ring_datalen(tagRingBuf* ring)
 {
     int ret = -1;
-    if(NULL != ring)
-    {
+    if (NULL != ring) {
         ret = ring->datalen;
     }
     return ret;
 }
-//reset the ring
-s32_t ring_reset(tagRingBuf *ring)
+// reset the ring
+s32_t ring_reset(tagRingBuf* ring)
 {
     int ret = -1;
-    if(NULL != ring)
-    {
+    if (NULL != ring) {
         ring->datalen = 0;
         ring->dataoff = 0;
         ret = 0;
     }
     return ret;
 }
-//deinit the ring:-1 means something error while 0 ok
-s32_t ring_deinit(tagRingBuf *ring)
+// deinit the ring:-1 means something error while 0 ok
+s32_t ring_deinit(tagRingBuf* ring)
 {
     int ret = -1;
-    if(NULL != ring)
-    {
+    if (NULL != ring) {
         memset(ring, 0, sizeof(tagRingBuf));
         ret = 0;
     }
     return ret;
 }
-

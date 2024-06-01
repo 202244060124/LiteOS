@@ -1,7 +1,8 @@
-#include "unity.h"
-#include "UnityHelper.h"
 #include <stdio.h>
 #include <string.h>
+#include "UnityHelper.h"
+#include "unity.h"
+
 
 void AssertEqualExampleStruct(const EXAMPLE_STRUCT_T expected, const EXAMPLE_STRUCT_T actual, const unsigned short line)
 {

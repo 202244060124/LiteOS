@@ -26,28 +26,29 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --------------------------------------------------------------------------- */
 #ifdef INCLUDE_PACK_OPTION_FILE
-#include "package_sha256.h"
 #include <string.h>
 #include "../package_head.h"
+#include "package_sha256.h"
 
-static void pack_sha256_reset(pack_checksum_alg_s *thi)
+
+static void pack_sha256_reset(pack_checksum_alg_s* thi)
 {
-    pack_sha256_s *sha256 = (pack_sha256_s *)thi;
+    pack_sha256_s* sha256 = (pack_sha256_s*)thi;
     mbedtls_sha256_init(&sha256->sha256_context);
     mbedtls_sha256_starts(&sha256->sha256_context, false);
 }
 
-static int pack_sha256_update(pack_checksum_alg_s *thi, const uint8_t *buff, uint16_t len)
+static int pack_sha256_update(pack_checksum_alg_s* thi, const uint8_t* buff, uint16_t len)
 {
-    pack_sha256_s *sha256 = (pack_sha256_s *)thi;
+    pack_sha256_s* sha256 = (pack_sha256_s*)thi;
     mbedtls_sha256_update(&sha256->sha256_context, buff, len);
     return PACK_OK;
 }
 
-static int pack_sha256_check(pack_checksum_alg_s *thi, const uint8_t *checksum, uint16_t checksum_len)
+static int pack_sha256_check(pack_checksum_alg_s* thi, const uint8_t* checksum, uint16_t checksum_len)
 {
     uint8_t real_value[32];
-    pack_sha256_s *sha256 = (pack_sha256_s *)thi;
+    pack_sha256_s* sha256 = (pack_sha256_s*)thi;
 
     ASSERT_THIS(return PACK_ERR);
 
@@ -63,13 +64,13 @@ static int pack_sha256_check(pack_checksum_alg_s *thi, const uint8_t *checksum, 
     return PACK_OK;
 }
 
-static void pack_sha256_destroy(struct pack_checksum_alg_tag_s *thi)
+static void pack_sha256_destroy(struct pack_checksum_alg_tag_s* thi)
 {
-    pack_sha256_s *sha256 = (pack_sha256_s *)thi;
+    pack_sha256_s* sha256 = (pack_sha256_s*)thi;
     mbedtls_sha256_free(&sha256->sha256_context);
 }
 
-int pack_sha256_init(pack_sha256_s *thi)
+int pack_sha256_init(pack_sha256_s* thi)
 {
     thi->base.reset = pack_sha256_reset;
     thi->base.update = pack_sha256_update;

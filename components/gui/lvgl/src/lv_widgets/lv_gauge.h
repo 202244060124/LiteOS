@@ -27,7 +27,6 @@ extern "C" {
 #include "lv_line.h"
 #include "lv_linemeter.h"
 
-
 /*********************
  *      DEFINES
  *********************/

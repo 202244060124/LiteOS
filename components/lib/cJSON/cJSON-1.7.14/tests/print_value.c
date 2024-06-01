@@ -24,16 +24,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "common.h"
 #include "unity/examples/unity_config.h"
 #include "unity/src/unity.h"
-#include "common.h"
 
-static void assert_print_value(const char *input)
+
+static void assert_print_value(const char* input)
 {
     unsigned char printed[1024];
     cJSON item[1];
-    printbuffer buffer = { 0, 0, 0, 0, 0, 0, { 0, 0, 0 } };
-    parse_buffer parsebuffer = { 0, 0, 0, 0, { 0, 0, 0 } };
+    printbuffer buffer = {0, 0, 0, 0, 0, 0, {0, 0, 0}};
+    parse_buffer parsebuffer = {0, 0, 0, 0, {0, 0, 0}};
     buffer.buffer = printed;
     buffer.length = sizeof(printed);
     buffer.offset = 0;

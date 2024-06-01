@@ -23,7 +23,6 @@ extern "C" {
 #include "lv_cont.h"
 #include "lv_label.h"
 
-
 /*********************
  *      DEFINES
  *********************/

@@ -26,9 +26,10 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --------------------------------------------------------------------------- */
 
-#include "los_memory.h"
 #include "at_frame/at_main.h"
 #include "at_hal.h"
+#include "los_memory.h"
+
 #ifdef WITH_SOTA
 #include "sota/sota.h"
 #endif
@@ -38,16 +39,16 @@
 static at_config at_user_conf;
 
 /* FUNCTION */
-void at_set_config(at_config *config);
-at_config *at_get_config(void);
+void at_set_config(at_config* config);
+at_config* at_get_config(void);
 
-int32_t at_init(at_config *config);
-int32_t at_write(int8_t *cmd, int8_t *suffix, int8_t *buf, int32_t len);
+int32_t at_init(at_config* config);
+int32_t at_write(int8_t* cmd, int8_t* suffix, int8_t* buf, int32_t len);
 int32_t at_get_unuse_linkid(void);
-void at_listener_list_add(at_listener *p);
-void at_listner_list_del(at_listener *p);
-int32_t at_cmd(int8_t *cmd, int32_t len, const char *suffix, char *resp_buf, int* resp_len);
-int32_t at_oob_register(char *featurestr, int cmdlen, oob_callback callback, oob_cmd_match cmd_match);
+void at_listener_list_add(at_listener* p);
+void at_listner_list_del(at_listener* p);
+int32_t at_cmd(int8_t* cmd, int32_t len, const char* suffix, char* resp_buf, int* resp_len);
+int32_t at_oob_register(char* featurestr, int cmdlen, oob_callback callback, oob_cmd_match cmd_match);
 
 void at_deinit(void);
 
@@ -57,7 +58,7 @@ char wbuf[AT_DATA_LEN] = {0};
 
 uint32_t at_get_time(void)
 {
-    return ((uint32_t)(LOS_TickCountGet()* (OS_SYS_MS_PER_SECOND / LOSCFG_BASE_CORE_TICK_PER_SECOND)))/ 1000;
+    return ((uint32_t)(LOS_TickCountGet() * (OS_SYS_MS_PER_SECOND / LOSCFG_BASE_CORE_TICK_PER_SECOND))) / 1000;
 }
 
 int chartoint(const char* port)
@@ -70,10 +71,10 @@ int chartoint(const char* port)
     return tmp;
 }
 
-void at_listener_list_add(at_listener *p)
+void at_listener_list_add(at_listener* p)
 {
-    at_listener *head = at.head;
-    at_listener *cur;
+    at_listener* head = at.head;
+    at_listener* cur;
 
     p->next = NULL;
     if (head == NULL) {
@@ -87,12 +88,12 @@ void at_listener_list_add(at_listener *p)
     }
 
     cur->next = p;
- }
+}
 
-void at_listner_list_del(at_listener *p)
+void at_listner_list_del(at_listener* p)
 {
-    at_listener *head = at.head;
-    at_listener *cur;
+    at_listener* head = at.head;
+    at_listener* cur;
 
     if (p == head) {
         at.head = head->next;
@@ -108,9 +109,9 @@ void at_listner_list_del(at_listener *p)
     }
 }
 
-void at_listner_list_destroy(at_task *at_tsk)
+void at_listner_list_destroy(at_task* at_tsk)
 {
-    at_listener *head;
+    at_listener* head;
     while (at_tsk->head != NULL) {
         head = at_tsk->head;
         at_tsk->head = head->next;
@@ -120,7 +121,7 @@ void at_listner_list_destroy(at_task *at_tsk)
     }
 }
 
-static void at_rm_node(at_listener *listener, at_listener *pre)
+static void at_rm_node(at_listener* listener, at_listener* pre)
 {
     if (at.head == listener) {
         at.head = listener->next;
@@ -136,10 +137,10 @@ static void at_rm_node(at_listener *listener, at_listener *pre)
 
 static void at_rm_timeout_nodes(void)
 {
-    at_listener *pre = NULL;
-    at_listener *next = NULL;
+    at_listener* pre = NULL;
+    at_listener* next = NULL;
 
-    for (at_listener *listener = at.head; listener != NULL; listener = next) {
+    for (at_listener* listener = at.head; listener != NULL; listener = next) {
         next = listener->next;
 
         if (listener->handle_data == NULL) {
@@ -150,8 +151,7 @@ static void at_rm_timeout_nodes(void)
         if (listener->expire_time <= at_get_time()) {
             AT_LOG("get recv data timeout");
             at_rm_node(listener, pre);
-        }
-        else {
+        } else {
             pre = listener;
         }
     }
@@ -175,17 +175,16 @@ int32_t at_get_unuse_linkid(void)
     return i;
 }
 
-void store_resp_buf(int8_t *resp_buf, const int8_t *src, uint32_t src_len, uint32_t* maxlen)
+void store_resp_buf(int8_t* resp_buf, const int8_t* src, uint32_t src_len, uint32_t* maxlen)
 {
     int copy_len;
 
     copy_len = MIN(*maxlen, src_len);
-    memcpy((char *)resp_buf, (char *)src, copy_len);
+    memcpy((char*)resp_buf, (char*)src, copy_len);
     *maxlen = copy_len;
 }
 
-int32_t at_cmd_in_callback(const int8_t *cmd, int32_t len,
-                    int32_t (*handle_data)(const int8_t *data, uint32_t len),  uint32_t timeout)
+int32_t at_cmd_in_callback(const int8_t* cmd, int32_t len, int32_t (*handle_data)(const int8_t* data, uint32_t len), uint32_t timeout)
 {
     int32_t ret = AT_FAILED;
 
@@ -196,10 +195,10 @@ int32_t at_cmd_in_callback(const int8_t *cmd, int32_t len,
     }
 
     LOS_MuxPend(at.cmd_mux, LOS_WAIT_FOREVER);
-    at_transmit((uint8_t *)cmd, len, 1);
+    at_transmit((uint8_t*)cmd, len, 1);
 
     if (handle_data != NULL) {
-        at_listener *listener = NULL;
+        at_listener* listener = NULL;
 
         listener = at_malloc(sizeof(*listener));
         if (listener == NULL) {
@@ -222,7 +221,7 @@ EXIT:
     return ret;
 }
 
-int32_t at_cmd_multi_suffix(const int8_t *cmd, int  len, at_cmd_info_s *cmd_info)
+int32_t at_cmd_multi_suffix(const int8_t* cmd, int len, at_cmd_info_s* cmd_info)
 {
     at_listener listener;
     int ret;
@@ -241,7 +240,7 @@ int32_t at_cmd_multi_suffix(const int8_t *cmd, int  len, at_cmd_info_s *cmd_info
 
     LOS_MuxPend(at.cmd_mux, LOS_WAIT_FOREVER);
     at_listener_list_add(&listener);
-    at_transmit((uint8_t *)cmd, len, 1);
+    at_transmit((uint8_t*)cmd, len, 1);
     LOS_MuxPost(at.cmd_mux);
 
     ret = LOS_SemPend(at.resp_sem, at.timeout);
@@ -262,23 +261,23 @@ int32_t at_cmd_multi_suffix(const int8_t *cmd, int  len, at_cmd_info_s *cmd_info
     return AT_OK;
 }
 
-int32_t at_cmd(int8_t *cmd, int32_t len, const char *suffix, char *resp_buf, int* resp_len)
+int32_t at_cmd(int8_t* cmd, int32_t len, const char* suffix, char* resp_buf, int* resp_len)
 {
-    const char *suffix_array[1] = {suffix};
+    const char* suffix_array[1] = {suffix};
     at_cmd_info_s cmd_info;
 
     memset(&cmd_info, 0, sizeof(cmd_info));
     cmd_info.suffix = suffix_array;
     cmd_info.suffix_num = array_size(suffix_array);
     cmd_info.resp_buf = resp_buf;
-    cmd_info.resp_len = (uint32_t *)resp_len;
+    cmd_info.resp_len = (uint32_t*)resp_len;
 
     return at_cmd_multi_suffix(cmd, len, &cmd_info);
 }
 
-int32_t at_write(int8_t *cmd, int8_t *suffix, int8_t *buf, int32_t len)
+int32_t at_write(int8_t* cmd, int8_t* suffix, int8_t* buf, int32_t len)
 {
-    const char *suffix_array[1];
+    const char* suffix_array[1];
     at_listener listener;
     int ret = AT_FAILED;
 
@@ -291,16 +290,16 @@ int32_t at_write(int8_t *cmd, int8_t *suffix, int8_t *buf, int32_t len)
 
     LOS_MuxPend(at.cmd_mux, LOS_WAIT_FOREVER);
     at_listener_list_add(&listener);
-    at_transmit((uint8_t *)cmd, strlen((char *)cmd), 1);
+    at_transmit((uint8_t*)cmd, strlen((char*)cmd), 1);
     LOS_MuxPost(at.cmd_mux);
 
     (void)LOS_SemPend(at.resp_sem, 200);
 
     LOS_MuxPend(at.cmd_mux, LOS_WAIT_FOREVER);
-    suffix_array[0] = (char *)suffix;
+    suffix_array[0] = (char*)suffix;
     at_listner_list_del(&listener);
     at_listener_list_add(&listener);
-    at_transmit((uint8_t *)buf, len, 0);
+    at_transmit((uint8_t*)buf, len, 0);
     LOS_MuxPost(at.cmd_mux);
 
     ret = LOS_SemPend(at.resp_sem, at.timeout);
@@ -319,18 +318,18 @@ int32_t at_write(int8_t *cmd, int8_t *suffix, int8_t *buf, int32_t len)
     return len;
 }
 
-int cloud_cmd_matching(int8_t *buf, int32_t len)
+int cloud_cmd_matching(int8_t* buf, int32_t len)
 {
     int ret = 0;
-    char *cmp = NULL;
+    char* cmp = NULL;
     int i;
 
     for (i = 0; i < at_oob.oob_num; i++) {
-        ret = at_oob.oob[i].cmd_match((const char *)buf, at_oob.oob[i].featurestr, at_oob.oob[i].len);
+        ret = at_oob.oob[i].cmd_match((const char*)buf, at_oob.oob[i].featurestr, at_oob.oob[i].len);
         if (ret == 0) {
             cmp += at_oob.oob[i].len;
             if (at_oob.oob[i].callback != NULL) {
-                (void)at_oob.oob[i].callback(at_oob.oob[i].arg, (int8_t *)buf, (int32_t)len);
+                (void)at_oob.oob[i].callback(at_oob.oob[i].arg, (int8_t*)buf, (int32_t)len);
             }
             return len;
         }
@@ -338,7 +337,7 @@ int cloud_cmd_matching(int8_t *buf, int32_t len)
     return 0;
 }
 
-static int at_handle_callback_cmd_resp(at_listener *listener, int8_t *resp_buf, uint32_t resp_len)
+static int at_handle_callback_cmd_resp(at_listener* listener, int8_t* resp_buf, uint32_t resp_len)
 {
     if (listener->handle_data == NULL) {
         return AT_FAILED;
@@ -352,9 +351,9 @@ static int at_handle_callback_cmd_resp(at_listener *listener, int8_t *resp_buf, 
     return AT_FAILED;
 }
 
-static void at_handle_resp(int8_t *resp_buf, uint32_t resp_len)
+static void at_handle_resp(int8_t* resp_buf, uint32_t resp_len)
 {
-    at_listener *listener = NULL;
+    at_listener* listener = NULL;
 
     listener = at.head;
     if (listener == NULL) {
@@ -371,17 +370,17 @@ static void at_handle_resp(int8_t *resp_buf, uint32_t resp_len)
         return;
     }
 
-    for (uint32_t i = 0;  i < listener->cmd_info.suffix_num; i++) {
-        char *suffix;
+    for (uint32_t i = 0; i < listener->cmd_info.suffix_num; i++) {
+        char* suffix;
 
         if (listener->cmd_info.suffix[i] == NULL) {
             continue;
         }
 
-        suffix = strstr((char *)resp_buf, (const char *)listener->cmd_info.suffix[i]);
+        suffix = strstr((char*)resp_buf, (const char*)listener->cmd_info.suffix[i]);
         if (suffix != NULL) {
             if ((listener->cmd_info.resp_buf != NULL) && (listener->cmd_info.resp_len != NULL) && (resp_len > 0)) {
-                store_resp_buf((int8_t *)listener->cmd_info.resp_buf, resp_buf, resp_len, listener->cmd_info.resp_len);
+                store_resp_buf((int8_t*)listener->cmd_info.resp_buf, resp_buf, resp_len, listener->cmd_info.resp_len);
             }
             listener->cmd_info.match_idx = i;
             (void)LOS_SemPost(at.resp_sem);
@@ -403,7 +402,7 @@ static uint32_t at_get_queue_wait_time(void)
         ret = LOS_WAIT_FOREVER;
     } else {
         const uint32_t min_wait_time = 100;
-        uint32_t  current = at_get_time();
+        uint32_t current = at_get_time();
         ret = ((current >= at.head->expire_time) ? min_wait_time : ((at.head->expire_time - current) * 1000));
     }
 
@@ -414,7 +413,7 @@ static uint32_t at_get_queue_wait_time(void)
 void at_recv_task(void)
 {
     uint32_t recv_len = 0;
-    uint8_t *tmp = at.userdata;
+    uint8_t* tmp = at.userdata;
     int ret = 0;
     recv_buff recv_buf;
     UINT32 rlen = sizeof(recv_buff);
@@ -433,7 +432,7 @@ void at_recv_task(void)
 
         LOS_MuxPend(at.cmd_mux, LOS_WAIT_FOREVER);
         at_rm_timeout_nodes();
-		LOS_MuxPost(at.cmd_mux);
+        LOS_MuxPost(at.cmd_mux);
 
         if (at.step_callback) {
             at.step_callback();
@@ -453,14 +452,14 @@ void at_recv_task(void)
 
         AT_LOG_DEBUG("recv len = %lu buf = %s ", recv_len, tmp);
 
-        ret = cloud_cmd_matching((int8_t *)tmp, recv_len);
+        ret = cloud_cmd_matching((int8_t*)tmp, recv_len);
         if (ret > 0) {
             continue;
         }
 
         LOS_MuxPend(at.cmd_mux, LOS_WAIT_FOREVER);
         at_rm_timeout_nodes();
-        at_handle_resp((int8_t *)tmp, recv_len);
+        at_handle_resp((int8_t*)tmp, recv_len);
         LOS_MuxPost(at.cmd_mux);
     }
 }
@@ -475,7 +474,7 @@ uint32_t create_at_recv_task(void)
     task_init_param.pfnTaskEntry = (TSK_ENTRY_FUNC)at_recv_task;
     task_init_param.uwStackSize = 0x1000;
 
-    ret = LOS_TaskCreate((UINT32 *)&at.tsk_hdl, &task_init_param);
+    ret = LOS_TaskCreate((UINT32*)&at.tsk_hdl, &task_init_param);
     if (ret != LOS_OK) {
         return ret;
     }
@@ -488,7 +487,7 @@ void at_init_oob(void)
     memset(at_oob.oob, 0, OOB_MAX_NUM * sizeof(struct oob_s));
 }
 
-int32_t at_struct_init(at_task *at)
+int32_t at_struct_init(at_task* at)
 {
     int ret = -1;
     if (at == NULL) {
@@ -496,33 +495,33 @@ int32_t at_struct_init(at_task *at)
         return ret;
     }
 
-    ret = LOS_QueueCreate("recvQueue", 32, (UINT32 *)&at->rid, 0, sizeof(recv_buff));
+    ret = LOS_QueueCreate("recvQueue", 32, (UINT32*)&at->rid, 0, sizeof(recv_buff));
     if (ret != LOS_OK) {
         AT_LOG("init recvQueue failed!");
         return AT_FAILED;
     }
     at->rid_flag = true;
 
-    ret = LOS_SemCreate(0, (UINT32 *)&at->recv_sem);
+    ret = LOS_SemCreate(0, (UINT32*)&at->recv_sem);
     if (ret != LOS_OK) {
         AT_LOG("init at_recv_sem failed!");
         goto at_recv_sem_failed;
     }
 
-    ret = LOS_MuxCreate((UINT32 *)&at->cmd_mux);
+    ret = LOS_MuxCreate((UINT32*)&at->cmd_mux);
     if (ret != LOS_OK) {
         AT_LOG("init cmd_mux failed!");
         goto at_cmd_mux_failed;
     }
 
-    ret = LOS_MuxCreate((UINT32 *)&at->trx_mux);
+    ret = LOS_MuxCreate((UINT32*)&at->trx_mux);
     if (ret != LOS_OK) {
         AT_LOG("init cmd_mux failed!");
         goto at_cmd_mux_failed;
     }
     at->trx_mux_flag = true;
 
-    ret = LOS_SemCreate(0, (UINT32 *)&at->resp_sem);
+    ret = LOS_SemCreate(0, (UINT32*)&at->resp_sem);
     if (ret != LOS_OK) {
         AT_LOG("init resp_sem failed!");
         goto at_resp_sem_failed;
@@ -558,7 +557,7 @@ int32_t at_struct_init(at_task *at)
         goto malloc_saveddata_buf;
     }
 
-    at->linkid = (at_link *)at_malloc(at_user_conf.linkid_num * sizeof(at_link));
+    at->linkid = (at_link*)at_malloc(at_user_conf.linkid_num * sizeof(at_link));
     if (at->linkid == NULL) {
         AT_LOG("malloc for at linkid array failed!");
         goto malloc_linkid_failed;
@@ -592,13 +591,13 @@ at_recv_sem_failed:
     }
 
     if (at->rid_flag) {
-        (VOID)LOS_QueueDelete(at->rid);
+        (VOID) LOS_QueueDelete(at->rid);
         at->rid_flag = false;
     }
     return AT_FAILED;
 }
 
-int32_t at_struct_deinit(at_task *at)
+int32_t at_struct_deinit(at_task* at)
 {
     int32_t ret = AT_OK;
 
@@ -632,7 +631,7 @@ int32_t at_struct_deinit(at_task *at)
     }
 
     if (at->rid_flag) {
-        (VOID)LOS_QueueDelete(at->rid);
+        (VOID) LOS_QueueDelete(at->rid);
         at->rid_flag = false;
     }
 
@@ -669,19 +668,19 @@ int32_t at_struct_deinit(at_task *at)
     return ret;
 }
 
-void at_set_config(at_config *config)
+void at_set_config(at_config* config)
 {
     if (config != NULL) {
         memcpy(&at_user_conf, config, sizeof(at_config));
     }
 }
 
-at_config *at_get_config(void)
+at_config* at_get_config(void)
 {
     return &at_user_conf;
 }
 
-int32_t at_init(at_config *config)
+int32_t at_init(at_config* config)
 {
     if (config == NULL) {
         AT_LOG("Config is NULL, failed!!\n");
@@ -739,10 +738,9 @@ void at_deinit(void)
     at_init_oob();
 }
 
-
-int32_t at_oob_register(char *featurestr, int cmdlen, oob_callback callback, oob_cmd_match cmd_match)
+int32_t at_oob_register(char* featurestr, int cmdlen, oob_callback callback, oob_cmd_match cmd_match)
 {
-    oob_t *oob;
+    oob_t* oob;
     if ((featurestr == NULL) || (cmd_match == NULL) || (at_oob.oob_num == OOB_MAX_NUM) || (cmdlen >= OOB_CMD_LEN - 1)) {
         return -1;
     }
@@ -754,37 +752,35 @@ int32_t at_oob_register(char *featurestr, int cmdlen, oob_callback callback, oob
     return 0;
 }
 
-void *at_malloc(size_t size)
+void* at_malloc(size_t size)
 {
-    void *pMem = LOS_MemAlloc(m_aucSysMem0, size);
+    void* pMem = LOS_MemAlloc(m_aucSysMem0, size);
     if (pMem != NULL) {
         memset(pMem, 0, size);
     }
     return pMem;
 }
 
-void at_free(void *ptr)
+void at_free(void* ptr)
 {
     (void)LOS_MemFree(m_aucSysMem0, ptr);
 }
 
-void at_reg_step_callback(at_task *at_tsk, void (*step_callback)(void))
+void at_reg_step_callback(at_task* at_tsk, void (*step_callback)(void))
 {
     at_tsk->step_callback = step_callback;
 }
 
-at_task at = {
-    .tsk_hdl = 0xFFFF,
-    .recv_buf = NULL,
-    .cmdresp = NULL,
-    .userdata = NULL,
-    .linkid = NULL,
-    .head = NULL,
-    .init = at_init,
-    .deinit = at_deinit,
-    .cmd = at_cmd,
-    .write = at_write,
-    .oob_register = at_oob_register,
-    .get_id = at_get_unuse_linkid,
-    .cmd_multi_suffix = at_cmd_multi_suffix
-};
+at_task at = {.tsk_hdl = 0xFFFF,
+              .recv_buf = NULL,
+              .cmdresp = NULL,
+              .userdata = NULL,
+              .linkid = NULL,
+              .head = NULL,
+              .init = at_init,
+              .deinit = at_deinit,
+              .cmd = at_cmd,
+              .write = at_write,
+              .oob_register = at_oob_register,
+              .get_id = at_get_unuse_linkid,
+              .cmd_multi_suffix = at_cmd_multi_suffix};

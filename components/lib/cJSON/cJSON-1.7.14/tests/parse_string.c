@@ -24,13 +24,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "common.h"
 #include "unity/examples/unity_config.h"
 #include "unity/src/unity.h"
-#include "common.h"
+
 
 static cJSON item[1];
 
-static void assert_is_string(cJSON *string_item)
+static void assert_is_string(cJSON* string_item)
 {
     TEST_ASSERT_NOT_NULL_MESSAGE(string_item, "Item is NULL.");
 
@@ -43,9 +44,9 @@ static void assert_is_string(cJSON *string_item)
     assert_has_no_string(string_item);
 }
 
-static void assert_parse_string(const char *string, const char *expected)
+static void assert_parse_string(const char* string, const char* expected)
 {
-    parse_buffer buffer = { 0, 0, 0, 0, { 0, 0, 0 } };
+    parse_buffer buffer = {0, 0, 0, 0, {0, 0, 0}};
     buffer.content = (const unsigned char*)string;
     buffer.length = strlen(string) + sizeof("");
     buffer.hooks = global_hooks;
@@ -57,9 +58,9 @@ static void assert_parse_string(const char *string, const char *expected)
     item->valuestring = NULL;
 }
 
-static void assert_not_parse_string(const char * const string)
+static void assert_not_parse_string(const char* const string)
 {
-    parse_buffer buffer = { 0, 0, 0, 0, { 0, 0, 0 } };
+    parse_buffer buffer = {0, 0, 0, 0, {0, 0, 0}};
     buffer.content = (const unsigned char*)string;
     buffer.length = strlen(string) + sizeof("");
     buffer.hooks = global_hooks;
@@ -68,17 +69,12 @@ static void assert_not_parse_string(const char * const string)
     assert_is_invalid(item);
 }
 
-
-
 static void parse_string_should_parse_strings(void)
 {
     assert_parse_string("\"\"", "");
-    assert_parse_string(
-        "\" !\\\"#$%&'()*+,-./\\/0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\\\]^_'abcdefghijklmnopqrstuvwxyz{|}~\"",
-        " !\"#$%&'()*+,-.//0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_'abcdefghijklmnopqrstuvwxyz{|}~");
-    assert_parse_string(
-        "\"\\\"\\\\\\/\\b\\f\\n\\r\\t\\u20AC\\u732b\"",
-        "\"\\/\b\f\n\r\t€猫");
+    assert_parse_string("\" !\\\"#$%&'()*+,-./\\/0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\\\]^_'abcdefghijklmnopqrstuvwxyz{|}~\"",
+                        " !\"#$%&'()*+,-.//0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_'abcdefghijklmnopqrstuvwxyz{|}~");
+    assert_parse_string("\"\\\"\\\\\\/\\b\\f\\n\\r\\t\\u20AC\\u732b\"", "\"\\/\b\f\n\r\t€猫");
     reset(item);
     assert_parse_string("\"\b\f\n\r\t\"", "\b\f\n\r\t");
     reset(item);

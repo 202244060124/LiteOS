@@ -24,16 +24,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "common.h"
 #include "unity/examples/unity_config.h"
 #include "unity/src/unity.h"
-#include "common.h"
-
 
 static void cjson_array_foreach_should_loop_over_arrays(void)
 {
     cJSON array[1];
     cJSON elements[10];
-    cJSON *element_pointer = NULL;
+    cJSON* element_pointer = NULL;
     size_t i = 0;
 
     memset(array, 0, sizeof(array));
@@ -43,8 +42,7 @@ static void cjson_array_foreach_should_loop_over_arrays(void)
     array[0].child = &elements[0];
     elements[0].prev = NULL;
     elements[9].next = NULL;
-    for (i = 0; i < 9; i++)
-    {
+    for (i = 0; i < 9; i++) {
         elements[i].next = &elements[i + 1];
         elements[i + 1].prev = &elements[i];
     }
@@ -59,15 +57,15 @@ static void cjson_array_foreach_should_loop_over_arrays(void)
 
 static void cjson_array_foreach_should_not_dereference_null_pointer(void)
 {
-    cJSON *array = NULL;
-    cJSON *element = NULL;
+    cJSON* array = NULL;
+    cJSON* element = NULL;
     cJSON_ArrayForEach(element, array);
 }
 
 static void cjson_get_object_item_should_get_object_items(void)
 {
-    cJSON *item = NULL;
-    cJSON *found = NULL;
+    cJSON* item = NULL;
+    cJSON* found = NULL;
 
     item = cJSON_Parse("{\"one\":1, \"Two\":2, \"tHree\":3}");
 
@@ -76,7 +74,6 @@ static void cjson_get_object_item_should_get_object_items(void)
 
     found = cJSON_GetObjectItem(item, NULL);
     TEST_ASSERT_NULL_MESSAGE(found, "Failed to fail on NULL string.");
-
 
     found = cJSON_GetObjectItem(item, "one");
     TEST_ASSERT_NOT_NULL_MESSAGE(found, "Failed to find first item.");
@@ -98,8 +95,8 @@ static void cjson_get_object_item_should_get_object_items(void)
 
 static void cjson_get_object_item_case_sensitive_should_get_object_items(void)
 {
-    cJSON *item = NULL;
-    cJSON *found = NULL;
+    cJSON* item = NULL;
+    cJSON* found = NULL;
 
     item = cJSON_Parse("{\"one\":1, \"Two\":2, \"tHree\":3}");
 
@@ -127,9 +124,10 @@ static void cjson_get_object_item_case_sensitive_should_get_object_items(void)
     cJSON_Delete(item);
 }
 
-static void cjson_get_object_item_should_not_crash_with_array(void) {
-    cJSON *array = NULL;
-    cJSON *found = NULL;
+static void cjson_get_object_item_should_not_crash_with_array(void)
+{
+    cJSON* array = NULL;
+    cJSON* found = NULL;
     array = cJSON_Parse("[1]");
 
     found = cJSON_GetObjectItem(array, "name");
@@ -138,9 +136,10 @@ static void cjson_get_object_item_should_not_crash_with_array(void) {
     cJSON_Delete(array);
 }
 
-static void cjson_get_object_item_case_sensitive_should_not_crash_with_array(void) {
-    cJSON *array = NULL;
-    cJSON *found = NULL;
+static void cjson_get_object_item_case_sensitive_should_not_crash_with_array(void)
+{
+    cJSON* array = NULL;
+    cJSON* found = NULL;
     array = cJSON_Parse("[1]");
 
     found = cJSON_GetObjectItemCaseSensitive(array, "name");
@@ -210,8 +209,7 @@ static void cjson_should_not_parse_to_deeply_nested_jsons(void)
     char deep_json[CJSON_NESTING_LIMIT + 1];
     size_t position = 0;
 
-    for (position = 0; position < sizeof(deep_json); position++)
-    {
+    for (position = 0; position < sizeof(deep_json); position++) {
         deep_json[position] = '[';
     }
     deep_json[sizeof(deep_json) - 1] = '\0';
@@ -283,10 +281,10 @@ static void cjson_detach_item_via_pointer_should_detach_items(void)
 static void cjson_replace_item_via_pointer_should_replace_items(void)
 {
     cJSON replacements[3];
-    cJSON *beginning = NULL;
-    cJSON *middle = NULL;
-    cJSON *end = NULL;
-    cJSON *array = NULL;
+    cJSON* beginning = NULL;
+    cJSON* middle = NULL;
+    cJSON* end = NULL;
+    cJSON* array = NULL;
 
     beginning = cJSON_CreateNull();
     TEST_ASSERT_NOT_NULL(beginning);
@@ -301,7 +299,6 @@ static void cjson_replace_item_via_pointer_should_replace_items(void)
     cJSON_AddItemToArray(array, beginning);
     cJSON_AddItemToArray(array, middle);
     cJSON_AddItemToArray(array, end);
-
 
     memset(replacements, '\0', sizeof(replacements));
 
@@ -329,9 +326,9 @@ static void cjson_replace_item_via_pointer_should_replace_items(void)
 
 static void cjson_replace_item_in_object_should_preserve_name(void)
 {
-    cJSON root[1] = {{ NULL, NULL, NULL, 0, NULL, 0, 0, NULL }};
-    cJSON *child = NULL;
-    cJSON *replacement = NULL;
+    cJSON root[1] = {{NULL, NULL, NULL, 0, NULL, 0, 0, NULL}};
+    cJSON* child = NULL;
+    cJSON* replacement = NULL;
     cJSON_bool flag = false;
 
     child = cJSON_CreateNumber(1);
@@ -339,7 +336,7 @@ static void cjson_replace_item_in_object_should_preserve_name(void)
     replacement = cJSON_CreateNumber(2);
     TEST_ASSERT_NOT_NULL(replacement);
 
-    flag  = cJSON_AddItemToObject(root, "child", child);
+    flag = cJSON_AddItemToObject(root, "child", child);
     TEST_ASSERT_TRUE_MESSAGE(flag, "add item to object failed");
     cJSON_ReplaceItemInObject(root, "child", replacement);
 
@@ -352,7 +349,7 @@ static void cjson_replace_item_in_object_should_preserve_name(void)
 static void cjson_functions_should_not_crash_with_null_pointers(void)
 {
     char buffer[10];
-    cJSON *item = cJSON_CreateString("item");
+    cJSON* item = cJSON_CreateString("item");
 
     cJSON_InitHooks(NULL);
     TEST_ASSERT_NULL(cJSON_Parse(NULL));
@@ -435,7 +432,7 @@ static void cjson_functions_should_not_crash_with_null_pointers(void)
     cJSON_Delete(item);
 }
 
-static void * CJSON_CDECL failing_realloc(void *pointer, size_t size)
+static void* CJSON_CDECL failing_realloc(void* pointer, size_t size)
 {
     (void)size;
     (void)pointer;
@@ -454,7 +451,7 @@ static void ensure_should_fail_on_failed_realloc(void)
 static void skip_utf8_bom_should_skip_bom(void)
 {
     const unsigned char string[] = "\xEF\xBB\xBF{}";
-    parse_buffer buffer = { 0, 0, 0, 0, { 0, 0, 0 } };
+    parse_buffer buffer = {0, 0, 0, 0, {0, 0, 0}};
     buffer.content = string;
     buffer.length = sizeof(string);
     buffer.hooks = global_hooks;
@@ -466,7 +463,7 @@ static void skip_utf8_bom_should_skip_bom(void)
 static void skip_utf8_bom_should_not_skip_bom_if_not_at_beginning(void)
 {
     const unsigned char string[] = " \xEF\xBB\xBF{}";
-    parse_buffer buffer = { 0, 0, 0, 0, { 0, 0, 0 } };
+    parse_buffer buffer = {0, 0, 0, 0, {0, 0, 0}};
     buffer.content = string;
     buffer.length = sizeof(string);
     buffer.hooks = global_hooks;
@@ -477,8 +474,8 @@ static void skip_utf8_bom_should_not_skip_bom_if_not_at_beginning(void)
 
 static void cjson_get_string_value_should_get_a_string(void)
 {
-    cJSON *string = cJSON_CreateString("test");
-    cJSON *number = cJSON_CreateNumber(1);
+    cJSON* string = cJSON_CreateString("test");
+    cJSON* number = cJSON_CreateNumber(1);
 
     TEST_ASSERT_TRUE(cJSON_GetStringValue(string) == string->valuestring);
     TEST_ASSERT_NULL(cJSON_GetStringValue(number));
@@ -490,31 +487,33 @@ static void cjson_get_string_value_should_get_a_string(void)
 
 static void cjson_get_number_value_should_get_a_number(void)
 {
-    cJSON *string = cJSON_CreateString("test");
-    cJSON *number = cJSON_CreateNumber(1);
+    cJSON* string = cJSON_CreateString("test");
+    cJSON* number = cJSON_CreateNumber(1);
 
     TEST_ASSERT_EQUAL_DOUBLE(cJSON_GetNumberValue(number), number->valuedouble);
     TEST_ASSERT_DOUBLE_IS_NAN(cJSON_GetNumberValue(string));
     TEST_ASSERT_DOUBLE_IS_NAN(cJSON_GetNumberValue(NULL));
-    
+
     cJSON_Delete(number);
     cJSON_Delete(string);
 }
 
-static void cjson_create_string_reference_should_create_a_string_reference(void) {
-    const char *string = "I am a string!";
+static void cjson_create_string_reference_should_create_a_string_reference(void)
+{
+    const char* string = "I am a string!";
 
-    cJSON *string_reference = cJSON_CreateStringReference(string);
+    cJSON* string_reference = cJSON_CreateStringReference(string);
     TEST_ASSERT_TRUE(string_reference->valuestring == string);
     TEST_ASSERT_EQUAL_INT(cJSON_IsReference | cJSON_String, string_reference->type);
 
     cJSON_Delete(string_reference);
 }
 
-static void cjson_create_object_reference_should_create_an_object_reference(void) {
-    cJSON *number_reference = NULL;
-    cJSON *number_object = cJSON_CreateObject();
-    cJSON *number = cJSON_CreateNumber(42);
+static void cjson_create_object_reference_should_create_an_object_reference(void)
+{
+    cJSON* number_reference = NULL;
+    cJSON* number_object = cJSON_CreateObject();
+    cJSON* number = cJSON_CreateNumber(42);
     const char key[] = "number";
 
     TEST_ASSERT_TRUE(cJSON_IsNumber(number));
@@ -529,10 +528,11 @@ static void cjson_create_object_reference_should_create_an_object_reference(void
     cJSON_Delete(number_reference);
 }
 
-static void cjson_create_array_reference_should_create_an_array_reference(void) {
-    cJSON *number_reference = NULL;
-    cJSON *number_array = cJSON_CreateArray();
-    cJSON *number = cJSON_CreateNumber(42);
+static void cjson_create_array_reference_should_create_an_array_reference(void)
+{
+    cJSON* number_reference = NULL;
+    cJSON* number_array = cJSON_CreateArray();
+    cJSON* number = cJSON_CreateNumber(42);
 
     TEST_ASSERT_TRUE(cJSON_IsNumber(number));
     TEST_ASSERT_TRUE(cJSON_IsArray(number_array));
@@ -548,8 +548,8 @@ static void cjson_create_array_reference_should_create_an_array_reference(void) 
 
 static void cjson_add_item_to_object_or_array_should_not_add_itself(void)
 {
-    cJSON *object = cJSON_CreateObject();
-    cJSON *array = cJSON_CreateArray();
+    cJSON* object = cJSON_CreateObject();
+    cJSON* array = cJSON_CreateArray();
     cJSON_bool flag = false;
 
     flag = cJSON_AddItemToObject(object, "key", object);
@@ -564,9 +564,9 @@ static void cjson_add_item_to_object_or_array_should_not_add_itself(void)
 
 static void cjson_add_item_to_object_should_not_use_after_free_when_string_is_aliased(void)
 {
-    cJSON *object = cJSON_CreateObject();
-    cJSON *number = cJSON_CreateNumber(42);
-    char *name = (char*)cJSON_strdup((const unsigned char*)"number", &global_hooks);
+    cJSON* object = cJSON_CreateObject();
+    cJSON* number = cJSON_CreateNumber(42);
+    char* name = (char*)cJSON_strdup((const unsigned char*)"number", &global_hooks);
 
     TEST_ASSERT_NOT_NULL(object);
     TEST_ASSERT_NOT_NULL(number);
@@ -586,15 +586,15 @@ static void cjson_delete_item_from_array_should_not_broken_list_structure(void)
     const char expected_json1[] = "{\"rd\":[{\"a\":\"123\"}]}";
     const char expected_json2[] = "{\"rd\":[{\"a\":\"123\"},{\"b\":\"456\"}]}";
     const char expected_json3[] = "{\"rd\":[{\"b\":\"456\"}]}";
-    char *str1 = NULL;
-    char *str2 = NULL;
-    char *str3 = NULL;
+    char* str1 = NULL;
+    char* str2 = NULL;
+    char* str3 = NULL;
 
-    cJSON *root = cJSON_Parse("{}");
+    cJSON* root = cJSON_Parse("{}");
 
-    cJSON *array = cJSON_AddArrayToObject(root, "rd");
-    cJSON *item1 = cJSON_Parse("{\"a\":\"123\"}");
-    cJSON *item2 = cJSON_Parse("{\"b\":\"456\"}");
+    cJSON* array = cJSON_AddArrayToObject(root, "rd");
+    cJSON* item1 = cJSON_Parse("{\"a\":\"123\"}");
+    cJSON* item2 = cJSON_Parse("{\"b\":\"456\"}");
 
     cJSON_AddItemToArray(array, item1);
     str1 = cJSON_PrintUnformatted(root);
@@ -617,16 +617,16 @@ static void cjson_delete_item_from_array_should_not_broken_list_structure(void)
 
 static void cjson_set_valuestring_to_object_should_not_leak_memory(void)
 {
-    cJSON *root = cJSON_Parse("{}");
-    const char *stringvalue = "valuestring could be changed safely";
-    const char *reference_valuestring = "reference item should be freed by yourself";
-    const char *short_valuestring = "shorter valuestring";
-    const char *long_valuestring = "new valuestring which much longer than previous should be changed safely";
-    cJSON *item1 = cJSON_CreateString(stringvalue);
-    cJSON *item2 = cJSON_CreateStringReference(reference_valuestring);
-    char *ptr1 = NULL;
-    char *return_value = NULL;
-    
+    cJSON* root = cJSON_Parse("{}");
+    const char* stringvalue = "valuestring could be changed safely";
+    const char* reference_valuestring = "reference item should be freed by yourself";
+    const char* short_valuestring = "shorter valuestring";
+    const char* long_valuestring = "new valuestring which much longer than previous should be changed safely";
+    cJSON* item1 = cJSON_CreateString(stringvalue);
+    cJSON* item2 = cJSON_CreateStringReference(reference_valuestring);
+    char* ptr1 = NULL;
+    char* return_value = NULL;
+
     cJSON_AddItemToObject(root, "one", item1);
     cJSON_AddItemToObject(root, "two", item2);
 

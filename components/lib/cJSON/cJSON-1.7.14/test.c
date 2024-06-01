@@ -26,26 +26,24 @@
 #include "cJSON.h"
 
 /* Used by some code below as an example datatype. */
-struct record
-{
-    const char *precision;
+struct record {
+    const char* precision;
     double lat;
     double lon;
-    const char *address;
-    const char *city;
-    const char *state;
-    const char *zip;
-    const char *country;
+    const char* address;
+    const char* city;
+    const char* state;
+    const char* zip;
+    const char* country;
 };
 
-
 /* Create a bunch of objects as demonstration. */
-static int print_preallocated(cJSON *root)
+static int print_preallocated(cJSON* root)
 {
     /* declarations */
-    char *out = NULL;
-    char *buf = NULL;
-    char *buf_fail = NULL;
+    char* out = NULL;
+    char* buf = NULL;
+    char* buf_fail = NULL;
     size_t len = 0;
     size_t len_fail = 0;
 
@@ -56,8 +54,7 @@ static int print_preallocated(cJSON *root)
     /* the extra 5 bytes are because of inaccuracies when reserving memory */
     len = strlen(out) + 5;
     buf = (char*)malloc(len);
-    if (buf == NULL)
-    {
+    if (buf == NULL) {
         printf("Failed to allocate memory.\n");
         exit(1);
     }
@@ -65,8 +62,7 @@ static int print_preallocated(cJSON *root)
     /* create buffer to fail */
     len_fail = strlen(out);
     buf_fail = (char*)malloc(len_fail);
-    if (buf_fail == NULL)
-    {
+    if (buf_fail == NULL) {
         printf("Failed to allocate memory.\n");
         exit(1);
     }
@@ -109,57 +105,22 @@ static int print_preallocated(cJSON *root)
 static void create_objects(void)
 {
     /* declare a few. */
-    cJSON *root = NULL;
-    cJSON *fmt = NULL;
-    cJSON *img = NULL;
-    cJSON *thm = NULL;
-    cJSON *fld = NULL;
+    cJSON* root = NULL;
+    cJSON* fmt = NULL;
+    cJSON* img = NULL;
+    cJSON* thm = NULL;
+    cJSON* fld = NULL;
     int i = 0;
 
     /* Our "days of the week" array: */
-    const char *strings[7] =
-    {
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday"
-    };
+    const char* strings[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
     /* Our matrix: */
-    int numbers[3][3] =
-    {
-        {0, -1, 0},
-        {1, 0, 0},
-        {0 ,0, 1}
-    };
+    int numbers[3][3] = {{0, -1, 0}, {1, 0, 0}, {0, 0, 1}};
     /* Our "gallery" item: */
-    int ids[4] = { 116, 943, 234, 38793 };
+    int ids[4] = {116, 943, 234, 38793};
     /* Our array of "records": */
-    struct record fields[2] =
-    {
-        {
-            "zip",
-            37.7668,
-            -1.223959e+2,
-            "",
-            "SAN FRANCISCO",
-            "CA",
-            "94107",
-            "US"
-        },
-        {
-            "zip",
-            37.371991,
-            -1.22026e+2,
-            "",
-            "SUNNYVALE",
-            "CA",
-            "94085",
-            "US"
-        }
-    };
+    struct record fields[2] = {{"zip", 37.7668, -1.223959e+2, "", "SAN FRANCISCO", "CA", "94107", "US"},
+                               {"zip", 37.371991, -1.22026e+2, "", "SUNNYVALE", "CA", "94085", "US"}};
     volatile double zero = 0.0;
 
     /* Here we construct some JSON standards, from the JSON site. */
@@ -171,7 +132,7 @@ static void create_objects(void)
     cJSON_AddStringToObject(fmt, "type", "rect");
     cJSON_AddNumberToObject(fmt, "width", 1920);
     cJSON_AddNumberToObject(fmt, "height", 1080);
-    cJSON_AddFalseToObject (fmt, "interlace");
+    cJSON_AddFalseToObject(fmt, "interlace");
     cJSON_AddNumberToObject(fmt, "frame rate", 24);
 
     /* Print to text */
@@ -192,8 +153,7 @@ static void create_objects(void)
 
     /* Our matrix: */
     root = cJSON_CreateArray();
-    for (i = 0; i < 3; i++)
-    {
+    for (i = 0; i < 3; i++) {
         cJSON_AddItemToArray(root, cJSON_CreateIntArray(numbers[i], 3));
     }
 
@@ -225,8 +185,7 @@ static void create_objects(void)
 
     /* Our array of "records": */
     root = cJSON_CreateArray();
-    for (i = 0; i < 2; i++)
-    {
+    for (i = 0; i < 2; i++) {
         cJSON_AddItemToArray(root, fld = cJSON_CreateObject());
         cJSON_AddStringToObject(fld, "precision", fields[i].precision);
         cJSON_AddNumberToObject(fld, "Latitude", fields[i].lat);

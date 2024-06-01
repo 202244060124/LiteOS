@@ -80,23 +80,24 @@
 #else
 #include "netif/etharp.h"
 #endif
-#include "ethernetif.h"
 #include <string.h>
+#include "ethernetif.h"
 #include "lwip/tcpip.h"
+
 
 /* Define those to better describe your network interface. */
 #define IFNAME0 's'
 #define IFNAME1 't'
 
-static struct netif *s_pxNetIf = NULL;
+static struct netif* s_pxNetIf = NULL;
 static struct ethernet_api s_eth_api;
 
 #if LWIP_IPV4 && LWIP_IPV6
 #elif LWIP_IPV6
 #else
-static void arp_timer(void *arg);
+static void arp_timer(void* arg);
 #endif
-int8_t ethernetif_api_register(struct ethernet_api *api)
+int8_t ethernetif_api_register(struct ethernet_api* api)
 {
     if (api == NULL) {
         return ERR_ARG;
@@ -113,7 +114,7 @@ int8_t ethernetif_api_register(struct ethernet_api *api)
  * @param netif the already initialized lwip network interface structure
  * for this ethernetif
  */
-static void low_level_init(struct netif *netif)
+static void low_level_init(struct netif* netif)
 {
     if (s_eth_api.init) {
         (void)s_eth_api.init(netif);
@@ -136,7 +137,7 @@ static void low_level_init(struct netif *netif)
  * to become availale since the stack doesn't retry to send a packet
  * dropped because of memory failure (except for the TCP timers).
  */
-static err_t low_level_output(struct netif *netif, struct pbuf *p)
+static err_t low_level_output(struct netif* netif, struct pbuf* p)
 {
     err_t err = ERR_IF;
 
@@ -155,9 +156,9 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
  * @return a pbuf filled with the received packet (including MAC header)
  * NULL on memory error
  */
-static struct pbuf *low_level_input(struct netif *netif)
+static struct pbuf* low_level_input(struct netif* netif)
 {
-    struct pbuf *p = NULL;
+    struct pbuf* p = NULL;
 
     if (s_eth_api.input) {
         p = s_eth_api.input(netif);
@@ -174,9 +175,9 @@ static struct pbuf *low_level_input(struct netif *netif)
  *
  * @param netif the lwip network interface structure for this ethernetif
  */
-void ethernetif_input(void *pvParameters)
+void ethernetif_input(void* pvParameters)
 {
-    struct pbuf *p;
+    struct pbuf* p;
     err_t err;
 
     /* move received packet into a new pbuf */
@@ -215,7 +216,7 @@ void ethernetif_input(void *pvParameters)
  *         ERR_MEM if private data couldn't be allocated
  *         any other err_t on error
  */
-err_t ethernetif_init(struct netif *netif)
+err_t ethernetif_init(struct netif* netif)
 {
     LWIP_ASSERT("netif != NULL", (netif != NULL));
 
@@ -250,7 +251,7 @@ err_t ethernetif_init(struct netif *netif)
 #if LWIP_IPV4 && LWIP_IPV6
 #elif LWIP_IPV6
 #else
-static void arp_timer(void *arg)
+static void arp_timer(void* arg)
 {
     etharp_tmr();
     sys_timeout(ARP_TMR_INTERVAL, arp_timer, NULL);
@@ -259,14 +260,14 @@ static void arp_timer(void *arg)
 
 #if LWIP_IPV6
 static ip6_addr_t g_lwip_ipv6_gw;
-ip6_addr_t *get_lwip_ipv6_default_gw(const struct netif *netif, const ip6_addr_t *ip6addr)
+ip6_addr_t* get_lwip_ipv6_default_gw(const struct netif* netif, const ip6_addr_t* ip6addr)
 {
     (void)ip6addr;
     (void)netif;
     return &g_lwip_ipv6_gw;
 }
 
-void set_lwip_ipv6_default_gw(struct netif *netif, const ip6_addr_t *gw)
+void set_lwip_ipv6_default_gw(struct netif* netif, const ip6_addr_t* gw)
 {
     (void)netif;
     if (gw == NULL) {

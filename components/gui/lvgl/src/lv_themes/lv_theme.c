@@ -9,7 +9,6 @@
 #include "../lv_core/lv_obj.h"
 #include "lv_theme.h"
 
-
 /*********************
  *      DEFINES
  *********************/

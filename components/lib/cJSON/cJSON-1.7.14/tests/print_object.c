@@ -20,20 +20,21 @@
   THE SOFTWARE.
 */
 
+#include "common.h"
 #include "unity/examples/unity_config.h"
 #include "unity/src/unity.h"
-#include "common.h"
 
-static void assert_print_object(const char * const expected, const char * const input)
+
+static void assert_print_object(const char* const expected, const char* const input)
 {
     unsigned char printed_unformatted[1024];
     unsigned char printed_formatted[1024];
 
     cJSON item[1];
 
-    printbuffer formatted_buffer = { 0, 0, 0, 0, 0, 0, { 0, 0, 0 } };
-    printbuffer unformatted_buffer = { 0, 0, 0, 0, 0, 0, { 0, 0, 0 } };
-    parse_buffer parsebuffer = { 0, 0, 0, 0, { 0, 0, 0 } };
+    printbuffer formatted_buffer = {0, 0, 0, 0, 0, 0, {0, 0, 0}};
+    printbuffer unformatted_buffer = {0, 0, 0, 0, 0, 0, {0, 0, 0}};
+    parse_buffer parsebuffer = {0, 0, 0, 0, {0, 0, 0}};
 
     /* buffer for parsing */
     parsebuffer.content = (const unsigned char*)input;
@@ -75,7 +76,6 @@ static void print_object_should_print_empty_objects(void)
 
 static void print_object_should_print_objects_with_one_element(void)
 {
-
     assert_print_object("{\n\t\"one\":\t1\n}", "{\"one\":1}");
     assert_print_object("{\n\t\"hello\":\t\"world!\"\n}", "{\"hello\":\"world!\"}");
     assert_print_object("{\n\t\"array\":\t[]\n}", "{\"array\":[]}");
@@ -85,7 +85,8 @@ static void print_object_should_print_objects_with_one_element(void)
 static void print_object_should_print_objects_with_multiple_elements(void)
 {
     assert_print_object("{\n\t\"one\":\t1,\n\t\"two\":\t2,\n\t\"three\":\t3\n}", "{\"one\":1,\"two\":2,\"three\":3}");
-    assert_print_object("{\n\t\"one\":\t1,\n\t\"NULL\":\tnull,\n\t\"TRUE\":\ttrue,\n\t\"FALSE\":\tfalse,\n\t\"array\":\t[],\n\t\"world\":\t\"hello\",\n\t\"object\":\t{\n\t}\n}", "{\"one\":1,\"NULL\":null,\"TRUE\":true,\"FALSE\":false,\"array\":[],\"world\":\"hello\",\"object\":{}}");
+    assert_print_object("{\n\t\"one\":\t1,\n\t\"NULL\":\tnull,\n\t\"TRUE\":\ttrue,\n\t\"FALSE\":\tfalse,\n\t\"array\":\t[],\n\t\"world\":\t\"hello\",\n\t\"object\":\t{\n\t}\n}",
+                        "{\"one\":1,\"NULL\":null,\"TRUE\":true,\"FALSE\":false,\"array\":[],\"world\":\"hello\",\"object\":{}}");
 }
 
 int CJSON_CDECL main(void)

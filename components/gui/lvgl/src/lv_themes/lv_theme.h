@@ -17,7 +17,6 @@ extern "C" {
 #include "../lv_core/lv_obj.h"
 #include "../lv_core/lv_style.h"
 
-
 /*********************
  *    DEFINES
  *********************/
@@ -224,7 +223,6 @@ uint32_t lv_theme_get_flags(void);
 #include "lv_theme_material.h"
 #include "lv_theme_mono.h"
 #include "lv_theme_template.h"
-
 
 #ifdef __cplusplus
 } /* extern "C" */

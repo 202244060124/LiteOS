@@ -22,7 +22,6 @@
 #include "../lv_misc/lv_txt.h"
 #include "../lv_themes/lv_theme.h"
 
-
 /*********************
  *      DEFINES
  *********************/

@@ -36,7 +36,6 @@ extern "C" {
 #include "lv_label.h"
 #include "lv_page.h"
 
-
 /*********************
  *      DEFINES
  *********************/

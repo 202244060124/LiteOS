@@ -20,7 +20,6 @@
 #include "../lv_misc/lv_txt_ap.h"
 #include "../lv_themes/lv_theme.h"
 
-
 /*********************
  *      DEFINES
  *********************/

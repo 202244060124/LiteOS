@@ -26,10 +26,11 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --------------------------------------------------------------------------- */
 
-#include <string.h>
 #include <ctype.h>
-#include "bc95.h"
+#include <string.h>
 #include "at_hal.h"
+#include "bc95.h"
+
 
 at_adaptor_api bc95_interface;
 extern char rbuf[AT_DATA_LEN];
@@ -89,7 +90,7 @@ static int nb_sock_to_idx(int socket)
     return MAX_SOCK_NUM;
 }
 
-int str_to_hex(const char *bufin, int len, char *bufout)
+int str_to_hex(const char* bufin, int len, char* bufout)
 {
     int i = 0;
     if (NULL == bufin || len <= 0 || NULL == bufout) {
@@ -103,7 +104,7 @@ int str_to_hex(const char *bufin, int len, char *bufout)
     return 0;
 }
 
-void HexStrToStr(const unsigned char *source, unsigned char *dest, int sourceLen)
+void HexStrToStr(const unsigned char* source, unsigned char* dest, int sourceLen)
 {
     short i;
     unsigned char highByte, lowByte;
@@ -131,89 +132,90 @@ void HexStrToStr(const unsigned char *source, unsigned char *dest, int sourceLen
 
 int32_t nb_reboot(void)
 {
-    return at.cmd((int8_t *)AT_NB_reboot, strlen(AT_NB_reboot), "OK", NULL, NULL);
+    return at.cmd((int8_t*)AT_NB_reboot, strlen(AT_NB_reboot), "OK", NULL, NULL);
 }
 
 // "AT+CFUN?\r"
-int32_t nb_hw_detect(void) {
-    return at.cmd((int8_t *)AT_NB_hw_detect, strlen(AT_NB_hw_detect), "+CFUN:1", NULL, NULL);
+int32_t nb_hw_detect(void)
+{
+    return at.cmd((int8_t*)AT_NB_hw_detect, strlen(AT_NB_hw_detect), "+CFUN:1", NULL, NULL);
 }
 
 int32_t nb_check_csq(void)
 {
-    char *cmd = "AT+CSQ\r";
-    return at.cmd((int8_t *)cmd, strlen(cmd), "+CSQ:", NULL, NULL);
+    char* cmd = "AT+CSQ\r";
+    return at.cmd((int8_t*)cmd, strlen(cmd), "+CSQ:", NULL, NULL);
 }
 
-int32_t nb_set_cdpserver(char *host, char *port)
+int32_t nb_set_cdpserver(char* host, char* port)
 {
-    char *cmd = "AT+NCDP=";
-    char *cmd2 = "AT+NCDP?";
-    char *cmdNNMI = "AT+NNMI=1\r";
-    char *cmdCMEE = "AT+CMEE=1\r";
+    char* cmd = "AT+NCDP=";
+    char* cmd2 = "AT+NCDP?";
+    char* cmdNNMI = "AT+NNMI=1\r";
+    char* cmdCMEE = "AT+CMEE=1\r";
     char cdpbuf[128] = {0};
     int ret = -1;
     char ipaddr[100] = {0};
     if ((strlen(host) > 70) || (strlen(port) > 20) || (host == NULL) || (port == NULL)) {
-        ret = at.cmd((int8_t *)cmdNNMI, strlen(cmdNNMI), "OK", NULL, NULL);
-        ret = at.cmd((int8_t *)cmdCMEE, strlen(cmdCMEE), "OK", NULL, NULL);
+        ret = at.cmd((int8_t*)cmdNNMI, strlen(cmdNNMI), "OK", NULL, NULL);
+        ret = at.cmd((int8_t*)cmdCMEE, strlen(cmdCMEE), "OK", NULL, NULL);
         return ret;
     }
 
     snprintf(ipaddr, sizeof(ipaddr) - 1, "%s,%s\r", host, port);
     snprintf(cdpbuf, sizeof(cdpbuf) - 1, "%s%s%c", cmd, ipaddr, '\r');
 
-    ret = at.cmd((int8_t *)cdpbuf, strlen(cdpbuf), "OK", NULL, NULL);
+    ret = at.cmd((int8_t*)cdpbuf, strlen(cdpbuf), "OK", NULL, NULL);
     if (ret < 0) {
         return ret;
     }
-    ret = at.cmd((int8_t *)cmd2, strlen(cmd2), ipaddr, NULL, NULL);
-    ret = at.cmd((int8_t *)cmdNNMI, strlen(cmdNNMI), "OK", NULL, NULL);
+    ret = at.cmd((int8_t*)cmd2, strlen(cmd2), ipaddr, NULL, NULL);
+    ret = at.cmd((int8_t*)cmdNNMI, strlen(cmdNNMI), "OK", NULL, NULL);
     return ret;
 }
 
-int32_t nb_send_psk(char *pskid, char *psk)
+int32_t nb_send_psk(char* pskid, char* psk)
 {
-    char *cmds = "AT+QSECSWT";                 // AT+QSECSWT=1,100    OK
-    char *cmdp = "AT+QSETPSK";                 // AT+QSETPSK=86775942,E6F4C799   OK
+    char* cmds = "AT+QSECSWT";                 // AT+QSECSWT=1,100    OK
+    char* cmdp = "AT+QSETPSK";                 // AT+QSETPSK=86775942,E6F4C799   OK
     sprintf(wbuf, "%s=%d,%d\r", cmds, 1, 100); // min
-    at.cmd((int8_t *)wbuf, strlen(wbuf), "OK", NULL, NULL);
+    at.cmd((int8_t*)wbuf, strlen(wbuf), "OK", NULL, NULL);
     snprintf(wbuf, AT_DATA_LEN, "%s=%s,%s\r", cmdp, pskid, psk);
-    return at.cmd((int8_t *)wbuf, strlen(wbuf), "OK", NULL, NULL);
+    return at.cmd((int8_t*)wbuf, strlen(wbuf), "OK", NULL, NULL);
 }
 
 int32_t nb_set_no_encrypt(void)
 {
-    char *cmd = "AT+QSECSWT=0\r";
-    return at.cmd((int8_t *)cmd, strlen(cmd), "OK", NULL, NULL);
+    char* cmd = "AT+QSECSWT=0\r";
+    return at.cmd((int8_t*)cmd, strlen(cmd), "OK", NULL, NULL);
 }
 
 #ifdef WITH_SOTA
-int sota_cmd(int8_t *cmd, int32_t len, const char *suffix, char *resp_buf, int *resp_len)
+int sota_cmd(int8_t* cmd, int32_t len, const char* suffix, char* resp_buf, int* resp_len)
 {
     AT_LOG("sota_cmd:%s", cmd);
     LOS_MuxPend(at.cmd_mux, LOS_WAIT_FOREVER);
-    at_transmit((uint8_t *)cmd, len, 1);
+    at_transmit((uint8_t*)cmd, len, 1);
     LOS_MuxPost(at.cmd_mux);
 
     return AT_OK;
 }
 
-int nb_send_str(const char *buf, int len)
+int nb_send_str(const char* buf, int len)
 {
-    char *cmd1 = "AT+NMGS=";
+    char* cmd1 = "AT+NMGS=";
     memset(wbuf, 0, AT_DATA_LEN);
     memset(rbuf, 0, AT_DATA_LEN);
     snprintf(wbuf, AT_DATA_LEN, "%s%d,%s%c", cmd1, (int)len / 2, buf, '\r');
-    return sota_cmd((int8_t *)wbuf, strlen(wbuf), "OK", NULL, NULL);
+    return sota_cmd((int8_t*)wbuf, strlen(wbuf), "OK", NULL, NULL);
 }
 #endif
-int32_t nb_send_payload(const char *buf, int len)
+int32_t nb_send_payload(const char* buf, int len)
 {
-    char *cmd1 = "AT+NMGS=";
-    char *cmd2 = "AT+NQMGS\r";
+    char* cmd1 = "AT+NMGS=";
+    char* cmd2 = "AT+NQMGS\r";
     int ret;
-    char *str = NULL;
+    char* str = NULL;
     int curcnt = 0;
     int rbuflen;
     static int sndcnt = 0;
@@ -226,11 +228,11 @@ int32_t nb_send_payload(const char *buf, int len)
     str_to_hex(buf, len, tmpbuf);
     memset(rbuf, 0, AT_DATA_LEN);
     snprintf(wbuf, AT_DATA_LEN, "%s%d,%s%c", cmd1, (int)len, tmpbuf, '\r');
-    ret = at.cmd((int8_t *)wbuf, strlen(wbuf), "OK", NULL, NULL);
+    ret = at.cmd((int8_t*)wbuf, strlen(wbuf), "OK", NULL, NULL);
     if (ret < 0) {
         return -1;
     }
-    ret = at.cmd((int8_t *)cmd2, strlen(cmd2), "SENT=", rbuf, &rbuflen);
+    ret = at.cmd((int8_t*)cmd2, strlen(cmd2), "SENT=", rbuf, &rbuflen);
     if (ret < 0) {
         return -1;
     }
@@ -248,20 +250,20 @@ int32_t nb_send_payload(const char *buf, int len)
 
 int nb_query_ip(void)
 {
-    char *cmd = "AT+CGPADDR\r";
-    return at.cmd((int8_t *)cmd, strlen(cmd), "+CGPADDR:0,", NULL, NULL);
+    char* cmd = "AT+CGPADDR\r";
+    return at.cmd((int8_t*)cmd, strlen(cmd), "+CGPADDR:0,", NULL, NULL);
 }
 
 int32_t nb_get_netstat(void)
 {
-    char *cmd = "AT+CGATT?\r";
-    return at.cmd((int8_t *)cmd, strlen(cmd), "CGATT:1", NULL, NULL);
+    char* cmd = "AT+CGATT?\r";
+    return at.cmd((int8_t*)cmd, strlen(cmd), "CGATT:1", NULL, NULL);
 }
 
-static int32_t nb_cmd_with_2_suffix(const int8_t *cmd, int len, const char *suffix_ok, const char *suffix_err,
-    char *resp_buf, uint32_t *resp_len)
+static int32_t nb_cmd_with_2_suffix(const int8_t* cmd, int len, const char* suffix_ok, const char* suffix_err, char* resp_buf,
+                                    uint32_t* resp_len)
 {
-    const char *suffix[2] = {0};
+    const char* suffix[2] = {0};
     at_cmd_info_s cmd_info = {0};
 
     suffix[0] = suffix_ok;
@@ -289,8 +291,8 @@ int32_t nb_create_sock(int port, int proto)
 {
     int socket;
     int rbuflen = AT_DATA_LEN;
-    const char *cmdudp = "AT+NSOCR=DGRAM,17,"; // udp
-    const char *cmdtcp = "AT+NSOCR=STREAM,6,"; // tcp
+    const char* cmdudp = "AT+NSOCR=DGRAM,17,"; // udp
+    const char* cmdtcp = "AT+NSOCR=STREAM,6,"; // tcp
     int ret;
     char buf[64];
     int cmd_len;
@@ -307,7 +309,7 @@ int32_t nb_create_sock(int port, int proto)
         cmd_len = snprintf(buf, sizeof(buf), "%s%d,1\r", cmdtcp, port);
     }
 
-    nb_cmd_with_2_suffix((int8_t *)buf, cmd_len, "OK", "ERROR", rbuf, (uint32_t *)&rbuflen);
+    nb_cmd_with_2_suffix((int8_t*)buf, cmd_len, "OK", "ERROR", rbuf, (uint32_t*)&rbuflen);
     ret = sscanf(rbuf, "%d\r%s", &socket, tmpbuf);
     if ((2 == ret) && (socket >= 0) && (strnstr(tmpbuf, "OK", sizeof(tmpbuf)))) {
         return socket;
@@ -317,7 +319,7 @@ int32_t nb_create_sock(int port, int proto)
     return -1;
 }
 
-static bool nb_is_addr_valid(const char *addr)
+static bool nb_is_addr_valid(const char* addr)
 {
     const int size = 4;
     int tmp[4];
@@ -327,7 +329,7 @@ static bool nb_is_addr_valid(const char *addr)
     return (size == ret);
 }
 
-int nb_decompose_str(const char *str, int *readleft, int *out_sockid)
+int nb_decompose_str(const char* str, int* readleft, int* out_sockid)
 {
     const char *tmp, *trans;
     int sockid;
@@ -352,12 +354,12 @@ int nb_decompose_str(const char *str, int *readleft, int *out_sockid)
         return AT_FAILED;
     }
 
-    qbuf.port = chartoint((char *)(trans + 1));
+    qbuf.port = chartoint((char*)(trans + 1));
     tmp = strstr(trans + 1, ",");
     if (tmp == NULL) {
         return AT_FAILED;
     }
-    rlen = chartoint((char *)(tmp + 1));
+    rlen = chartoint((char*)(tmp + 1));
     if (rlen >= AT_DATA_LEN / 2 || rlen < 0) {
         AT_LOG("rlen %d", rlen);
         return AT_FAILED;
@@ -373,7 +375,7 @@ int nb_decompose_str(const char *str, int *readleft, int *out_sockid)
         return AT_FAILED;
     }
 
-    *readleft = chartoint((char *)(tmp + 1));
+    *readleft = chartoint((char*)(tmp + 1));
 
     *out_sockid = sockid;
 
@@ -389,7 +391,7 @@ int nb_decompose_str(const char *str, int *readleft, int *out_sockid)
         return AT_OK;
     }
 
-    HexStrToStr((const unsigned char *)(trans + 1), qbuf.addr, (rlen)*2);
+    HexStrToStr((const unsigned char*)(trans + 1), qbuf.addr, (rlen) * 2);
     qbuf.len = rlen;
 
     ret = LOS_QueueWriteCopy(at.linkid[link_id].qid, &qbuf, sizeof(qbuf), 0);
@@ -403,16 +405,15 @@ int nb_decompose_str(const char *str, int *readleft, int *out_sockid)
 
 static void nb_close_sock(int sock)
 {
-    const char *cmd = "AT+NSOCL=";
+    const char* cmd = "AT+NSOCL=";
     char buf[64];
     int cmd_len;
 
     cmd_len = snprintf(buf, sizeof(buf), "%s%d\r", cmd, sock);
-    nb_cmd_with_2_suffix((int8_t *)buf, cmd_len, "OK", "ERROR", NULL, NULL);
+    nb_cmd_with_2_suffix((int8_t*)buf, cmd_len, "OK", "ERROR", NULL, NULL);
 }
 
-
-static int nb_create_sock_link(int portnum, int *link_id)
+static int nb_create_sock_link(int portnum, int* link_id)
 {
     int ret = 0;
     int sock;
@@ -445,25 +446,25 @@ CLOSE_SOCk:
     return AT_FAILED;
 }
 
-int32_t nb_bind(const int8_t *host, const int8_t *port, int32_t proto)
+int32_t nb_bind(const int8_t* host, const int8_t* port, int32_t proto)
 {
     int ret = 0;
     int portnum;
 
     (void)host;
     (void)proto;
-    portnum = chartoint((char *)port);
+    portnum = chartoint((char*)port);
 
     if (nb_create_sock_link(portnum, &ret) != AT_OK) {
         return AT_FAILED;
     }
 
-    sockinfo[ret].localport = *(unsigned short *)portnum;
+    sockinfo[ret].localport = *(unsigned short*)portnum;
 
     return AT_OK;
 }
 
-int32_t nb_connect(const int8_t *host, const int8_t *port, int32_t proto)
+int32_t nb_connect(const int8_t* host, const int8_t* port, int32_t proto)
 {
     int ret = 0;
     static uint16_t localport = NB_STAT_LOCALPORT;
@@ -478,18 +479,18 @@ int32_t nb_connect(const int8_t *host, const int8_t *port, int32_t proto)
         localport = 5685;
     }
 
-    strncpy(sockinfo[ret].remoteip, (const char *)host, sizeof(sockinfo[ret].remoteip));
+    strncpy(sockinfo[ret].remoteip, (const char*)host, sizeof(sockinfo[ret].remoteip));
     sockinfo[ret].remoteip[sizeof(sockinfo[ret].remoteip) - 1] = '\0';
-    sockinfo[ret].remoteport = chartoint((char *)port);
+    sockinfo[ret].remoteport = chartoint((char*)port);
 
     AT_LOG("ret:%d remoteip:%s port:%d", ret, sockinfo[ret].remoteip, sockinfo[ret].remoteport);
 
     return ret;
 }
 
-int32_t nb_sendto(int32_t id, const uint8_t *buf, uint32_t len, char *ipaddr, int port)
+int32_t nb_sendto(int32_t id, const uint8_t* buf, uint32_t len, char* ipaddr, int port)
 {
-    char *cmd = "AT+NSOST=";
+    char* cmd = "AT+NSOST=";
     int data_len = len / 2;
     int cmd_len;
 
@@ -501,21 +502,18 @@ int32_t nb_sendto(int32_t id, const uint8_t *buf, uint32_t len, char *ipaddr, in
     AT_LOG("id:%d remoteip:%s port:%d", (int)sockinfo[id].socket, ipaddr, port);
     memset(wbuf, 0, AT_DATA_LEN);
     memset(tmpbuf, 0, AT_DATA_LEN);
-    str_to_hex((const char *)buf, len, tmpbuf);
+    str_to_hex((const char*)buf, len, tmpbuf);
 
-    cmd_len = snprintf(wbuf, AT_DATA_LEN, "%s%d,%s,%d,%d,%s\r", cmd, (int)sockinfo[id].socket, ipaddr, port, (int)len,
-        tmpbuf);
+    cmd_len = snprintf(wbuf, AT_DATA_LEN, "%s%d,%s,%d,%d,%s\r", cmd, (int)sockinfo[id].socket, ipaddr, port, (int)len, tmpbuf);
 
-
-    if (nb_cmd_with_2_suffix((int8_t *)wbuf, cmd_len, "OK", "ERROR", NULL, NULL) != AT_OK) {
+    if (nb_cmd_with_2_suffix((int8_t*)wbuf, cmd_len, "OK", "ERROR", NULL, NULL) != AT_OK) {
         return AT_FAILED;
     }
 
     return len;
 }
 
-
-int32_t nb_send(int32_t id, const uint8_t *buf, uint32_t len)
+int32_t nb_send(int32_t id, const uint8_t* buf, uint32_t len)
 {
     if (id >= MAX_SOCK_NUM) {
         AT_LOG("invalid args");
@@ -524,17 +522,17 @@ int32_t nb_send(int32_t id, const uint8_t *buf, uint32_t len)
     return nb_sendto(id, buf, len, sockinfo[id].remoteip, (int)sockinfo[id].remoteport);
 }
 
-int32_t nb_recv(int32_t id, uint8_t *buf, uint32_t len)
+int32_t nb_recv(int32_t id, uint8_t* buf, uint32_t len)
 {
     return nb_recv_timeout(id, buf, len, NULL, NULL, LOS_WAIT_FOREVER);
 }
 
-int32_t nb_recvfrom(int32_t id, uint8_t *buf, uint32_t len, char *ipaddr, int *port)
+int32_t nb_recvfrom(int32_t id, uint8_t* buf, uint32_t len, char* ipaddr, int* port)
 {
     return nb_recv_timeout(id, buf, len, ipaddr, port, LOS_WAIT_FOREVER);
 }
 
-int32_t nb_recv_timeout(int32_t id, uint8_t *buf, uint32_t len, char *ipaddr, int *port, int32_t timeout)
+int32_t nb_recv_timeout(int32_t id, uint8_t* buf, uint32_t len, char* ipaddr, int* port, int32_t timeout)
 {
     int rlen = 0;
     int ret;
@@ -571,7 +569,6 @@ int32_t nb_recv_timeout(int32_t id, uint8_t *buf, uint32_t len, char *ipaddr, in
     }
     return rlen;
 }
-
 
 int32_t nb_close(int32_t id)
 {
@@ -654,20 +651,20 @@ at_adaptor_api bc95_interface = {
 
 void nb_reattach(void)
 {
-    (void)nb_cmd_with_2_suffix((int8_t *)CGATT, strlen(CGATT), "OK", "ERROR", NULL, NULL);
-    (void)nb_cmd_with_2_suffix((int8_t *)CGATT_DEATTACH, strlen(CGATT_DEATTACH), "OK", "ERROR", NULL, NULL);
+    (void)nb_cmd_with_2_suffix((int8_t*)CGATT, strlen(CGATT), "OK", "ERROR", NULL, NULL);
+    (void)nb_cmd_with_2_suffix((int8_t*)CGATT_DEATTACH, strlen(CGATT_DEATTACH), "OK", "ERROR", NULL, NULL);
     LOS_TaskDelay(1000);
-    (void)nb_cmd_with_2_suffix((int8_t *)CGATT_ATTACH, strlen(CGATT_ATTACH), "OK", "ERROR", NULL, NULL);
+    (void)nb_cmd_with_2_suffix((int8_t*)CGATT_ATTACH, strlen(CGATT_ATTACH), "OK", "ERROR", NULL, NULL);
 }
 
 static int nb_cmd_rcv_data(int sockid, int readleft);
 
-static int32_t nb_handle_sock_data(const int8_t *data, uint32_t len)
+static int32_t nb_handle_sock_data(const int8_t* data, uint32_t len)
 {
     (void)len;
-    char *curr = (char *)data;
+    char* curr = (char*)data;
 
-    if (strstr((char *)data, "ERROR") != NULL) {
+    if (strstr((char*)data, "ERROR") != NULL) {
         return AT_OK;
     }
 
@@ -675,7 +672,7 @@ static int32_t nb_handle_sock_data(const int8_t *data, uint32_t len)
         int readleft;
         int sockid;
 
-        char *next = strstr(curr, "\r\n");
+        char* next = strstr(curr, "\r\n");
 
         if (next == curr) {
             curr += 2;
@@ -698,14 +695,14 @@ static int nb_cmd_rcv_data(int sockid, int readleft)
 {
     int cmdlen;
     char cmdbuf[40];
-    const char *cmd = "AT+NSORF=";
+    const char* cmd = "AT+NSORF=";
     const uint32_t timeout = 10;
 
     cmdlen = snprintf(cmdbuf, sizeof(cmdbuf), "%s%d,%d\r", cmd, sockid, readleft);
-    return at_cmd_in_callback((int8_t *)cmdbuf, cmdlen, nb_handle_sock_data, timeout);
+    return at_cmd_in_callback((int8_t*)cmdbuf, cmdlen, nb_handle_sock_data, timeout);
 }
 
-static int32_t nb_handle_data_ind(const char *buf)
+static int32_t nb_handle_data_ind(const char* buf)
 {
     int32_t sockid;
     int32_t data_len;
@@ -741,7 +738,7 @@ static int32_t nb_handle_data_ind(const char *buf)
     return AT_OK;
 }
 
-int32_t nb_cmd_match(const char *buf, char *featurestr, int len)
+int32_t nb_cmd_match(const char* buf, char* featurestr, int len)
 {
     if (buf == NULL) {
         return AT_FAILED;

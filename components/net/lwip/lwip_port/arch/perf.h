@@ -36,39 +36,37 @@
 #define __LWIP_PERF_H__
 
 #include "lwip/arch.h"
-#include "lwip/opt.h"
 #include "lwip/def.h"
+#include "lwip/opt.h"
 
-#ifdef  __cplusplus
+
+#ifdef __cplusplus
 extern "C" {
 #endif
 
 /* PERF_START and PERF_STOP are called in code so its kept as empty here always */
 
-#define PERF_START    /* null definition */
-#define PERF_STOP(x)  /* null definition */
+#define PERF_START   /* null definition */
+#define PERF_STOP(x) /* null definition */
 
 #if LWIP_PERF
 
-void
-perf_print(u32_t start_ms, u32_t end_ms, char *key);
+void perf_print(u32_t start_ms, u32_t end_ms, char* key);
 
 #define LWIP_PERF_DECLARATION u32_t start_ms, end_ms
-#define LWIP_PERF_START  start_ms = sys_now()
-#define LWIP_PERF_STOP(x)  end_ms = sys_now(); \
-                       perf_print(start_ms, end_ms, x)
+#define LWIP_PERF_START       start_ms = sys_now()
+#define LWIP_PERF_STOP(x) \
+    end_ms = sys_now();   \
+    perf_print(start_ms, end_ms, x)
 
-void
-perf_init(void *data);
+void perf_init(void* data);
 
-void
-perf_fini(void *data);
+void perf_fini(void* data);
 
 #endif /* LWIP_PERF */
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
 #endif
 
 #endif /* __LWIP_PERF_H__ */
-

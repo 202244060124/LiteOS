@@ -11,7 +11,6 @@
 #include "lv_bidi.h"
 #include "lv_txt.h"
 
-
 #if LV_USE_BIDI
 
 /*********************

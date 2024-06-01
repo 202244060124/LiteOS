@@ -5,9 +5,10 @@
  *  [Released under MIT License. Please refer to license.txt for details]
  * ========================================== */
 
+#include <string.h>
 #include "unity_fixture.h"
 #include "unity_internals.h"
-#include <string.h>
+
 
 struct UNITY_FIXTURE_T UnityFixture;
 
@@ -16,14 +17,18 @@ struct UNITY_FIXTURE_T UnityFixture;
  * int (*outputChar)(int) = putchar; */
 
 #if !defined(UNITY_WEAK_ATTRIBUTE) && !defined(UNITY_WEAK_PRAGMA)
-void setUp(void)    { /*does nothing*/ }
-void tearDown(void) { /*does nothing*/ }
+void setUp(void)
+{ /*does nothing*/
+}
+void tearDown(void)
+{ /*does nothing*/
+}
 #endif
 
 static void announceTestRun(unsigned int runNumber)
 {
     UnityPrint("Unity test run ");
-    UnityPrintNumberUnsigned(runNumber+1);
+    UnityPrintNumberUnsigned(runNumber + 1);
     UnityPrint(" of ");
     UnityPrintNumberUnsigned(UnityFixture.RepeatCount);
     UNITY_PRINT_EOL();
@@ -36,12 +41,12 @@ int UnityMain(int argc, const char* argv[], void (*runAllTests)(void))
     if (result != 0)
         return result;
 
-    for (r = 0; r < UnityFixture.RepeatCount; r++)
-    {
+    for (r = 0; r < UnityFixture.RepeatCount; r++) {
         UnityBegin(argv[0]);
         announceTestRun(r);
         runAllTests();
-        if (!UnityFixture.Verbose) UNITY_PRINT_EOL();
+        if (!UnityFixture.Verbose)
+            UNITY_PRINT_EOL();
         UnityEnd();
     }
 
@@ -65,45 +70,34 @@ static int groupSelected(const char* group)
     return selected(UnityFixture.GroupFilter, group);
 }
 
-void UnityTestRunner(unityfunction* setup,
-                     unityfunction* testBody,
-                     unityfunction* teardown,
-                     const char* printableName,
-                     const char* group,
-                     const char* name,
-                     const char* file,
-                     unsigned int line)
+void UnityTestRunner(unityfunction* setup, unityfunction* testBody, unityfunction* teardown, const char* printableName, const char* group,
+                     const char* name, const char* file, unsigned int line)
 {
-    if (testSelected(name) && groupSelected(group))
-    {
+    if (testSelected(name) && groupSelected(group)) {
         Unity.TestFile = file;
         Unity.CurrentTestName = printableName;
         Unity.CurrentTestLineNumber = line;
         if (!UnityFixture.Verbose)
             UNITY_OUTPUT_CHAR('.');
-        else
-        {
+        else {
             UnityPrint(printableName);
-        #ifndef UNITY_REPEAT_TEST_NAME
+#ifndef UNITY_REPEAT_TEST_NAME
             Unity.CurrentTestName = NULL;
-        #endif
+#endif
         }
 
         Unity.NumberOfTests++;
         UnityMalloc_StartTest();
         UnityPointer_Init();
 
-        if (TEST_PROTECT())
-        {
+        if (TEST_PROTECT()) {
             setup();
             testBody();
         }
-        if (TEST_PROTECT())
-        {
+        if (TEST_PROTECT()) {
             teardown();
         }
-        if (TEST_PROTECT())
-        {
+        if (TEST_PROTECT()) {
             UnityPointer_UndoAllSets();
             if (!Unity.CurrentTestFailed)
                 UnityMalloc_EndTest();
@@ -114,20 +108,17 @@ void UnityTestRunner(unityfunction* setup,
 
 void UnityIgnoreTest(const char* printableName, const char* group, const char* name)
 {
-    if (testSelected(name) && groupSelected(group))
-    {
+    if (testSelected(name) && groupSelected(group)) {
         Unity.NumberOfTests++;
         Unity.TestIgnores++;
         if (!UnityFixture.Verbose)
             UNITY_OUTPUT_CHAR('!');
-        else
-        {
+        else {
             UnityPrint(printableName);
             UNITY_PRINT_EOL();
         }
     }
 }
-
 
 /*------------------------------------------------- */
 /* Malloc and free stuff */
@@ -144,8 +135,7 @@ void UnityMalloc_StartTest(void)
 void UnityMalloc_EndTest(void)
 {
     malloc_fail_countdown = MALLOC_DONT_FAIL;
-    if (malloc_count != 0)
-    {
+    if (malloc_count != 0) {
         UNITY_TEST_FAIL(Unity.CurrentTestLineNumber, "This test leaks!");
     }
 }
@@ -169,12 +159,10 @@ static size_t heap_index;
 #include <stdlib.h>
 #endif
 
-typedef struct GuardBytes
-{
+typedef struct GuardBytes {
     size_t size;
     size_t guard_space;
 } Guard;
-
 
 static const char end[] = "END";
 
@@ -184,28 +172,26 @@ void* unity_malloc(size_t size)
     Guard* guard;
     size_t total_size = size + sizeof(Guard) + sizeof(end);
 
-    if (malloc_fail_countdown != MALLOC_DONT_FAIL)
-    {
+    if (malloc_fail_countdown != MALLOC_DONT_FAIL) {
         if (malloc_fail_countdown == 0)
             return NULL;
         malloc_fail_countdown--;
     }
 
-    if (size == 0) return NULL;
+    if (size == 0)
+        return NULL;
 #ifdef UNITY_EXCLUDE_STDLIB_MALLOC
-    if (heap_index + total_size > UNITY_INTERNAL_HEAP_SIZE_BYTES)
-    {
+    if (heap_index + total_size > UNITY_INTERNAL_HEAP_SIZE_BYTES) {
         guard = NULL;
-    }
-    else
-    {
+    } else {
         guard = (Guard*)&unity_heap[heap_index];
         heap_index += total_size;
     }
 #else
     guard = (Guard*)UNITY_FIXTURE_MALLOC(total_size);
 #endif
-    if (guard == NULL) return NULL;
+    if (guard == NULL)
+        return NULL;
     malloc_count++;
     guard->size = size;
     guard->guard_space = 0;
@@ -231,8 +217,7 @@ static void release_memory(void* mem)
 
     malloc_count--;
 #ifdef UNITY_EXCLUDE_STDLIB_MALLOC
-    if (mem == unity_heap + heap_index - guard->size - sizeof(end))
-    {
+    if (mem == unity_heap + heap_index - guard->size - sizeof(end)) {
         heap_index -= (guard->size + sizeof(Guard) + sizeof(end));
     }
 #else
@@ -244,15 +229,13 @@ void unity_free(void* mem)
 {
     int overrun;
 
-    if (mem == NULL)
-    {
+    if (mem == NULL) {
         return;
     }
 
     overrun = isOverrun(mem);
     release_memory(mem);
-    if (overrun)
-    {
+    if (overrun) {
         UNITY_TEST_FAIL(Unity.CurrentTestLineNumber, "Buffer overrun detected during free()");
     }
 }
@@ -260,7 +243,8 @@ void unity_free(void* mem)
 void* unity_calloc(size_t num, size_t size)
 {
     void* mem = unity_malloc(num * size);
-    if (mem == NULL) return NULL;
+    if (mem == NULL)
+        return NULL;
     memset(mem, 0, num * size);
     return mem;
 }
@@ -270,43 +254,40 @@ void* unity_realloc(void* oldMem, size_t size)
     Guard* guard = (Guard*)oldMem;
     void* newMem;
 
-    if (oldMem == NULL) return unity_malloc(size);
+    if (oldMem == NULL)
+        return unity_malloc(size);
 
     guard--;
-    if (isOverrun(oldMem))
-    {
+    if (isOverrun(oldMem)) {
         release_memory(oldMem);
         UNITY_TEST_FAIL(Unity.CurrentTestLineNumber, "Buffer overrun detected during realloc()");
     }
 
-    if (size == 0)
-    {
+    if (size == 0) {
         release_memory(oldMem);
         return NULL;
     }
 
-    if (guard->size >= size) return oldMem;
+    if (guard->size >= size)
+        return oldMem;
 
 #ifdef UNITY_EXCLUDE_STDLIB_MALLOC /* Optimization if memory is expandable */
-    if (oldMem == unity_heap + heap_index - guard->size - sizeof(end) &&
-        heap_index + size - guard->size <= UNITY_INTERNAL_HEAP_SIZE_BYTES)
-    {
+    if (oldMem == unity_heap + heap_index - guard->size - sizeof(end) && heap_index + size - guard->size <= UNITY_INTERNAL_HEAP_SIZE_BYTES) {
         release_memory(oldMem);    /* Not thread-safe, like unity_heap generally */
         return unity_malloc(size); /* No memcpy since data is in place */
     }
 #endif
     newMem = unity_malloc(size);
-    if (newMem == NULL) return NULL; /* Do not release old memory */
+    if (newMem == NULL)
+        return NULL; /* Do not release old memory */
     memcpy(newMem, oldMem, guard->size);
     release_memory(oldMem);
     return newMem;
 }
 
-
 /*-------------------------------------------------------- */
 /*Automatic pointer restoration functions */
-struct PointerPair
-{
+struct PointerPair {
     void** pointer;
     void* old_value;
 };
@@ -321,12 +302,9 @@ void UnityPointer_Init(void)
 
 void UnityPointer_Set(void** pointer, void* newValue, UNITY_LINE_TYPE line)
 {
-    if (pointer_index >= UNITY_MAX_POINTERS)
-    {
+    if (pointer_index >= UNITY_MAX_POINTERS) {
         UNITY_TEST_FAIL(line, "Too many pointers set");
-    }
-    else
-    {
+    } else {
         pointer_store[pointer_index].pointer = pointer;
         pointer_store[pointer_index].old_value = *pointer;
         *pointer = newValue;
@@ -336,11 +314,9 @@ void UnityPointer_Set(void** pointer, void* newValue, UNITY_LINE_TYPE line)
 
 void UnityPointer_UndoAllSets(void)
 {
-    while (pointer_index > 0)
-    {
+    while (pointer_index > 0) {
         pointer_index--;
-        *(pointer_store[pointer_index].pointer) =
-            pointer_store[pointer_index].old_value;
+        *(pointer_store[pointer_index].pointer) = pointer_store[pointer_index].old_value;
     }
 }
 
@@ -355,50 +331,37 @@ int UnityGetCommandLineOptions(int argc, const char* argv[])
     if (argc == 1)
         return 0;
 
-    for (i = 1; i < argc; )
-    {
-        if (strcmp(argv[i], "-v") == 0)
-        {
+    for (i = 1; i < argc;) {
+        if (strcmp(argv[i], "-v") == 0) {
             UnityFixture.Verbose = 1;
             i++;
-        }
-        else if (strcmp(argv[i], "-g") == 0)
-        {
+        } else if (strcmp(argv[i], "-g") == 0) {
             i++;
             if (i >= argc)
                 return 1;
             UnityFixture.GroupFilter = argv[i];
             i++;
-        }
-        else if (strcmp(argv[i], "-n") == 0)
-        {
+        } else if (strcmp(argv[i], "-n") == 0) {
             i++;
             if (i >= argc)
                 return 1;
             UnityFixture.NameFilter = argv[i];
             i++;
-        }
-        else if (strcmp(argv[i], "-r") == 0)
-        {
+        } else if (strcmp(argv[i], "-r") == 0) {
             UnityFixture.RepeatCount = 2;
             i++;
-            if (i < argc)
-            {
-                if (*(argv[i]) >= '0' && *(argv[i]) <= '9')
-                {
+            if (i < argc) {
+                if (*(argv[i]) >= '0' && *(argv[i]) <= '9') {
                     unsigned int digit = 0;
                     UnityFixture.RepeatCount = 0;
-                    while (argv[i][digit] >= '0' && argv[i][digit] <= '9')
-                    {
+                    while (argv[i][digit] >= '0' && argv[i][digit] <= '9') {
                         UnityFixture.RepeatCount *= 10;
                         UnityFixture.RepeatCount += (unsigned int)argv[i][digit++] - '0';
                     }
                     i++;
                 }
             }
-        }
-        else
-        {
+        } else {
             /* ignore unknown parameter */
             i++;
         }
@@ -408,20 +371,15 @@ int UnityGetCommandLineOptions(int argc, const char* argv[])
 
 void UnityConcludeFixtureTest(void)
 {
-    if (Unity.CurrentTestIgnored)
-    {
+    if (Unity.CurrentTestIgnored) {
         Unity.TestIgnores++;
         UNITY_PRINT_EOL();
-    }
-    else if (!Unity.CurrentTestFailed)
-    {
-        if (UnityFixture.Verbose)
-        {
+    } else if (!Unity.CurrentTestFailed) {
+        if (UnityFixture.Verbose) {
             UnityPrint(" PASS");
             UNITY_PRINT_EOL();
         }
-    }
-    else /* Unity.CurrentTestFailed */
+    } else /* Unity.CurrentTestFailed */
     {
         Unity.TestFailures++;
         UNITY_PRINT_EOL();

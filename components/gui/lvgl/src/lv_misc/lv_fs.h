@@ -21,7 +21,6 @@ extern "C" {
 #include <stdint.h>
 #include "lv_mem.h"
 
-
 /*********************
  *      DEFINES
  *********************/

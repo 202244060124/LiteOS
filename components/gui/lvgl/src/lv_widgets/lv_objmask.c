@@ -11,7 +11,6 @@
 #include "../lv_themes/lv_theme.h"
 #include "lv_objmask.h"
 
-
 #if defined(LV_USE_OBJMASK) && LV_USE_OBJMASK != 0
 
 /*********************

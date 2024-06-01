@@ -13,7 +13,6 @@
 #include "../lv_draw/lv_draw.h"
 #include "../lv_themes/lv_theme.h"
 
-
 /*********************
  *      DEFINES
  *********************/

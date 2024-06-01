@@ -17,7 +17,6 @@
 #include "../lv_misc/lv_math.h"
 #include "../lv_themes/lv_theme.h"
 
-
 /*********************
  *      DEFINES
  *********************/

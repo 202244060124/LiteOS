@@ -19,7 +19,6 @@ extern "C" {
 #include "../lv_font/lv_font.h"
 #include "lv_area.h"
 
-
 /*********************
  *      DEFINES
  *********************/

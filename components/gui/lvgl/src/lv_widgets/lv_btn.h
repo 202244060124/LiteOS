@@ -25,7 +25,6 @@ extern "C" {
 #include "../lv_core/lv_indev.h"
 #include "lv_cont.h"
 
-
 /*********************
  *      DEFINES
  *********************/

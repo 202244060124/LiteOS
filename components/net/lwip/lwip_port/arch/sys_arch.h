@@ -21,15 +21,16 @@
 #ifndef __ARCH_SYS_ARCH_H__
 #define __ARCH_SYS_ARCH_H__
 
-#include "lwip/opt.h"
-#include "lwip/err.h"
+#include "los_memory.h"
 #include "los_sem.h"
 #include "los_sem_pri.h"
 #include "los_typedef.h"
-#include "los_memory.h"
+#include "lwip/err.h"
+#include "lwip/opt.h"
+
 
 typedef struct los_sem {
-    LosSemCB* sem;        /**< Semaphore attribute structure*/
+    LosSemCB* sem; /**< Semaphore attribute structure*/
 } sem_t;
 
 typedef struct los_sem sys_sem_t;
@@ -40,9 +41,9 @@ struct sys_mbox {
     int mbox_size;
     int isFull;
     int isEmpty;
-    unsigned int  not_empty;
-    unsigned int  not_full;
-    unsigned int  mutex;
+    unsigned int not_empty;
+    unsigned int not_full;
+    unsigned int mutex;
 };
 
 typedef struct sys_mbox* sys_mbox_t;
@@ -54,13 +55,18 @@ struct sys_thread {
 
 typedef unsigned int sys_thread_t;
 
-#define sys_sem_valid(x)        (((*x).sem == NULL) ? 0 : 1)
-#define sys_sem_set_invalid(x)  ( (*x).sem = NULL)
+#define sys_sem_valid(x)                  (((*x).sem == NULL) ? 0 : 1)
+#define sys_sem_set_invalid(x)            ((*x).sem = NULL)
 
-#define sys_arch_mbox_tryfetch(mbox,msg)   sys_arch_mbox_fetch(mbox,msg,1)
-#define SYS_MBOX_NULL               (NULL)
-#define sys_mbox_valid(mbox)  (*(mbox) != NULL)
-#define sys_mbox_set_invalid(mbox) do { if((mbox) != NULL) { *(mbox) = NULL; }}while(0)
+#define sys_arch_mbox_tryfetch(mbox, msg) sys_arch_mbox_fetch(mbox, msg, 1)
+#define SYS_MBOX_NULL                     (NULL)
+#define sys_mbox_valid(mbox)              (*(mbox) != NULL)
+#define sys_mbox_set_invalid(mbox) \
+    do {                           \
+        if ((mbox) != NULL) {      \
+            *(mbox) = NULL;        \
+        }                          \
+    } while (0)
 
 // === PROTECTION ===
 typedef int sys_prot_t;
@@ -89,7 +95,5 @@ static inline void sys_align_free(void* mem)
  *  /returns current systick time in milliSeconds
  */
 u32_t sys_now(void);
-
-
 
 #endif /* __ARCH_SYS_ARCH_H__ */

@@ -26,31 +26,31 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --------------------------------------------------------------------------- */
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include <string.h>
+
 
 #include "osport.h"
 
-#define CN_IODEV_WTIMEOUT   100
-#define CN_IODEV_RTIMEOUT   100
+#define CN_IODEV_WTIMEOUT 100
+#define CN_IODEV_RTIMEOUT 100
 #ifndef bool_t
-#define bool_t              int
-#define false               0
-#define true                1
+#define bool_t int
+#define false  0
+#define true   1
 #endif
 
-#define CN_AT_LEN           128
+#define CN_AT_LEN 128
 
 // we use this for the at command
 // usage:we use this function to deal the at result as the args format
-static int __getpara(char *text, char *seperate, char *argv[], int argc)
+static int __getpara(char* text, char* seperate, char* argv[], int argc)
 {
     int result;
-    char *s;
+    char* s;
     int len, i;
     s = seperate;
     len = strlen(text);
@@ -88,7 +88,7 @@ static int __getpara(char *text, char *seperate, char *argv[], int argc)
 // devname, the at device name,cmd:at command buf/buflen:storage the reply result(argc and argv in args mode)
 //-----------------------------------------------------------------------------
 // usage:send the at command to the serial device
-int AtCmd(const char *devname, char *cmd, char *buf, int buflen, int argc, char *argv[])
+int AtCmd(const char* devname, char* cmd, char* buf, int buflen, int argc, char* argv[])
 {
     char cmdbuf[CN_AT_LEN];
     int result = 0;
@@ -109,7 +109,7 @@ int AtCmd(const char *devname, char *cmd, char *buf, int buflen, int argc, char 
     snprintf(cmdbuf, CN_AT_LEN, "%s\r\n", cmd); // AT+CGMI
     // write the command to the device
     len = strlen(cmdbuf);
-    result = iodev_write(dev, (unsigned char *)cmdbuf, len, CN_IODEV_WTIMEOUT);
+    result = iodev_write(dev, (unsigned char*)cmdbuf, len, CN_IODEV_WTIMEOUT);
     if (result != len) {
         printf("%s:only write %d/%d to %s \n\r", __FUNCTION__, result, len, devname);
         goto EXIT_WRITEFAILED;
@@ -122,7 +122,7 @@ int AtCmd(const char *devname, char *cmd, char *buf, int buflen, int argc, char 
         offset = 0;
         lenleft = buflen;
         while (1) {
-            len = iodev_read(dev, (unsigned char *)&buf[offset], lenleft, CN_IODEV_RTIMEOUT);
+            len = iodev_read(dev, (unsigned char*)&buf[offset], lenleft, CN_IODEV_RTIMEOUT);
             if (len > 0) {
                 offset += len;
                 lenleft -= len;
@@ -145,7 +145,7 @@ int AtCmd(const char *devname, char *cmd, char *buf, int buflen, int argc, char 
             memset(&buf[offset], 0, lenleft); // make the bufleft to zero
         }
         if ((argc > 0) && (NULL != argv)) {
-            result = __getpara((char *)buf, "\n\r", argv, argc);
+            result = __getpara((char*)buf, "\n\r", argv, argc);
             if (result <= 0) {
                 printf("%s:get para failed\n\r", __FUNCTION__);
                 goto EXIT_GETPARA;
@@ -166,7 +166,7 @@ EXIT_OPENFAILED:
 
 // usage:use this function to check if the string is in the argv
 // if exit then return the position it in
-static int strinargs(int argc, char *argv[], char *str)
+static int strinargs(int argc, char* argv[], char* str)
 {
     int result = -1;
     int i = 0;
@@ -182,32 +182,24 @@ static int strinargs(int argc, char *argv[], char *str)
 }
 
 typedef struct {
-    const char *mcc_mnc;
-    const char *apndefault;
+    const char* mcc_mnc;
+    const char* apndefault;
 } tagImsi;
 
-tagImsi gAtcimi[] = {\
-    {"46000","CMNET"},\
-    {"46002","CMNET"},\
-    {"46004","CMNET"},\
-    {"46007","CMNET"},\
-    {"46001","3gnet"},\
-    {"46006","3gnet"},\
-    {"46009","3gnet"},\
-    {"46003","ctnet"},\
-    {"46005","ctnet"},\
-    {"46011","ctlte"},\
+tagImsi gAtcimi[] = {
+    {"46000", "CMNET"}, {"46002", "CMNET"}, {"46004", "CMNET"}, {"46007", "CMNET"}, {"46001", "3gnet"},
+    {"46006", "3gnet"}, {"46009", "3gnet"}, {"46003", "ctnet"}, {"46005", "ctnet"}, {"46011", "ctlte"},
 };
 
-#define CN_CIMI_SIZE  (sizeof(gAtcimi)/sizeof(tagImsi))
+#define CN_CIMI_SIZE (sizeof(gAtcimi) / sizeof(tagImsi))
 
 // usage:used to check the lte module
-static bool_t checkmi(char *devname, int times)
+static bool_t checkmi(char* devname, int times)
 {
     bool_t result = false;
     char atrcvbuf[CN_AT_LEN];
 
-    char *argv[6];
+    char* argv[6];
     int argc;
     int i = 0;
     int position;
@@ -237,10 +229,10 @@ static bool_t checkmi(char *devname, int times)
 }
 
 // usage:used to check the module type
-static bool_t checkmm(char *devname, int times)
+static bool_t checkmm(char* devname, int times)
 {
     bool_t result = false;
-    char *argv[6];
+    char* argv[6];
     int argc;
     int i = 0;
     int position;
@@ -271,10 +263,10 @@ static bool_t checkmm(char *devname, int times)
 }
 
 // usage:used to check the module sn
-static bool_t checksn(char *devname, int times)
+static bool_t checksn(char* devname, int times)
 {
     bool_t result = false;
-    char *argv[6];
+    char* argv[6];
     int argc;
     int i = 0;
     int position;
@@ -304,10 +296,10 @@ static bool_t checksn(char *devname, int times)
 }
 
 // usage:used to check the module sn
-static bool_t checkmr(char *devname, int times)
+static bool_t checkmr(char* devname, int times)
 {
     bool_t result = false;
-    char *argv[6];
+    char* argv[6];
     int argc;
     int i = 0;
     int position;
@@ -337,15 +329,15 @@ static bool_t checkmr(char *devname, int times)
 }
 
 // usage:used to check sim card mnc
-static tagImsi *checkcimi(char *devname, int times, char *simapn)
+static tagImsi* checkcimi(char* devname, int times, char* simapn)
 {
-    char *argv[6];
+    char* argv[6];
     int argc;
     int i = 0, tmp = 0;
     int position = -1;
     char atrcvbuf[CN_AT_LEN];
     // find the mnc here
-    tagImsi *result = NULL;
+    tagImsi* result = NULL;
     // first we should check if the sim card inserted:at+cpin?
     printf("checkcimi:");
     for (i = 0; i < times; i++) {
@@ -384,10 +376,10 @@ static tagImsi *checkcimi(char *devname, int times, char *simapn)
     return result;
 }
 // usage:used to check if the simcard is inserted
-static bool_t checkcpin(char *devname, int times)
+static bool_t checkcpin(char* devname, int times)
 {
     bool_t result = false;
-    char *argv[6];
+    char* argv[6];
     int argc;
     int i = 0;
     char atrcvbuf[CN_AT_LEN];
@@ -415,10 +407,10 @@ static bool_t checkcpin(char *devname, int times)
 }
 
 // usage:used to check if the net is registered
-static bool_t checkcgreg(char *devname, int times)
+static bool_t checkcgreg(char* devname, int times)
 {
     bool_t result = false;
-    char *argv[6];
+    char* argv[6];
     int argc;
     int i = 0;
     char atrcvbuf[CN_AT_LEN];
@@ -445,10 +437,10 @@ static bool_t checkcgreg(char *devname, int times)
 }
 
 // usage:used to set the apn:set the apn
-static bool_t setnetapn(char *devname, char *apn, int times)
+static bool_t setnetapn(char* devname, char* apn, int times)
 {
     bool_t result = false;
-    char *argv[6];
+    char* argv[6];
     int argc;
     int i = 0;
     char atrcvbuf[CN_AT_LEN];
@@ -471,18 +463,17 @@ static bool_t setnetapn(char *devname, char *apn, int times)
     }
     if (result) {
         printf(".ready!\n\r");
-    }
-    else {
+    } else {
         printf(".timeout!\n\r");
     }
     return result;
 }
 
 // usage:used to call the data connection,form now on, we will change to data mode,any at command will be invalid
-static bool_t atdcall(char *devname, int times)
+static bool_t atdcall(char* devname, int times)
 {
     bool_t result = false;
-    char *argv[6];
+    char* argv[6];
     int argc;
     int i = 0;
     char atrcvbuf[CN_AT_LEN];
@@ -508,10 +499,10 @@ static bool_t atdcall(char *devname, int times)
     return result;
 }
 
-static bool_t atgetsignal(char *devname, int *signal)
+static bool_t atgetsignal(char* devname, int* signal)
 {
     bool_t ret = false;
-    char *argv[6];
+    char* argv[6];
     int argc;
     int position = -1;
     char atrcvbuf[CN_AT_LEN];
@@ -537,11 +528,11 @@ static bool_t atgetsignal(char *devname, int *signal)
 }
 
 // usage:this function used to check the modem state and change the modem state from at to data
-int AtDial(char *devname, char *apn)
+int AtDial(char* devname, char* apn)
 {
     bool_t result = false;
     int ret = -1;
-    char *simapn;
+    char* simapn;
     simapn = apn;
     printf("ATCMD CALL BEGIN:\n\r");
     // first we should check the module type
@@ -577,13 +568,13 @@ int AtDial(char *devname, char *apn)
     // check the apn here
     if ((simapn == NULL) || (simapn[0] == '\0')) {
         // do check our self
-        tagImsi *imsi;
+        tagImsi* imsi;
         imsi = checkcimi(devname, 32, NULL);
         if (imsi == NULL) {
-            result = false ;
+            result = false;
             return ret;
         } else {
-            simapn = (char *)imsi->apndefault;
+            simapn = (char*)imsi->apndefault;
         }
     } else {
         checkcimi(devname, 32, simapn);
