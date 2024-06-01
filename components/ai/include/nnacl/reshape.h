@@ -21,9 +21,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void Reshape(void *input_ptr, void *output_ptr, size_t data_size);
+void Reshape(void* input_ptr, void* output_ptr, size_t data_size);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_RESHAHPE_H_
+#endif // MINDSPORE_LITE_NNACL_RESHAHPE_H_

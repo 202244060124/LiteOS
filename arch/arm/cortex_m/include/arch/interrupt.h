@@ -29,8 +29,9 @@
 #ifndef _ARCH_INTERRUPT_H
 #define _ARCH_INTERRUPT_H
 
-#include "los_typedef.h"
 #include "arch/regs.h"
+#include "los_typedef.h"
+
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -46,7 +47,7 @@ STATIC INLINE UINT32 ArchIntLocked(VOID)
 {
     UINT32 intSave;
 
-    __asm__ volatile("mrs %0, primask" : "=r" (intSave) : : "memory");
+    __asm__ volatile("mrs %0, primask" : "=r"(intSave) : : "memory");
 
     return intSave;
 }

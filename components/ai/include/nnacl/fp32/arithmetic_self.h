@@ -20,37 +20,38 @@
 #ifdef ENABLE_NEON
 #include <arm_neon.h>
 #endif
-#include "nnacl/op_base.h"
 #include "nnacl/errorcode.h"
+#include "nnacl/op_base.h"
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-int ElementAbs(float *input, float *output, int element_size);
+int ElementAbs(float* input, float* output, int element_size);
 
-int ElementCos(float *input, float *output, int element_size);
+int ElementCos(float* input, float* output, int element_size);
 
-int ElementExp(float *input, float *output, int element_size);
+int ElementExp(float* input, float* output, int element_size);
 
-int ElementLog(float *input, float *output, int element_size);
+int ElementLog(float* input, float* output, int element_size);
 
-int ElementSquare(float *input, float *output, int element_size);
+int ElementSquare(float* input, float* output, int element_size);
 
-int ElementSqrt(float *input, float *output, int element_size);
+int ElementSqrt(float* input, float* output, int element_size);
 
-int ElementRsqrt(float *input, float *output, int element_size);
+int ElementRsqrt(float* input, float* output, int element_size);
 
-int ElementSin(float *input, float *output, int element_size);
+int ElementSin(float* input, float* output, int element_size);
 
-int ElementLogicalNot(float *input, float *output, int element_size);
+int ElementLogicalNot(float* input, float* output, int element_size);
 
-int ElementRound(float *input, float *output, int element_size);
+int ElementRound(float* input, float* output, int element_size);
 
-int ElementFloor(float *input, float *output, int element_size);
+int ElementFloor(float* input, float* output, int element_size);
 
-int ElementCeil(float *input, float *output, int number);
+int ElementCeil(float* input, float* output, int number);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_ARITHMETIC_SELF_H_
+#endif // MINDSPORE_LITE_NNACL_ARITHMETIC_SELF_H_

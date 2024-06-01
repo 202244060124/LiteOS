@@ -22,9 +22,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void DoScale(float *in_data, float *out_data, float *scale, float *offset, int task_id, ScaleParameter *scale_param);
+void DoScale(float* in_data, float* out_data, float* scale, float* offset, int task_id, ScaleParameter* scale_param);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_SCALE_FP32_H_
+#endif // MINDSPORE_LITE_NNACL_SCALE_FP32_H_

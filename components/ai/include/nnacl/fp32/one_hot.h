@@ -23,22 +23,21 @@
 #include "nnacl/op_base.h"
 
 typedef struct OneHotParameter {
-  OpParameter op_parameter_;
-  int axis_;
-  int depth_;
-  float on_value_;
-  float off_value_;
-  int outer_size_;
-  int inner_size_;
+    OpParameter op_parameter_;
+    int axis_;
+    int depth_;
+    float on_value_;
+    float off_value_;
+    int outer_size_;
+    int inner_size_;
 } OneHotParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-int OneHot(const int *indices, float *output, const OneHotParameter *one_hot_param, const int tid,
-           const int thread_num);
+int OneHot(const int* indices, float* output, const OneHotParameter* one_hot_param, const int tid, const int thread_num);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_FP32_ONE_HOT_H_
+#endif // MINDSPORE_LITE_NNACL_FP32_ONE_HOT_H_

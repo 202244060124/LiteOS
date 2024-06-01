@@ -50,7 +50,7 @@
 #include "liblwm2m.h"
 #include "ota/package.h"
 
-#define array_size(a) (sizeof(a)/sizeof(*(a)))
+#define array_size(a) (sizeof(a) / sizeof(*(a)))
 
 /*
 0: Initial value. Once the updating process is initiated (Download /Update), this Resource MUST be reset to Initial value.
@@ -66,7 +66,7 @@
 */
 
 typedef int atiny_fota_state_e;
-enum { //atiny_fota_state_e
+enum { // atiny_fota_state_e
     ATINY_FOTA_IDLE = 0,
     ATINY_FOTA_DOWNLOADING,
     ATINY_FOTA_DOWNLOADED,
@@ -74,11 +74,7 @@ enum { //atiny_fota_state_e
 };
 
 typedef int atiny_update_result_e;
-enum {
-    ATINY_FIRMWARE_UPDATE_NULL = 0,
-    ATINY_FIRMWARE_UPDATE_SUCCESS = 1,
-    ATINY_FIRMWARE_UPDATE_FAIL = 8
-};
+enum { ATINY_FIRMWARE_UPDATE_NULL = 0, ATINY_FIRMWARE_UPDATE_SUCCESS = 1, ATINY_FIRMWARE_UPDATE_FAIL = 8 };
 
 struct atiny_fota_manager_tag_s;
 typedef struct atiny_fota_manager_tag_s atiny_fota_manager_s;
@@ -89,27 +85,27 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-char *atiny_fota_manager_get_pkg_uri(const atiny_fota_manager_s *thi);
-int atiny_fota_manager_get_state(const atiny_fota_manager_s *thi);
-int atiny_fota_manager_get_update_result(const atiny_fota_manager_s *thi);
-void atiny_fota_manager_set_update_result(atiny_fota_manager_s *thi, atiny_update_result_e result);
-int atiny_fota_manager_get_deliver_method(const atiny_fota_manager_s *thi);
-int atiny_fota_manager_start_download(atiny_fota_manager_s *thi, const char *uri, uint32_t len);
-int atiny_fota_manager_execute_update(atiny_fota_manager_s *thi);
-int atiny_fota_manager_repot_result(atiny_fota_manager_s *thi);
-int atiny_fota_manager_set_state(atiny_fota_manager_s *thi, atiny_fota_state_e state);
-int atiny_fota_manager_set_storage_device(atiny_fota_manager_s *thi);
-pack_storage_device_api_s *atiny_fota_manager_get_storage_device(atiny_fota_manager_s *thi);
-int atiny_fota_manager_set_lwm2m_context(atiny_fota_manager_s *thi, lwm2m_context_t *lwm2m_context);
-lwm2m_context_t *atiny_fota_manager_get_lwm2m_context(atiny_fota_manager_s *thi);
-void atiny_fota_manager_get_data_cfg(const atiny_fota_manager_s *thi, lwm2m_data_cfg_t *data_cfg);
+char* atiny_fota_manager_get_pkg_uri(const atiny_fota_manager_s* thi);
+int atiny_fota_manager_get_state(const atiny_fota_manager_s* thi);
+int atiny_fota_manager_get_update_result(const atiny_fota_manager_s* thi);
+void atiny_fota_manager_set_update_result(atiny_fota_manager_s* thi, atiny_update_result_e result);
+int atiny_fota_manager_get_deliver_method(const atiny_fota_manager_s* thi);
+int atiny_fota_manager_start_download(atiny_fota_manager_s* thi, const char* uri, uint32_t len);
+int atiny_fota_manager_execute_update(atiny_fota_manager_s* thi);
+int atiny_fota_manager_repot_result(atiny_fota_manager_s* thi);
+int atiny_fota_manager_set_state(atiny_fota_manager_s* thi, atiny_fota_state_e state);
+int atiny_fota_manager_set_storage_device(atiny_fota_manager_s* thi);
+pack_storage_device_api_s* atiny_fota_manager_get_storage_device(atiny_fota_manager_s* thi);
+int atiny_fota_manager_set_lwm2m_context(atiny_fota_manager_s* thi, lwm2m_context_t* lwm2m_context);
+lwm2m_context_t* atiny_fota_manager_get_lwm2m_context(atiny_fota_manager_s* thi);
+void atiny_fota_manager_get_data_cfg(const atiny_fota_manager_s* thi, lwm2m_data_cfg_t* data_cfg);
 
-void atiny_fota_manager_destroy(atiny_fota_manager_s *thi);
-int atiny_fota_manager_rpt_state(atiny_fota_manager_s *thi, atiny_fota_state_e rpt_state);
-void atiny_fota_manager_save_rpt_state(atiny_fota_manager_s *thi, atiny_fota_state_e rpt_state);
+void atiny_fota_manager_destroy(atiny_fota_manager_s* thi);
+int atiny_fota_manager_rpt_state(atiny_fota_manager_s* thi, atiny_fota_state_e rpt_state);
+void atiny_fota_manager_save_rpt_state(atiny_fota_manager_s* thi, atiny_fota_state_e rpt_state);
 
-atiny_fota_state_e atiny_fota_manager_get_rpt_state(const atiny_fota_manager_s *thi);
-atiny_fota_manager_s *atiny_fota_manager_get_instance(void);
+atiny_fota_state_e atiny_fota_manager_get_rpt_state(const atiny_fota_manager_s* thi);
+atiny_fota_manager_s* atiny_fota_manager_get_instance(void);
 
 #ifdef __cplusplus
 #if __cplusplus

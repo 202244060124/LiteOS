@@ -28,10 +28,11 @@
 
 #ifdef LWM2M_BOOTSTRAP
 #ifdef LWM2M_CLIENT_MODE
-#include "util_timer.h"
 #include "liblwm2m.h"
+#include "util_timer.h"
 
-void timer_init(util_timer_t *timer, time_t interval, void(*callback)(void *param), void *param)
+
+void timer_init(util_timer_t* timer, time_t interval, void (*callback)(void* param), void* param)
 {
     timer->expireTime = lwm2m_gettime() + interval;
     timer->interval = interval;
@@ -40,17 +41,17 @@ void timer_init(util_timer_t *timer, time_t interval, void(*callback)(void *para
     timer->param = param;
 }
 
-void timer_start(util_timer_t *timer)
+void timer_start(util_timer_t* timer)
 {
     timer->startFlag = true;
 }
 
-void timer_stop(util_timer_t *timer)
+void timer_stop(util_timer_t* timer)
 {
     timer->startFlag = false;
 }
 
-void timer_step(util_timer_t *timer)
+void timer_step(util_timer_t* timer)
 {
     time_t current;
 

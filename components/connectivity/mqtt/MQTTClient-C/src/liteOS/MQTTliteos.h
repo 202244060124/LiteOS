@@ -29,15 +29,16 @@
 #ifndef _MQTT_LITE_OS_H
 #define _MQTT_LITE_OS_H
 
+#include <los_sys.h>
+#include <los_typedef.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <signal.h>
-#include <los_typedef.h>
-#include <los_sys.h>
-#include "sal/atiny_socket.h"
-#include "log/atiny_log.h"
 #include "atiny_mqtt/mqtt_client.h"
+#include "log/atiny_log.h"
+#include "sal/atiny_socket.h"
+
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -58,30 +59,30 @@ void TimerCountdown(Timer*, unsigned int);
 int TimerLeftMS(Timer*);
 
 typedef struct atiny_task_mutex_tag_s Mutex;
-int MutexInit(Mutex *mutex);
-int MutexLock(Mutex *mutex);
-int MutexUnlock(Mutex *mutex);
-void MutexDestory(Mutex *mutex);
+int MutexInit(Mutex* mutex);
+int MutexLock(Mutex* mutex);
+int MutexUnlock(Mutex* mutex);
+void MutexDestory(Mutex* mutex);
 
 typedef struct {
-    void *no_used;
+    void* no_used;
 } Thread;
 
-int ThreadStart(Thread *thread, void (*fn)(void *), void *arg);
+int ThreadStart(Thread* thread, void (*fn)(void*), void* arg);
 
 typedef struct mqtt_context {
     int fd;
 } mqtt_context_t;
 
 typedef struct Network {
-    void *ctx;
-    int (*mqttread) (struct Network*, unsigned char*, int, int);
-    int (*mqttwrite) (struct Network*, unsigned char*, int, int);
+    void* ctx;
+    int (*mqttread)(struct Network*, unsigned char*, int, int);
+    int (*mqttwrite)(struct Network*, unsigned char*, int, int);
 
-    mqtt_security_info_s *(*get_security_info)(void);
+    mqtt_security_info_s* (*get_security_info)(void);
 } Network;
 
-void NetworkInit(Network *n, mqtt_security_info_s *(*get_security_info)(void));
+void NetworkInit(Network* n, mqtt_security_info_s* (*get_security_info)(void));
 int NetworkConnect(Network*, char*, int);
 void NetworkDisconnect(Network*);
 

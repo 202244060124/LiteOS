@@ -21,21 +21,21 @@
 #include "nnacl/quantization/fixed_point.h"
 
 typedef struct ActivationParameter {
-  OpParameter op_parameter_;
-  int type_;
-  float alpha_;
+    OpParameter op_parameter_;
+    int type_;
+    float alpha_;
 } ActivationParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-int Fp32Relu(const float *src, int length, float *dst);
-int Fp32Relu6(const float *src, int length, float *dst);
-int LRelu(const float *src, int length, float *dst, float alpha);
-int Sigmoid(const float *src, int length, float *dst);
-int Tanh(const float *src, int length, float *dst);
-int HSwish(const float *src, int length, float *dst);
+int Fp32Relu(const float* src, int length, float* dst);
+int Fp32Relu6(const float* src, int length, float* dst);
+int LRelu(const float* src, int length, float* dst, float alpha);
+int Sigmoid(const float* src, int length, float* dst);
+int Tanh(const float* src, int length, float* dst);
+int HSwish(const float* src, int length, float* dst);
 #ifdef __cplusplus
 }
 #endif
-#endif  // MINDSPORE_LITE_NNACL_ACTIVATION_H_
+#endif // MINDSPORE_LITE_NNACL_ACTIVATION_H_

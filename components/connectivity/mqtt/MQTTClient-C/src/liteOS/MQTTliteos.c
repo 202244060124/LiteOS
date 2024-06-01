@@ -28,30 +28,32 @@
 
 #include "MQTTliteos.h"
 
-#include "mbedtls/net_sockets.h"
-#include "mbedtls/ssl.h"
-#include "mbedtls/entropy.h"
-#include "mbedtls/ctr_drbg.h"
-#include "mbedtls/platform.h"
 #include "dtls_interface.h"
+#include "mbedtls/ctr_drbg.h"
+#include "mbedtls/entropy.h"
+#include "mbedtls/net_sockets.h"
+#include "mbedtls/platform.h"
+#include "mbedtls/ssl.h"
+
 
 #if defined(WITH_LINUX)
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include <arpa/inet.h>
-#include <sys/time.h>
-#include <unistd.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <netdb.h>
-#include <errno.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 #elif defined(LOSCFG_COMPONENTS_NET_LWIP)
-//#include "lwip/sockets.h"
-#include "lwip/netdb.h"
+// #include "lwip/sockets.h"
 #include "lwip/errno.h"
+#include "lwip/netdb.h"
+
 #endif
 #include "osdepends/atiny_osdep.h"
-
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -59,39 +61,38 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-
 #define get_time_ms atiny_gettime_ms
 
-void TimerInit(Timer *timer)
+void TimerInit(Timer* timer)
 {
     timer->end_time = get_time_ms();
 }
 
-char TimerIsExpired(Timer *timer)
+char TimerIsExpired(Timer* timer)
 {
     unsigned long long now = get_time_ms();
     return now >= timer->end_time;
 }
 
-void TimerCountdownMS(Timer *timer, unsigned int timeout)
+void TimerCountdownMS(Timer* timer, unsigned int timeout)
 {
     unsigned long long now = get_time_ms();
     timer->end_time = now + timeout;
 }
 
-void TimerCountdown(Timer *timer, unsigned int timeout)
+void TimerCountdown(Timer* timer, unsigned int timeout)
 {
     unsigned long long now = get_time_ms();
     timer->end_time = now + timeout * 1000;
 }
 
-int TimerLeftMS(Timer *timer)
+int TimerLeftMS(Timer* timer)
 {
     UINT64 now = get_time_ms();
     return timer->end_time <= now ? 0 : timer->end_time - now;
 }
 
-int MutexInit(Mutex *mutex)
+int MutexInit(Mutex* mutex)
 {
     int ret = atiny_task_mutex_create(mutex);
     if (ret != LOS_OK) {
@@ -99,7 +100,7 @@ int MutexInit(Mutex *mutex)
     }
     return ret;
 }
-int MutexLock(Mutex *mutex)
+int MutexLock(Mutex* mutex)
 {
     int ret = atiny_task_mutex_lock(mutex);
     if (ret != LOS_OK) {
@@ -108,7 +109,7 @@ int MutexLock(Mutex *mutex)
     return ret;
 }
 
-int MutexUnlock(Mutex *mutex)
+int MutexUnlock(Mutex* mutex)
 {
     int ret = atiny_task_mutex_unlock(mutex);
     if (ret != LOS_OK) {
@@ -117,7 +118,7 @@ int MutexUnlock(Mutex *mutex)
     return ret;
 }
 
-void MutexDestory(Mutex *mutex)
+void MutexDestory(Mutex* mutex)
 {
     int ret = atiny_task_mutex_delete(mutex);
     if (ret != LOS_OK) {
@@ -125,7 +126,7 @@ void MutexDestory(Mutex *mutex)
     }
 }
 
-int ThreadStart(Thread *thread, void (*fn)(void *), void *arg)
+int ThreadStart(Thread* thread, void (*fn)(void*), void* arg)
 {
     (void)thread;
     (void)fn;
@@ -133,7 +134,7 @@ int ThreadStart(Thread *thread, void (*fn)(void *), void *arg)
     return -1;
 }
 
-static int los_mqtt_read(void *ctx, unsigned char *buffer, int len, int timeout_ms)
+static int los_mqtt_read(void* ctx, unsigned char* buffer, int len, int timeout_ms)
 {
     int ret = atiny_net_recv_timeout(ctx, buffer, len, timeout_ms);
     /* 0 is timeout for mqtt for normal select */
@@ -143,7 +144,7 @@ static int los_mqtt_read(void *ctx, unsigned char *buffer, int len, int timeout_
     return ret;
 }
 
-static int los_mqtt_tls_read(mbedtls_ssl_context *ssl, unsigned char *buffer, int len, int timeout_ms)
+static int los_mqtt_tls_read(mbedtls_ssl_context* ssl, unsigned char* buffer, int len, int timeout_ms)
 {
     int ret;
 
@@ -155,20 +156,17 @@ static int los_mqtt_tls_read(mbedtls_ssl_context *ssl, unsigned char *buffer, in
     mbedtls_ssl_conf_read_timeout((mbedtls_ssl_config*)ssl->conf, timeout_ms);
 
     ret = mbedtls_ssl_read(ssl, buffer, len);
-    if ((ret == MBEDTLS_ERR_SSL_WANT_READ)
-            || (ret == MBEDTLS_ERR_SSL_WANT_WRITE)
-            || (ret == MBEDTLS_ERR_SSL_TIMEOUT)) {
+    if ((ret == MBEDTLS_ERR_SSL_WANT_READ) || (ret == MBEDTLS_ERR_SSL_WANT_WRITE) || (ret == MBEDTLS_ERR_SSL_TIMEOUT)) {
         ret = 0;
     }
 
     return ret;
 }
 
-
-static int los_read(Network *n, unsigned char *buffer, int len, int timeout_ms)
+static int los_read(Network* n, unsigned char* buffer, int len, int timeout_ms)
 {
     int ret = -1;
-    mqtt_security_info_s *info = NULL;
+    mqtt_security_info_s* info = NULL;
 
     if ((n == NULL) || (buffer == NULL)) {
         ATINY_LOG(LOG_FATAL, "invalid params.");
@@ -178,14 +176,14 @@ static int los_read(Network *n, unsigned char *buffer, int len, int timeout_ms)
     info = n->get_security_info();
 
     switch (info->security_type) {
-        case MQTT_SECURITY_TYPE_NONE :
+        case MQTT_SECURITY_TYPE_NONE:
             ret = los_mqtt_read(n->ctx, buffer, len, timeout_ms);
             break;
         case MQTT_SECURITY_TYPE_PSK:
         case MQTT_SECURITY_TYPE_CA:
             ret = los_mqtt_tls_read(n->ctx, buffer, len, timeout_ms);
             break;
-        default :
+        default:
             ATINY_LOG(LOG_WARNING, "unknow proto : %d", info->security_type);
             break;
     }
@@ -193,11 +191,10 @@ static int los_read(Network *n, unsigned char *buffer, int len, int timeout_ms)
     return ret;
 }
 
-
-static int los_write(Network *n, unsigned char *buffer, int len, int timeout_ms)
+static int los_write(Network* n, unsigned char* buffer, int len, int timeout_ms)
 {
     int ret = -1;
-    mqtt_security_info_s *info = NULL;
+    mqtt_security_info_s* info = NULL;
 
     if ((n == NULL) || (buffer == NULL)) {
         ATINY_LOG(LOG_FATAL, "invalid params.");
@@ -207,14 +204,14 @@ static int los_write(Network *n, unsigned char *buffer, int len, int timeout_ms)
     info = n->get_security_info();
 
     switch (info->security_type) {
-        case MQTT_SECURITY_TYPE_NONE :
+        case MQTT_SECURITY_TYPE_NONE:
             ret = atiny_net_send_timeout(n->ctx, buffer, len, timeout_ms);
             break;
         case MQTT_SECURITY_TYPE_PSK:
         case MQTT_SECURITY_TYPE_CA:
             ret = dtls_write(n->ctx, buffer, len);
             break;
-        default :
+        default:
             ATINY_LOG(LOG_WARNING, "unknow proto : %d", info->security_type);
             break;
     }
@@ -222,7 +219,7 @@ static int los_write(Network *n, unsigned char *buffer, int len, int timeout_ms)
     return ret;
 }
 
-void NetworkInit(Network *n, mqtt_security_info_s *(*get_security_info)(void))
+void NetworkInit(Network* n, mqtt_security_info_s* (*get_security_info)(void))
 {
     if ((n == NULL) || (get_security_info == NULL)) {
         ATINY_LOG(LOG_FATAL, "invalid params.");
@@ -235,13 +232,13 @@ void NetworkInit(Network *n, mqtt_security_info_s *(*get_security_info)(void))
     return;
 }
 
-static int los_mqtt_connect(Network *n, char *addr, int port)
+static int los_mqtt_connect(Network* n, char* addr, int port)
 {
     char port_str[16];
 
     (void)snprintf(port_str, sizeof(port_str), "%u", port);
     port_str[sizeof(port_str) - 1] = '\0';
-    atiny_net_context *ctx = (atiny_net_context*)atiny_malloc(sizeof(atiny_net_context));
+    atiny_net_context* ctx = (atiny_net_context*)atiny_malloc(sizeof(atiny_net_context));
     int ret = atiny_net_connect(ctx, addr, port_str, ATINY_PROTO_TCP);
     if (ret == -1) {
         ATINY_LOG(LOG_FATAL, "atiny_net_connect fail");
@@ -254,30 +251,30 @@ static int los_mqtt_connect(Network *n, char *addr, int port)
 }
 
 #define PORT_BUF_LEN 16
-static int los_mqtt_tls_connect(Network *n, char *addr, int port)
+static int los_mqtt_tls_connect(Network* n, char* addr, int port)
 {
     int ret;
-    mbedtls_ssl_context *ssl = NULL;
+    mbedtls_ssl_context* ssl = NULL;
     dtls_shakehand_info_s shakehand_info;
     dtls_establish_info_s establish_info;
-    mqtt_security_info_s *security_info;
+    mqtt_security_info_s* security_info;
     char port_buf[PORT_BUF_LEN];
 
     security_info = n->get_security_info();
 
     if (security_info->security_type == MQTT_SECURITY_TYPE_PSK) {
         establish_info.psk_or_cert = VERIFY_WITH_PSK;
-        establish_info.v.p.psk = (unsigned char *)security_info->u.psk.psk;
+        establish_info.v.p.psk = (unsigned char*)security_info->u.psk.psk;
         establish_info.v.p.psk_len = security_info->u.psk.psk_len;
-        establish_info.v.p.psk_identity = (unsigned char *)security_info->u.psk.psk_id;
+        establish_info.v.p.psk_identity = (unsigned char*)security_info->u.psk.psk_id;
     } else {
         establish_info.psk_or_cert = VERIFY_WITH_CERT;
-        establish_info.v.c.ca_cert = (const unsigned char *)security_info->u.ca.ca_crt;
+        establish_info.v.c.ca_cert = (const unsigned char*)security_info->u.ca.ca_crt;
         establish_info.v.c.cert_len = security_info->u.ca.ca_len;
     }
     establish_info.udp_or_tcp = MBEDTLS_NET_PROTO_TCP;
 
-    ssl = (void *)dtls_ssl_new(&establish_info, MBEDTLS_SSL_IS_CLIENT);
+    ssl = (void*)dtls_ssl_new(&establish_info, MBEDTLS_SSL_IS_CLIENT);
     if (ssl == NULL) {
         ATINY_LOG(LOG_ERR, "create ssl context failed");
         goto exit;
@@ -309,10 +306,10 @@ exit:
     return -1;
 }
 
-int NetworkConnect(Network *n, char *addr, int port)
+int NetworkConnect(Network* n, char* addr, int port)
 {
     int ret = -1;
-    mqtt_security_info_s *info = NULL;
+    mqtt_security_info_s* info = NULL;
 
     if ((n == NULL) || (addr == NULL)) {
         ATINY_LOG(LOG_FATAL, "invalid params.\n");
@@ -321,14 +318,14 @@ int NetworkConnect(Network *n, char *addr, int port)
 
     info = n->get_security_info();
     switch (info->security_type) {
-        case MQTT_SECURITY_TYPE_NONE :
+        case MQTT_SECURITY_TYPE_NONE:
             ret = los_mqtt_connect(n, addr, port);
             break;
         case MQTT_SECURITY_TYPE_PSK:
         case MQTT_SECURITY_TYPE_CA:
             ret = los_mqtt_tls_connect(n, addr, port);
             break;
-        default :
+        default:
             ATINY_LOG(LOG_WARNING, "unknow proto : %d\n", info->security_type);
             break;
     }
@@ -336,7 +333,7 @@ int NetworkConnect(Network *n, char *addr, int port)
     return ret;
 }
 
-static void los_mqtt_disconnect(void *ctx)
+static void los_mqtt_disconnect(void* ctx)
 {
     if (ctx == NULL) {
         ATINY_LOG(LOG_FATAL, "invalid params.\n");
@@ -347,9 +344,9 @@ static void los_mqtt_disconnect(void *ctx)
     return;
 }
 
-void NetworkDisconnect(Network *n)
+void NetworkDisconnect(Network* n)
 {
-    mqtt_security_info_s *info = NULL;
+    mqtt_security_info_s* info = NULL;
     if (n == NULL) {
         ATINY_LOG(LOG_FATAL, "invalid params.\n");
         return;
@@ -357,14 +354,14 @@ void NetworkDisconnect(Network *n)
 
     info = n->get_security_info();
     switch (info->security_type) {
-        case MQTT_SECURITY_TYPE_NONE :
+        case MQTT_SECURITY_TYPE_NONE:
             los_mqtt_disconnect(n->ctx);
             break;
         case MQTT_SECURITY_TYPE_PSK:
         case MQTT_SECURITY_TYPE_CA:
             dtls_ssl_destroy(n->ctx);
             break;
-        default :
+        default:
             ATINY_LOG(LOG_WARNING, "unknow proto : %d\n", info->security_type);
             break;
     }

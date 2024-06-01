@@ -25,27 +25,24 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * ---------------------------------------------------------------------------- */
-#include "stdint.h"
 #include "los_errno.h"
+#include "stdint.h"
+
 
 #ifndef _ARCH_FPB_H
 #define _ARCH_FPB_H
 
-#define FPB_SUCCESS              LOS_OK
-#define FPB_COMP_REPEAT_ERR      LOS_ERRNO_OS_ERROR(LOS_MOD_FPB, 0x00)
-#define FPB_NO_COMP_ERR          LOS_ERRNO_OS_ERROR(LOS_MOD_FPB, 0x01)
-#define FPB_TYPE_ERR             LOS_ERRNO_OS_ERROR(LOS_MOD_FPB, 0x02)
-#define FPB_NO_FREE_COMP_ERR     LOS_ERRNO_OS_ERROR(LOS_MOD_FPB, 0x03)
-#define FPB_ADDR_NOT_ALIGN_ERR   LOS_ERRNO_OS_ERROR(LOS_MOD_FPB, 0x04)
-#define FPB_TARGET_ADDR_ERR      LOS_ERRNO_OS_ERROR(LOS_MOD_FPB, 0x05)
-#define FPB_BUSY_ERR             LOS_ERRNO_OS_ERROR(LOS_MOD_FPB, 0x06)
-#define FPB_ERROR_INPUT_ERR      LOS_ERRNO_OS_ERROR(LOS_MOD_FPB, 0x07)
+#define FPB_SUCCESS            LOS_OK
+#define FPB_COMP_REPEAT_ERR    LOS_ERRNO_OS_ERROR(LOS_MOD_FPB, 0x00)
+#define FPB_NO_COMP_ERR        LOS_ERRNO_OS_ERROR(LOS_MOD_FPB, 0x01)
+#define FPB_TYPE_ERR           LOS_ERRNO_OS_ERROR(LOS_MOD_FPB, 0x02)
+#define FPB_NO_FREE_COMP_ERR   LOS_ERRNO_OS_ERROR(LOS_MOD_FPB, 0x03)
+#define FPB_ADDR_NOT_ALIGN_ERR LOS_ERRNO_OS_ERROR(LOS_MOD_FPB, 0x04)
+#define FPB_TARGET_ADDR_ERR    LOS_ERRNO_OS_ERROR(LOS_MOD_FPB, 0x05)
+#define FPB_BUSY_ERR           LOS_ERRNO_OS_ERROR(LOS_MOD_FPB, 0x06)
+#define FPB_ERROR_INPUT_ERR    LOS_ERRNO_OS_ERROR(LOS_MOD_FPB, 0x07)
 
-typedef enum {
-    FPB_TYPE_INSTR        = 0,
-    FPB_TYPE_LITERAL      = 1,
-    FPB_TYPE_MAX
-} FpbCompTypeEnum;
+typedef enum { FPB_TYPE_INSTR = 0, FPB_TYPE_LITERAL = 1, FPB_TYPE_MAX } FpbCompTypeEnum;
 
 void FpbInit(void);
 

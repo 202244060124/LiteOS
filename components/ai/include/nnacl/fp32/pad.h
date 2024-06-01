@@ -19,18 +19,19 @@
 #ifdef ENABLE_NEON
 #include <arm_neon.h>
 #endif
-#include <memory.h>
 #include <float.h>
+#include <memory.h>
 #include "nnacl/op_base.h"
 #include "nnacl/pad_parameter.h"
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-void Pad(const float *input_data, float *output_data, const int *input_shape, const int *output_shape,
-         const int *paddings, const int tid, const int thread_num);
+void Pad(const float* input_data, float* output_data, const int* input_shape, const int* output_shape, const int* paddings, const int tid,
+         const int thread_num);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_FP32_PAD_H_
+#endif // MINDSPORE_LITE_NNACL_FP32_PAD_H_

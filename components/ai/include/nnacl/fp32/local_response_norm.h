@@ -20,20 +20,19 @@
 #include "nnacl/op_base.h"
 
 typedef struct LocalResponseNormParameter {
-  OpParameter op_parameter_;
-  int depth_radius_;
-  float bias_;
-  float alpha_;
-  float beta_;
+    OpParameter op_parameter_;
+    int depth_radius_;
+    float bias_;
+    float alpha_;
+    float beta_;
 } LocalResponseNormParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-int LocalResponseNorm(float *input_ptr, int out_size, int channel, float *output_ptr,
-                      LocalResponseNormParameter *param);
+int LocalResponseNorm(float* input_ptr, int out_size, int channel, float* output_ptr, LocalResponseNormParameter* param);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_LOCAL_RESPONSE_NORM_H_
+#endif // MINDSPORE_LITE_NNACL_LOCAL_RESPONSE_NORM_H_

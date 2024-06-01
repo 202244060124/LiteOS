@@ -58,46 +58,46 @@ extern "C" {
  *      `lv_style_set_border_width(&style1, LV_STATE_PRESSED, 2);`
  */
 
-#define _OBJ_GET_STYLE_scalar(prop_name, func_name, value_type, style_type)                         \
-    static inline value_type lv_obj_get_style_##func_name (const lv_obj_t * obj, uint8_t part)      \
-    {                                                                                               \
-        return (value_type) _lv_obj_get_style##style_type (obj, part, LV_STYLE_##prop_name);        \
+#define _OBJ_GET_STYLE_scalar(prop_name, func_name, value_type, style_type)                  \
+    static inline value_type lv_obj_get_style_##func_name(const lv_obj_t* obj, uint8_t part) \
+    {                                                                                        \
+        return (value_type)_lv_obj_get_style##style_type(obj, part, LV_STYLE_##prop_name);   \
     }
 
-#define _OBJ_GET_STYLE_nonscalar(prop_name, func_name, value_type, style_type)                      \
-    static inline value_type lv_obj_get_style_##func_name (const lv_obj_t * obj, uint8_t part)      \
-    {                                                                                               \
-        return _lv_obj_get_style##style_type (obj, part, LV_STYLE_##prop_name);                     \
+#define _OBJ_GET_STYLE_nonscalar(prop_name, func_name, value_type, style_type)               \
+    static inline value_type lv_obj_get_style_##func_name(const lv_obj_t* obj, uint8_t part) \
+    {                                                                                        \
+        return _lv_obj_get_style##style_type(obj, part, LV_STYLE_##prop_name);               \
     }
 
-#define _OBJ_SET_STYLE_LOCAL_scalar(prop_name, func_name, value_type, style_type)                                               \
-    static inline void lv_obj_set_style_local_##func_name (lv_obj_t * obj, uint8_t part, lv_state_t state, value_type value)    \
-    {                                                                                                                           \
-        _lv_obj_set_style_local##style_type (obj, part, LV_STYLE_##prop_name | (state << LV_STYLE_STATE_POS), value);           \
+#define _OBJ_SET_STYLE_LOCAL_scalar(prop_name, func_name, value_type, style_type)                                          \
+    static inline void lv_obj_set_style_local_##func_name(lv_obj_t* obj, uint8_t part, lv_state_t state, value_type value) \
+    {                                                                                                                      \
+        _lv_obj_set_style_local##style_type(obj, part, LV_STYLE_##prop_name | (state << LV_STYLE_STATE_POS), value);       \
     }
 
-#define _OBJ_SET_STYLE_LOCAL_nonscalar(prop_name, func_name, value_type, style_type)                                            \
-    static inline void lv_obj_set_style_local_##func_name (lv_obj_t * obj, uint8_t part, lv_state_t state, value_type value)    \
-    {                                                                                                                           \
-        _lv_obj_set_style_local##style_type (obj, part, LV_STYLE_##prop_name | (state << LV_STYLE_STATE_POS), value);           \
+#define _OBJ_SET_STYLE_LOCAL_nonscalar(prop_name, func_name, value_type, style_type)                                       \
+    static inline void lv_obj_set_style_local_##func_name(lv_obj_t* obj, uint8_t part, lv_state_t state, value_type value) \
+    {                                                                                                                      \
+        _lv_obj_set_style_local##style_type(obj, part, LV_STYLE_##prop_name | (state << LV_STYLE_STATE_POS), value);       \
     }
 
-#define _OBJ_SET_STYLE_scalar(prop_name, func_name, value_type, style_type)                                             \
-    static inline void lv_style_set_##func_name (lv_style_t * style, lv_state_t state, value_type value)                 \
-    {                                                                                                                    \
-        _lv_style_set##style_type (style, LV_STYLE_##prop_name | (state << LV_STYLE_STATE_POS), value);                  \
+#define _OBJ_SET_STYLE_scalar(prop_name, func_name, value_type, style_type)                            \
+    static inline void lv_style_set_##func_name(lv_style_t* style, lv_state_t state, value_type value) \
+    {                                                                                                  \
+        _lv_style_set##style_type(style, LV_STYLE_##prop_name | (state << LV_STYLE_STATE_POS), value); \
     }
 
-#define _OBJ_SET_STYLE_nonscalar(prop_name, func_name, value_type, style_type)                                          \
-    static inline void lv_style_set_##func_name (lv_style_t * style, lv_state_t state, value_type value)                 \
-    {                                                                                                                    \
-        _lv_style_set##style_type (style, LV_STYLE_##prop_name | (state << LV_STYLE_STATE_POS), value);                  \
+#define _OBJ_SET_STYLE_nonscalar(prop_name, func_name, value_type, style_type)                         \
+    static inline void lv_style_set_##func_name(lv_style_t* style, lv_state_t state, value_type value) \
+    {                                                                                                  \
+        _lv_style_set##style_type(style, LV_STYLE_##prop_name | (state << LV_STYLE_STATE_POS), value); \
     }
 
-#define _LV_OBJ_STYLE_SET_GET_DECLARE(prop_name, func_name, value_type, style_type, scalar)                             \
-    _OBJ_GET_STYLE_##scalar(prop_name, func_name, value_type, style_type)                                               \
-    _OBJ_SET_STYLE_LOCAL_##scalar(prop_name, func_name, value_type, style_type)                                         \
-    _OBJ_SET_STYLE_##scalar(prop_name, func_name, value_type, style_type)
+#define _LV_OBJ_STYLE_SET_GET_DECLARE(prop_name, func_name, value_type, style_type, scalar) \
+    _OBJ_GET_STYLE_##scalar(prop_name, func_name, value_type, style_type)                   \
+        _OBJ_SET_STYLE_LOCAL_##scalar(prop_name, func_name, value_type, style_type)         \
+            _OBJ_SET_STYLE_##scalar(prop_name, func_name, value_type, style_type)
 
 _LV_OBJ_STYLE_SET_GET_DECLARE(RADIUS, radius, lv_style_int_t, _int, scalar)
 _LV_OBJ_STYLE_SET_GET_DECLARE(CLIP_CORNER, clip_corner, bool, _int, scalar)
@@ -146,7 +146,7 @@ _LV_OBJ_STYLE_SET_GET_DECLARE(PATTERN_BLEND_MODE, pattern_blend_mode, lv_blend_m
 _LV_OBJ_STYLE_SET_GET_DECLARE(PATTERN_RECOLOR, pattern_recolor, lv_color_t, _color, nonscalar)
 _LV_OBJ_STYLE_SET_GET_DECLARE(PATTERN_OPA, pattern_opa, lv_opa_t, _opa, scalar)
 _LV_OBJ_STYLE_SET_GET_DECLARE(PATTERN_RECOLOR_OPA, pattern_recolor_opa, lv_opa_t, _opa, scalar)
-_LV_OBJ_STYLE_SET_GET_DECLARE(PATTERN_IMAGE, pattern_image, const void *, _ptr, scalar)
+_LV_OBJ_STYLE_SET_GET_DECLARE(PATTERN_IMAGE, pattern_image, const void*, _ptr, scalar)
 _LV_OBJ_STYLE_SET_GET_DECLARE(VALUE_LETTER_SPACE, value_letter_space, lv_style_int_t, _int, scalar)
 _LV_OBJ_STYLE_SET_GET_DECLARE(VALUE_LINE_SPACE, value_line_space, lv_style_int_t, _int, scalar)
 _LV_OBJ_STYLE_SET_GET_DECLARE(VALUE_BLEND_MODE, value_blend_mode, lv_blend_mode_t, _int, scalar)
@@ -155,8 +155,8 @@ _LV_OBJ_STYLE_SET_GET_DECLARE(VALUE_OFS_Y, value_ofs_y, lv_style_int_t, _int, sc
 _LV_OBJ_STYLE_SET_GET_DECLARE(VALUE_ALIGN, value_align, lv_align_t, _int, scalar)
 _LV_OBJ_STYLE_SET_GET_DECLARE(VALUE_COLOR, value_color, lv_color_t, _color, nonscalar)
 _LV_OBJ_STYLE_SET_GET_DECLARE(VALUE_OPA, value_opa, lv_opa_t, _opa, scalar)
-_LV_OBJ_STYLE_SET_GET_DECLARE(VALUE_FONT, value_font, const lv_font_t *, _ptr, scalar)
-_LV_OBJ_STYLE_SET_GET_DECLARE(VALUE_STR, value_str, const char *, _ptr, scalar)
+_LV_OBJ_STYLE_SET_GET_DECLARE(VALUE_FONT, value_font, const lv_font_t*, _ptr, scalar)
+_LV_OBJ_STYLE_SET_GET_DECLARE(VALUE_STR, value_str, const char*, _ptr, scalar)
 _LV_OBJ_STYLE_SET_GET_DECLARE(TEXT_LETTER_SPACE, text_letter_space, lv_style_int_t, _int, scalar)
 _LV_OBJ_STYLE_SET_GET_DECLARE(TEXT_LINE_SPACE, text_line_space, lv_style_int_t, _int, scalar)
 _LV_OBJ_STYLE_SET_GET_DECLARE(TEXT_DECOR, text_decor, lv_text_decor_t, _int, scalar)
@@ -164,7 +164,7 @@ _LV_OBJ_STYLE_SET_GET_DECLARE(TEXT_BLEND_MODE, text_blend_mode, lv_blend_mode_t,
 _LV_OBJ_STYLE_SET_GET_DECLARE(TEXT_COLOR, text_color, lv_color_t, _color, nonscalar)
 _LV_OBJ_STYLE_SET_GET_DECLARE(TEXT_SEL_COLOR, text_sel_color, lv_color_t, _color, nonscalar)
 _LV_OBJ_STYLE_SET_GET_DECLARE(TEXT_OPA, text_opa, lv_opa_t, _opa, scalar)
-_LV_OBJ_STYLE_SET_GET_DECLARE(TEXT_FONT, text_font, const lv_font_t *, _ptr, scalar)
+_LV_OBJ_STYLE_SET_GET_DECLARE(TEXT_FONT, text_font, const lv_font_t*, _ptr, scalar)
 _LV_OBJ_STYLE_SET_GET_DECLARE(LINE_WIDTH, line_width, lv_style_int_t, _int, scalar)
 _LV_OBJ_STYLE_SET_GET_DECLARE(LINE_BLEND_MODE, line_blend_mode, lv_blend_mode_t, _int, scalar)
 _LV_OBJ_STYLE_SET_GET_DECLARE(LINE_DASH_WIDTH, line_dash_width, lv_style_int_t, _int, scalar)
@@ -185,10 +185,10 @@ _LV_OBJ_STYLE_SET_GET_DECLARE(TRANSITION_PROP_4, transition_prop_4, lv_style_int
 _LV_OBJ_STYLE_SET_GET_DECLARE(TRANSITION_PROP_5, transition_prop_5, lv_style_int_t, _int, scalar)
 _LV_OBJ_STYLE_SET_GET_DECLARE(TRANSITION_PROP_6, transition_prop_6, lv_style_int_t, _int, scalar)
 #if LV_USE_ANIMATION
-_LV_OBJ_STYLE_SET_GET_DECLARE(TRANSITION_PATH, transition_path, lv_anim_path_t *, _ptr, scalar)
+_LV_OBJ_STYLE_SET_GET_DECLARE(TRANSITION_PATH, transition_path, lv_anim_path_t*, _ptr, scalar)
 #else
 /*For compatibility*/
-_LV_OBJ_STYLE_SET_GET_DECLARE(TRANSITION_PATH, transition_path, const void *, _ptr, scalar)
+_LV_OBJ_STYLE_SET_GET_DECLARE(TRANSITION_PATH, transition_path, const void*, _ptr, scalar)
 #endif
 _LV_OBJ_STYLE_SET_GET_DECLARE(SCALE_WIDTH, scale_width, lv_style_int_t, _int, scalar)
 _LV_OBJ_STYLE_SET_GET_DECLARE(SCALE_BORDER_WIDTH, scale_border_width, lv_style_int_t, _int, scalar)

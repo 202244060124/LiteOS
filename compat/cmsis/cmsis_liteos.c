@@ -33,4 +33,3 @@
 #elif (CMSIS_OS_VER == 2)
 #include "2.0/cmsis_liteos2.c"
 #endif
-

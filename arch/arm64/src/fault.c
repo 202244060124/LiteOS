@@ -29,12 +29,13 @@
 #include "arch/exception.h"
 #include "arch/regs.h"
 
-#include "los_memory_pri.h"
-#include "los_printf_pri.h"
-#include "los_task_pri.h"
 #include "los_exc_pri.h"
-#include "los_stackinfo_pri.h"
+#include "los_memory_pri.h"
 #include "los_mp_pri.h"
+#include "los_printf_pri.h"
+#include "los_stackinfo_pri.h"
+#include "los_task_pri.h"
+
 
 #ifdef LOSCFG_KERNEL_TRACE
 #include "los_trace_pri.h"
@@ -49,22 +50,20 @@ extern "C" {
 STATIC EXC_PROC_FUNC g_excHook = NULL;
 UINT32 g_curNestCount = 0;
 
-#define OS_MAX_BACKTRACE 15
-#define DUMPSIZE         128U
-#define DUMPREGS         30
-#define FP_NUM           29
+#define OS_MAX_BACKTRACE     15
+#define DUMPSIZE             128U
+#define DUMPREGS             30
+#define FP_NUM               29
 
 #define NBIT(val, high, low) (((val) >> (low)) & ((1U << (((high) - (low)) + 1)) - 1))
-#define GET_IL(esr) ((esr) & (1U << 25))
-#define IS_VALID_ADDR(ptr) (((ptr) >= SYS_MEM_BASE) &&       \
-                            ((ptr) <= g_sys_mem_addr_end) && \
-                            IS_ALIGNED((ptr), sizeof(CHAR *)))
+#define GET_IL(esr)          ((esr) & (1U << 25))
+#define IS_VALID_ADDR(ptr)   (((ptr) >= SYS_MEM_BASE) && ((ptr) <= g_sys_mem_addr_end) && IS_ALIGNED((ptr), sizeof(CHAR*)))
 
 VOID OsDecodeDataAbortISS(UINT32 bitsISS)
 {
-    UINT32 bitFnV = bitsISS & (1U << 10);   /* FnV bit[10] */
-    UINT32 bitWnR = bitsISS & (1U << 6);    /* WnR bit[6] */
-    UINT32 bitsDFSC = NBIT(bitsISS, 5, 0);  /* DFSC bits[5:0] */
+    UINT32 bitFnV = bitsISS & (1U << 10);  /* FnV bit[10] */
+    UINT32 bitWnR = bitsISS & (1U << 6);   /* WnR bit[6] */
+    UINT32 bitsDFSC = NBIT(bitsISS, 5, 0); /* DFSC bits[5:0] */
 
     if (!bitFnV) {
         if (bitWnR) {
@@ -73,13 +72,13 @@ VOID OsDecodeDataAbortISS(UINT32 bitsISS)
             PRINTK("Abort caused by a read instruction.");
         }
         switch (bitsDFSC) {
-            case 0x21:  /* 0b100001 */
+            case 0x21: /* 0b100001 */
                 PRINTK("Alignment fault.\n");
                 break;
-            case 0x0:   /* 0b000000 */
-            case 0x01:  /* 0b000001 */
-            case 0x03:  /* 0b000011 */
-            case 0x04:  /* 0b000100 */
+            case 0x0:  /* 0b000000 */
+            case 0x01: /* 0b000001 */
+            case 0x03: /* 0b000011 */
+            case 0x04: /* 0b000100 */
                 PRINTK("Address size fault.\n");
                 break;
             default:
@@ -92,15 +91,15 @@ VOID OsDecodeDataAbortISS(UINT32 bitsISS)
     }
 }
 
-STATIC VOID OsExcType(const ExcContext *frame, UINT32 regESR, UINT32 bitsEC)
+STATIC VOID OsExcType(const ExcContext* frame, UINT32 regESR, UINT32 bitsEC)
 {
     UINT32 bitIL = GET_IL(regESR);
     UINT32 bitsISS = NBIT(regESR, 24, 0); /* Instruction Specific Syndrome in ESR_ELx[24:0] */
     UINT64 regFAR;
 
     switch (bitsEC) {
-        case 0x24:  /* 0b100100 */
-        case 0x25:  /* 0b100101 */
+        case 0x24: /* 0b100100 */
+        case 0x25: /* 0b100101 */
             PrintExcInfo("Data Abort.\n");
             /* read the FAR register */
             regFAR = AARCH64_SYSREG_READ(FAR_ELx);
@@ -110,14 +109,14 @@ STATIC VOID OsExcType(const ExcContext *frame, UINT32 regESR, UINT32 bitsEC)
             }
             PrintExcInfo("PC at 0x%llx,FAR 0x%llx,ISS 0x%x\n", frame->regELR, regFAR, bitsISS);
             break;
-        case 0x20:  /* 0b100000 */
-        case 0x21:  /* 0b100001 */
+        case 0x20: /* 0b100000 */
+        case 0x21: /* 0b100001 */
             PrintExcInfo("Instruction Abort.\n");
             break;
-        case 0x22:  /* 0b100010 */
+        case 0x22: /* 0b100010 */
             PrintExcInfo("PC alignment fault.\n");
             break;
-        case 0x26:  /* 0b100110 */
+        case 0x26: /* 0b100110 */
             PrintExcInfo("SP alignment fault.\n");
             break;
         default:
@@ -138,7 +137,7 @@ UINT32 ArchSetExcHook(EXC_PROC_FUNC excHook)
     return 0;
 }
 
-UINT32 ArchBackTraceGet(UINTPTR fp, UINTPTR *callChain, UINT32 maxDepth)
+UINT32 ArchBackTraceGet(UINTPTR fp, UINTPTR* callChain, UINT32 maxDepth)
 {
     UINTPTR tmpFp;
     UINTPTR backLr;
@@ -147,8 +146,8 @@ UINT32 ArchBackTraceGet(UINTPTR fp, UINTPTR *callChain, UINT32 maxDepth)
 
     while ((backFp > OS_SYS_FUNC_ADDR_START) && (backFp < OS_SYS_FUNC_ADDR_END)) {
         tmpFp = backFp;
-        backFp = *((UINTPTR *)(tmpFp));
-        backLr = *((UINTPTR *)(tmpFp + sizeof(CHAR *)));
+        backFp = *((UINTPTR*)(tmpFp));
+        backLr = *((UINTPTR*)(tmpFp + sizeof(CHAR*)));
 
         if (callChain == NULL) {
             PrintExcInfo("traceback %u -- lr = 0x%llx    fp = 0x%llx\n", count, backLr, backFp);
@@ -166,14 +165,14 @@ UINT32 ArchBackTraceGet(UINTPTR fp, UINTPTR *callChain, UINT32 maxDepth)
 
 STATIC VOID BackTraceSub(UINTPTR fp)
 {
-    (VOID)ArchBackTraceGet(fp, NULL, OS_MAX_BACKTRACE);
+    (VOID) ArchBackTraceGet(fp, NULL, OS_MAX_BACKTRACE);
 }
 
 STATIC VOID BackTraceWithFp(UINTPTR fp)
 {
     UINTPTR backFp;
 
-    if ((VOID *)fp == NULL) {
+    if ((VOID*)fp == NULL) {
         backFp = ArchGetFp();
     } else {
         backFp = fp;
@@ -188,7 +187,7 @@ VOID ArchBackTrace(VOID)
     BackTraceWithFp((UINTPTR)NULL);
 }
 
-VOID ArchBackTraceWithSp(const VOID *stackPointer)
+VOID ArchBackTraceWithSp(const VOID* stackPointer)
 {
     UINTPTR fp = ArchGetTaskFp(stackPointer);
     BackTraceSub(fp);
@@ -197,23 +196,21 @@ VOID ArchBackTraceWithSp(const VOID *stackPointer)
 VOID OsCallStackInfo(VOID)
 {
     UINT32 count = 0;
-    LosTaskCB *runTask = OsCurrTaskGet();
+    LosTaskCB* runTask = OsCurrTaskGet();
 
-    UINTPTR *stackBottom = (UINTPTR *)(runTask->topOfStack + runTask->stackSize);
-    UINTPTR *stackPointer = stackBottom;
+    UINTPTR* stackBottom = (UINTPTR*)(runTask->topOfStack + runTask->stackSize);
+    UINTPTR* stackPointer = stackBottom;
 
     PrintExcInfo("runTask->stackPointer = 0x%llx\n"
                  "runTask->topOfStack = 0x%llx\n"
                  "text_start = 0x%llx,text_end = 0x%llx\n",
                  stackPointer, runTask->topOfStack, &__text_start, &__text_end);
 
-    while ((stackPointer > (UINTPTR *)runTask->topOfStack) && (count < OS_MAX_BACKTRACE)) {
-        if ((*stackPointer > (UINTPTR)(&__text_start)) &&
-            (*stackPointer < (UINTPTR)(&__text_end)) &&
-            IS_ALIGNED(*stackPointer, sizeof(CHAR *))) {
-            if ((*(stackPointer - 1) > (UINTPTR)runTask->topOfStack) &&
-                (*(stackPointer - 1) < (UINTPTR)stackBottom) &&
-                IS_ALIGNED(*(stackPointer - 1), sizeof(CHAR *))) {
+    while ((stackPointer > (UINTPTR*)runTask->topOfStack) && (count < OS_MAX_BACKTRACE)) {
+        if ((*stackPointer > (UINTPTR)(&__text_start)) && (*stackPointer < (UINTPTR)(&__text_end))
+            && IS_ALIGNED(*stackPointer, sizeof(CHAR*))) {
+            if ((*(stackPointer - 1) > (UINTPTR)runTask->topOfStack) && (*(stackPointer - 1) < (UINTPTR)stackBottom)
+                && IS_ALIGNED(*(stackPointer - 1), sizeof(CHAR*))) {
                 count++;
                 PrintExcInfo("traceback %u -- lr = 0x%llx\n", count, *stackPointer);
             }
@@ -223,10 +220,10 @@ VOID OsCallStackInfo(VOID)
     PRINTK("\n");
 }
 
-VOID OsDumpContextMem(const ExcContext *excBufAddr)
+VOID OsDumpContextMem(const ExcContext* excBufAddr)
 {
     UINT32 count = 0;
-    const UINT64 *excReg = NULL;
+    const UINT64* excReg = NULL;
 
     for (excReg = &(excBufAddr->X[0]); count <= (DUMPREGS - 1); excReg++, count++) {
         if (IS_VALID_ADDR(*excReg)) {
@@ -241,10 +238,9 @@ VOID OsDumpContextMem(const ExcContext *excBufAddr)
     }
 }
 
-STATIC const StackInfo g_excStack[] = {
-    {&__stack_startup, OS_EXC_START_STACK_SIZE, "start_stack"},
+STATIC const StackInfo g_excStack[] = {{&__stack_startup, OS_EXC_START_STACK_SIZE, "start_stack"},
 #ifdef LOSCFG_IRQ_USE_STANDALONE_STACK
-    {&__irq_stack, OS_EXC_IRQ_STACK_SIZE, "irq_stack"}
+                                       {&__irq_stack, OS_EXC_IRQ_STACK_SIZE, "irq_stack"}
 #endif
 };
 
@@ -253,26 +249,24 @@ VOID ArchExcInit(VOID)
     OsExcStackInfoReg(g_excStack, sizeof(g_excStack) / sizeof(g_excStack[0]));
 }
 
-VOID OsExcDumpContext(const ExcContext *excBufAddr)
+VOID OsExcDumpContext(const ExcContext* excBufAddr)
 {
     UINT32 i;
-    LosTaskCB *runTask = OsCurrTaskGet();
+    LosTaskCB* runTask = OsCurrTaskGet();
 
     PrintExcInfo("taskName = %s\nTaskId = %u\nTask StackSize = %u\n"
                  "system mem addr = %p\nPC = 0x%llx\nLR = 0x%llx\n",
-                 runTask->taskName, runTask->taskId, runTask->stackSize,
-                 m_aucSysMem0, excBufAddr->regELR, excBufAddr->LR);
+                 runTask->taskName, runTask->taskId, runTask->stackSize, m_aucSysMem0, excBufAddr->regELR, excBufAddr->LR);
 
     for (i = 0; i < DUMPREGS; i++) {
         PrintExcInfo("X%-02d = 0x%llx\n", i, excBufAddr->X[i]);
     }
 
-    PrintExcInfo("LR = 0x%llx\nELR = 0x%llx\nSPSR = 0x%llx\n",
-                 excBufAddr->LR, excBufAddr->regELR, excBufAddr->SPSR);
+    PrintExcInfo("LR = 0x%llx\nELR = 0x%llx\nSPSR = 0x%llx\n", excBufAddr->LR, excBufAddr->regELR, excBufAddr->SPSR);
 
     BackTraceSub(excBufAddr->X[FP_NUM]);
 #ifdef LOSCFG_SHELL
-    (VOID)OsShellCmdTskInfoGet(OS_ALL_TASK_MASK);
+    (VOID) OsShellCmdTskInfoGet(OS_ALL_TASK_MASK);
 #endif
     OsExcStackInfo();
     OsDumpContextMem(excBufAddr);
@@ -289,10 +283,10 @@ VOID OsCurrentELGet(UINT32 reg)
     PRINT_ERR("The current exception level is EL%d\n", NBIT(reg, 3, 2));
 }
 
-VOID OsExceptSyncExcHdl(ExcContext *frame)
+VOID OsExceptSyncExcHdl(ExcContext* frame)
 {
     UINT32 regESR = AARCH64_SYSREG_READ(ESR_ELx);
-    UINT32 bitsEC = NBIT(regESR, 31, 26);       /* get the 26-31bit for EC */
+    UINT32 bitsEC = NBIT(regESR, 31, 26); /* get the 26-31bit for EC */
 
 #if (LOSCFG_KERNEL_SMP == YES)
     /* use halt ipi to stop other active cores */
@@ -318,7 +312,8 @@ VOID OsExceptSyncExcHdl(ExcContext *frame)
         OsRecordExcInfoTime();
 #endif
         PrintExcInfo("/*******************Exception Information*******************/"
-                     "\nExcClass:0x%x => ", bitsEC);
+                     "\nExcClass:0x%x => ",
+                     bitsEC);
 
         OsExcType(frame, regESR, bitsEC);
         OsExcDumpContext(frame);

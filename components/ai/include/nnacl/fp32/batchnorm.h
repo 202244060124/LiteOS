@@ -23,13 +23,12 @@
 extern "C" {
 #endif
 
-void BatchNormFp32(const void *input, const void *mean, const void *variance, BatchNormParameter *param, int task_id,
-                   void *output);
-void FusedBatchNormFp32(const void *input, const void *scale, const void *offset, const void *mean,
-                        const void *variance, BatchNormParameter *param, int task_id, void *output);
+void BatchNormFp32(const void* input, const void* mean, const void* variance, BatchNormParameter* param, int task_id, void* output);
+void FusedBatchNormFp32(const void* input, const void* scale, const void* offset, const void* mean, const void* variance,
+                        BatchNormParameter* param, int task_id, void* output);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_FUSED_BATCHNORM_H_
+#endif // MINDSPORE_LITE_NNACL_FUSED_BATCHNORM_H_

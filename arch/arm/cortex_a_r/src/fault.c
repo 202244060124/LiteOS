@@ -53,50 +53,46 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-VOID OsExcHook(UINT32 excType, ExcContext *excBufAddr);
+VOID OsExcHook(UINT32 excType, ExcContext* excBufAddr);
 UINT32 g_curNestCount = 0;
 STATIC EXC_PROC_FUNC g_excHook = (EXC_PROC_FUNC)OsExcHook;
 #if (LOSCFG_KERNEL_SMP == YES)
 STATIC SPIN_LOCK_INIT(g_excSerializerSpin);
 #endif
 
-#define OS_MAX_BACKTRACE 15U
-#define DUMPSIZE         128U
-#define DUMPREGS         12U
-#define INSTR_SET_MASK   0x01000020U
-#define THUMB_INSTR_LEN  2U
-#define ARM_INSTR_LEN    4U
-#define POINTER_SIZE     4U
+#define OS_MAX_BACKTRACE   15U
+#define DUMPSIZE           128U
+#define DUMPREGS           12U
+#define INSTR_SET_MASK     0x01000020U
+#define THUMB_INSTR_LEN    2U
+#define ARM_INSTR_LEN      4U
+#define POINTER_SIZE       4U
 
-#define GET_FS(fsr) (((fsr) & 0xFU) | (((fsr) & (1U << 10)) >> 6))
-#define GET_WNR(dfsr) ((dfsr) & (1U << 11))
+#define GET_FS(fsr)        (((fsr) & 0xFU) | (((fsr) & (1U << 10)) >> 6))
+#define GET_WNR(dfsr)      ((dfsr) & (1U << 11))
 
-#define IS_VALID_ADDR(ptr) (((ptr) >= SYS_MEM_BASE) &&       \
-                            ((ptr) <= g_sys_mem_addr_end) && \
-                            IS_ALIGNED((ptr), sizeof(CHAR *)))
+#define IS_VALID_ADDR(ptr) (((ptr) >= SYS_MEM_BASE) && ((ptr) <= g_sys_mem_addr_end) && IS_ALIGNED((ptr), sizeof(CHAR*)))
 
-STATIC const StackInfo g_excStack[] = {
-    { &__undef_stack, OS_EXC_UNDEF_STACK_SIZE, "udf_stack" },
-    { &__abt_stack,   OS_EXC_ABT_STACK_SIZE,   "abt_stack" },
-    { &__fiq_stack,   OS_EXC_FIQ_STACK_SIZE,   "fiq_stack" },
-    { &__svc_stack,   OS_EXC_SVC_STACK_SIZE,   "svc_stack" },
-    { &__irq_stack,   OS_EXC_IRQ_STACK_SIZE,   "irq_stack" },
-    { &__exc_stack,   OS_EXC_STACK_SIZE,       "exc_stack" }
-};
+STATIC const StackInfo g_excStack[] = {{&__undef_stack, OS_EXC_UNDEF_STACK_SIZE, "udf_stack"},
+                                       {&__abt_stack, OS_EXC_ABT_STACK_SIZE, "abt_stack"},
+                                       {&__fiq_stack, OS_EXC_FIQ_STACK_SIZE, "fiq_stack"},
+                                       {&__svc_stack, OS_EXC_SVC_STACK_SIZE, "svc_stack"},
+                                       {&__irq_stack, OS_EXC_IRQ_STACK_SIZE, "irq_stack"},
+                                       {&__exc_stack, OS_EXC_STACK_SIZE, "exc_stack"}};
 
 STATIC INT32 OsDecodeFS(UINT32 bitsFS)
 {
     switch (bitsFS) {
-        case 0x05:  /* 0b00101 */
-        case 0x07:  /* 0b00111 */
+        case 0x05: /* 0b00101 */
+        case 0x07: /* 0b00111 */
             PrintExcInfo("Translation fault, %s\n", (bitsFS & 0x2) ? "page" : "section");
             break;
-        case 0x09:  /* 0b01001 */
-        case 0x0b:  /* 0b01011 */
+        case 0x09: /* 0b01001 */
+        case 0x0b: /* 0b01011 */
             PrintExcInfo("Domain fault, %s\n", (bitsFS & 0x2) ? "page" : "section");
             break;
-        case 0x0d:  /* 0b01101 */
-        case 0x0f:  /* 0b01111 */
+        case 0x0d: /* 0b01101 */
+        case 0x0f: /* 0b01111 */
             PrintExcInfo("Permission fault, %s\n", (bitsFS & 0x2) ? "page" : "section");
             break;
         default:
@@ -138,11 +134,11 @@ STATIC INT32 OsDecodeDataFSR(UINT32 regDFSR)
     return ret;
 }
 
-STATIC VOID OsExcType(UINT32 excType, ExcContext *excBufAddr)
+STATIC VOID OsExcType(UINT32 excType, ExcContext* excBufAddr)
 {
     /* undefinited exception handling or software interrupt */
     if ((excType == OS_EXCEPT_UNDEF_INSTR) || (excType == OS_EXCEPT_SWI)) {
-        if ((excBufAddr->regCPSR & INSTR_SET_MASK) == 0) { /* work status: ARM */
+        if ((excBufAddr->regCPSR & INSTR_SET_MASK) == 0) {           /* work status: ARM */
             excBufAddr->PC = excBufAddr->PC - ARM_INSTR_LEN;
         } else if ((excBufAddr->regCPSR & INSTR_SET_MASK) == 0x20) { /* work status: Thumb */
             excBufAddr->PC = excBufAddr->PC - THUMB_INSTR_LEN;
@@ -151,27 +147,19 @@ STATIC VOID OsExcType(UINT32 excType, ExcContext *excBufAddr)
 
     if (excType == OS_EXCEPT_PREFETCH_ABORT) {
         PrintExcInfo("prefetch_abort fault fsr:0x%x, far:0x%0+8x\n", OsGetIFSR(), OsGetIFAR());
-        (VOID)OsDecodeInstructionFSR(OsGetIFSR());
+        (VOID) OsDecodeInstructionFSR(OsGetIFSR());
     } else if (excType == OS_EXCEPT_DATA_ABORT) {
         PrintExcInfo("data_abort fsr:0x%x, far:0x%0+8x\n", OsGetDFSR(), OsGetDFAR());
-        (VOID)OsDecodeDataFSR(OsGetDFSR());
+        (VOID) OsDecodeDataFSR(OsGetDFSR());
     }
 }
 
-STATIC const CHAR *g_excTypeString[] = {
-    "reset",
-    "undefined instruction",
-    "software interrupt",
-    "prefetch abort",
-    "data abort",
-    "fiq",
-    "address abort",
-    "irq"
-};
+STATIC const CHAR* g_excTypeString[] =
+    {"reset", "undefined instruction", "software interrupt", "prefetch abort", "data abort", "fiq", "address abort", "irq"};
 
-STATIC VOID OsExcSysInfo(UINT32 excType, const ExcContext *excBufAddr)
+STATIC VOID OsExcSysInfo(UINT32 excType, const ExcContext* excBufAddr)
 {
-    LosTaskCB *runTask = OsCurrTaskGet();
+    LosTaskCB* runTask = OsCurrTaskGet();
 
     PrintExcInfo("excType:%s\n"
                  "taskName = %s\n"
@@ -182,18 +170,11 @@ STATIC VOID OsExcSysInfo(UINT32 excType, const ExcContext *excBufAddr)
                  "excBuffAddr lr = 0x%x\n"
                  "excBuffAddr sp = 0x%x\n"
                  "excBuffAddr fp = 0x%x\n",
-                 g_excTypeString[excType],
-                 runTask->taskName,
-                 runTask->taskId,
-                 runTask->stackSize,
-                 m_aucSysMem0,
-                 excBufAddr->PC,
-                 excBufAddr->LR,
-                 excBufAddr->SP,
-                 excBufAddr->R11);
+                 g_excTypeString[excType], runTask->taskName, runTask->taskId, runTask->stackSize, m_aucSysMem0, excBufAddr->PC,
+                 excBufAddr->LR, excBufAddr->SP, excBufAddr->R11);
 }
 
-STATIC VOID OsExcRegsInfo(const ExcContext *excBufAddr)
+STATIC VOID OsExcRegsInfo(const ExcContext* excBufAddr)
 {
     /*
      * Split register information into two parts:
@@ -206,8 +187,7 @@ STATIC VOID OsExcRegsInfo(const ExcContext *excBufAddr)
                  "R4         = 0x%x\n"
                  "R5         = 0x%x\n"
                  "R6         = 0x%x\n",
-                 excBufAddr->R0, excBufAddr->R1, excBufAddr->R2, excBufAddr->R3,
-                 excBufAddr->R4, excBufAddr->R5, excBufAddr->R6);
+                 excBufAddr->R0, excBufAddr->R1, excBufAddr->R2, excBufAddr->R3, excBufAddr->R4, excBufAddr->R5, excBufAddr->R6);
     PrintExcInfo("R7         = 0x%x\n"
                  "R8         = 0x%x\n"
                  "R9         = 0x%x\n"
@@ -215,8 +195,7 @@ STATIC VOID OsExcRegsInfo(const ExcContext *excBufAddr)
                  "R11        = 0x%x\n"
                  "R12        = 0x%x\n"
                  "CPSR       = 0x%x\n",
-                 excBufAddr->R7, excBufAddr->R8, excBufAddr->R9, excBufAddr->R10,
-                 excBufAddr->R11, excBufAddr->R12, excBufAddr->regCPSR);
+                 excBufAddr->R7, excBufAddr->R8, excBufAddr->R9, excBufAddr->R10, excBufAddr->R11, excBufAddr->R12, excBufAddr->regCPSR);
 }
 
 UINT32 ArchSetExcHook(EXC_PROC_FUNC excHook)
@@ -229,16 +208,15 @@ UINT32 ArchSetExcHook(EXC_PROC_FUNC excHook)
     return 0;
 }
 
-
 EXC_PROC_FUNC ArchGetExcHook(VOID)
 {
     return g_excHook;
 }
 
-VOID OsDumpContextMem(const ExcContext *excBufAddr)
+VOID OsDumpContextMem(const ExcContext* excBufAddr)
 {
     UINT32 count = 0;
-    const UINT32 *excReg = NULL;
+    const UINT32* excReg = NULL;
 
     for (excReg = &(excBufAddr->R0); count <= DUMPREGS; excReg++, count++) {
         if (IS_VALID_ADDR(*excReg)) {
@@ -259,12 +237,12 @@ STATIC INLINE BOOL IsValidFP(UINTPTR regFP, UINTPTR start, UINTPTR end)
     return (regFP > start) && (regFP < end);
 }
 
-STATIC INLINE BOOL FindSuitableStack(UINTPTR regFP, UINTPTR *start, UINTPTR *end)
+STATIC INLINE BOOL FindSuitableStack(UINTPTR regFP, UINTPTR* start, UINTPTR* end)
 {
     UINT32 index, stackStart, stackEnd;
     BOOL found = FALSE;
-    LosTaskCB *taskCB = NULL;
-    const StackInfo *stack = NULL;
+    LosTaskCB* taskCB = NULL;
+    const StackInfo* stack = NULL;
 
     /* Search in the task stacks */
     for (index = 0; index < g_taskMaxNum; index++) {
@@ -301,7 +279,7 @@ FOUND:
     return found;
 }
 
-UINT32 ArchBackTraceGet(UINTPTR fp, UINTPTR *callChain, UINT32 maxDepth)
+UINT32 ArchBackTraceGet(UINTPTR fp, UINTPTR* callChain, UINT32 maxDepth)
 {
     UINTPTR tmpFP;
     UINTPTR backLR;
@@ -323,7 +301,7 @@ UINT32 ArchBackTraceGet(UINTPTR fp, UINTPTR *callChain, UINT32 maxDepth)
      * there's no function call, and compiler will not store the link register, but the frame pointer
      * will still be stored and updated. In that case we needs to find the right position of frame pointer.
      */
-    tmpFP = *((UINTPTR *)(fp));
+    tmpFP = *((UINTPTR*)(fp));
     if (IsValidFP(tmpFP, stackStart, stackEnd)) {
         backFP = tmpFP;
 
@@ -334,8 +312,8 @@ UINT32 ArchBackTraceGet(UINTPTR fp, UINTPTR *callChain, UINT32 maxDepth)
 
     while (IsValidFP(backFP, stackStart, stackEnd)) {
         tmpFP = backFP;
-        backLR = *((UINTPTR *)(tmpFP));
-        backFP = *((UINTPTR *)(tmpFP - POINTER_SIZE));
+        backLR = *((UINTPTR*)(tmpFP));
+        backFP = *((UINTPTR*)(tmpFP - POINTER_SIZE));
 
         if (callChain == NULL) {
             PrintExcInfo("traceback %u -- lr = 0x%x    fp = 0x%x\n", count, backLR, backFP);
@@ -352,7 +330,7 @@ UINT32 ArchBackTraceGet(UINTPTR fp, UINTPTR *callChain, UINT32 maxDepth)
 
 STATIC VOID BackTraceWithFp(UINTPTR fp)
 {
-    (VOID)ArchBackTraceGet(fp, NULL, OS_MAX_BACKTRACE);
+    (VOID) ArchBackTraceGet(fp, NULL, OS_MAX_BACKTRACE);
 }
 
 VOID ArchBackTrace(VOID)
@@ -367,14 +345,14 @@ VOID ArchExcInit(VOID)
     OsExcStackInfoReg(g_excStack, sizeof(g_excStack) / sizeof(g_excStack[0]));
 }
 
-VOID ArchBackTraceWithSp(const VOID *stackPointer)
+VOID ArchBackTraceWithSp(const VOID* stackPointer)
 {
     UINT32 regFp = ArchGetTaskFp(stackPointer);
 
     BackTraceWithFp(regFp);
 }
 
-VOID OsExcHook(UINT32 excType, ExcContext *excBufAddr)
+VOID OsExcHook(UINT32 excType, ExcContext* excBufAddr)
 {
     OsExcType(excType, excBufAddr);
     OsExcSysInfo(excType, excBufAddr);
@@ -382,7 +360,7 @@ VOID OsExcHook(UINT32 excType, ExcContext *excBufAddr)
 
     BackTraceWithFp(excBufAddr->R11);
 #ifdef LOSCFG_SHELL
-    (VOID)OsShellCmdTskInfoGet(OS_ALL_TASK_MASK);
+    (VOID) OsShellCmdTskInfoGet(OS_ALL_TASK_MASK);
     OsExcStackInfo();
 #endif
     OsDumpContextMem(excBufAddr);
@@ -402,22 +380,20 @@ VOID OsExcHook(UINT32 excType, ExcContext *excBufAddr)
 VOID OsCallStackInfo(VOID)
 {
     UINT32 count = 0;
-    LosTaskCB *runTask = OsCurrTaskGet();
+    LosTaskCB* runTask = OsCurrTaskGet();
     UINTPTR stackBottom = runTask->topOfStack + runTask->stackSize;
-    UINT32 *stackPointer = (UINT32 *)stackBottom;
+    UINT32* stackPointer = (UINT32*)stackBottom;
 
     PrintExcInfo("runTask->stackPointer = 0x%x\n"
                  "runTask->topOfStack = 0x%x\n"
                  "text_start:0x%x,text_end:0x%x\n",
                  stackPointer, runTask->topOfStack, &__text_start, &__text_end);
 
-    while ((stackPointer > (UINT32 *)runTask->topOfStack) && (count < OS_MAX_BACKTRACE)) {
-        if ((*stackPointer > (UINTPTR)(&__text_start)) &&
-            (*stackPointer < (UINTPTR)(&__text_end)) &&
-            IS_ALIGNED((*stackPointer), POINTER_SIZE)) {
-            if ((*(stackPointer - 1) > (UINT32)runTask->topOfStack) &&
-                (*(stackPointer - 1) < stackBottom) &&
-                IS_ALIGNED((*(stackPointer - 1)), POINTER_SIZE)) {
+    while ((stackPointer > (UINT32*)runTask->topOfStack) && (count < OS_MAX_BACKTRACE)) {
+        if ((*stackPointer > (UINTPTR)(&__text_start)) && (*stackPointer < (UINTPTR)(&__text_end))
+            && IS_ALIGNED((*stackPointer), POINTER_SIZE)) {
+            if ((*(stackPointer - 1) > (UINT32)runTask->topOfStack) && (*(stackPointer - 1) < stackBottom)
+                && IS_ALIGNED((*(stackPointer - 1)), POINTER_SIZE)) {
                 count++;
                 PrintExcInfo("traceback %u -- lr = 0x%x\n", count, *stackPointer);
             }
@@ -428,9 +404,9 @@ VOID OsCallStackInfo(VOID)
 }
 
 #ifdef LOSCFG_GDB
-VOID OsUndefIncExcHandleEntry(ExcContext *excBufAddr)
+VOID OsUndefIncExcHandleEntry(ExcContext* excBufAddr)
 {
-    excBufAddr->PC -= 4;  /* lr in undef is pc + 4 */
+    excBufAddr->PC -= 4; /* lr in undef is pc + 4 */
 
     if (gdb_undef_hook(excBufAddr, OS_EXCEPT_UNDEF_INSTR)) {
         return;
@@ -445,9 +421,9 @@ VOID OsUndefIncExcHandleEntry(ExcContext *excBufAddr)
 }
 
 #if __LINUX_ARM_ARCH__ >= 7
-VOID OsPrefetchAbortExcHandleEntry(ExcContext *excBufAddr)
+VOID OsPrefetchAbortExcHandleEntry(ExcContext* excBufAddr)
 {
-    excBufAddr->PC -= 4;  /* lr in prefetch abort is pc + 4 */
+    excBufAddr->PC -= 4; /* lr in prefetch abort is pc + 4 */
 
     if (gdbhw_hook(excBufAddr, OS_EXCEPT_PREFETCH_ABORT)) {
         return;
@@ -461,9 +437,9 @@ VOID OsPrefetchAbortExcHandleEntry(ExcContext *excBufAddr)
     }
 }
 
-VOID OsDataAbortExcHandleEntry(ExcContext *excBufAddr)
+VOID OsDataAbortExcHandleEntry(ExcContext* excBufAddr)
 {
-    excBufAddr->PC -= 8;  /* lr in data abort is pc + 8 */
+    excBufAddr->PC -= 8; /* lr in data abort is pc + 8 */
 
     if (gdbhw_hook(excBufAddr, OS_EXCEPT_DATA_ABORT)) {
         return;
@@ -536,7 +512,8 @@ STATIC VOID CheckAllCpuStatus(VOID)
         g_excCpuid = ArchCurrCpuid();
     } else if (g_excCpuid != ArchCurrCpuid()) {
         LOS_SpinUnlock(&g_excSerializerSpin);
-        while (1) {}
+        while (1) {
+        }
     }
     LOS_SpinUnlock(&g_excSerializerSpin);
 
@@ -550,7 +527,7 @@ STATIC VOID CheckAllCpuStatus(VOID)
  * Input       : excType    --- exc type
  *               excBufAddr --- address of EXC buf
  */
-LITE_OS_SEC_TEXT_INIT VOID OsExcHandleEntry(UINT32 excType, ExcContext *excBufAddr)
+LITE_OS_SEC_TEXT_INIT VOID OsExcHandleEntry(UINT32 excType, ExcContext* excBufAddr)
 {
 #if (LOSCFG_KERNEL_SMP == YES)
     /* use halt ipi to stop other active cores */
@@ -586,9 +563,9 @@ LITE_OS_SEC_TEXT_INIT VOID OsExcHandleEntry(UINT32 excType, ExcContext *excBufAd
 #ifdef LOSCFG_SHELL_EXCINFO_DUMP
         if (func != NULL) {
             PrintExcInfo("Be sure your space bigger than OsOsGetExcInfoOffset():0x%x\n", OsGetExcInfoOffset());
-            OsIrqNestingCntSet(0);     /* 0: int nest count */
+            OsIrqNestingCntSet(0); /* 0: int nest count */
             func(OsGetExcInfoDumpAddr(), OsGetExcInfoLen(), 0, OsGetExcInfoBuf());
-            OsIrqNestingCntSet(1);     /* 1: int nest count */
+            OsIrqNestingCntSet(1); /* 1: int nest count */
         }
 #endif
     }

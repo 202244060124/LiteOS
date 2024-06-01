@@ -26,12 +26,13 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --------------------------------------------------------------------------- */
 
-#include "mmu_pri.h"
-#include "mmu.h"
-#include "board.h"
 #include "asm/dma.h"
+#include "board.h"
 #include "los_base.h"
 #include "los_hwi.h"
+#include "mmu.h"
+#include "mmu_pri.h"
+
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -47,22 +48,22 @@ static ALIGNED_4K UINT8 g_secondPageTableApp[SECOND_PAGE_TABLE_APP_LEN];
 static SENCOND_PAGE g_mmuOsPage = {0};
 static SENCOND_PAGE g_mmuAppPage = {0};
 
-#define PGD_ADDR  (UINT64)g_firstPageTable
-#define PMD_ADDR0 (PGD_ADDR + PAGE_SIZE)
-#define PMD_ADDR1 (PMD_ADDR0 + PAGE_SIZE)
-#define PMD_ADDR2 (PMD_ADDR1 + PAGE_SIZE)
+#define PGD_ADDR             (UINT64) g_firstPageTable
+#define PMD_ADDR0            (PGD_ADDR + PAGE_SIZE)
+#define PMD_ADDR1            (PMD_ADDR0 + PAGE_SIZE)
+#define PMD_ADDR2            (PMD_ADDR1 + PAGE_SIZE)
 
-#define ITEM_MASK ((1U << (SHIFT_4K - 3)) - 1)
+#define ITEM_MASK            ((1U << (SHIFT_4K - 3)) - 1)
 #define PMD_PAGE_GET(addr)   (((addr) >> SHIFT_1G) * PAGE_SIZE + PMD_ADDR0)
 #define PMD_OFFSET_GET(addr) ((((addr) & (MMU_1G - 1)) >> SHIFT_2M) * 8)
 #define PMD_ADDR_GET(addr)   (PMD_PAGE_GET(addr) + PMD_OFFSET_GET(addr))
-#define PTE_TABLE_GET(addr)  (*(UINT64 *)(PMD_ADDR_GET(addr)) >> SHIFT_4K << SHIFT_4K)
+#define PTE_TABLE_GET(addr)  (*(UINT64*)(PMD_ADDR_GET(addr)) >> SHIFT_4K << SHIFT_4K)
 
-#define BYTES_PER_ITEM 8
-#define ITEM_TYPE_MASK 0x3
+#define BYTES_PER_ITEM       8
+#define ITEM_TYPE_MASK       0x3
 
 /* Difference of the output-address bit width between each level, 1G / 2M = 2^9, 2M / 4K = 2^9 */
-#define ADDR_WIDTH_DIFF 9
+#define ADDR_WIDTH_DIFF      9
 
 typedef struct {
     UINT64 tbl;
@@ -75,7 +76,7 @@ typedef struct {
 
 STATIC INLINE VOID CreatPgdItem(UINT64 tbl, UINT64 pmdTableAddr)
 {
-    *(UINT64 *)(tbl) = pmdTableAddr | MMU_PTE_L012_DESCRIPTOR_TABLE;
+    *(UINT64*)(tbl) = pmdTableAddr | MMU_PTE_L012_DESCRIPTOR_TABLE;
 }
 
 STATIC VOID CreatPmdTable(UINT64 pteTableAddr, UINT64 startAddr, UINT64 endAddr)
@@ -90,14 +91,14 @@ STATIC VOID CreatPmdTable(UINT64 pteTableAddr, UINT64 startAddr, UINT64 endAddr)
     indexEnd += ((endAddr - startAddr) >> SHIFT_1G) << ADDR_WIDTH_DIFF;
 
     for (index = indexStart; index <= indexEnd; ++index) {
-        *(UINT64 *)(tbl + (index * BYTES_PER_ITEM)) = pteTableAddr | MMU_PTE_L012_DESCRIPTOR_TABLE;
+        *(UINT64*)(tbl + (index * BYTES_PER_ITEM)) = pteTableAddr | MMU_PTE_L012_DESCRIPTOR_TABLE;
         pteTableAddr += PAGE_SIZE;
     }
     v8_dma_clean_range(tbl + (indexStart * BYTES_PER_ITEM), tbl + (indexEnd * BYTES_PER_ITEM));
     __asm__ __volatile__("tlbi    vmalle1");
 }
 
-STATIC VOID CreatPteTable(const MMU_PARAM *para)
+STATIC VOID CreatPteTable(const MMU_PARAM* para)
 {
     UINT64 indexMax;
     UINT64 indexTemp;
@@ -112,14 +113,14 @@ STATIC VOID CreatPteTable(const MMU_PARAM *para)
     phy |= para->uwFlag;
 
     for (indexTemp = 0; indexTemp <= indexMax; ++indexTemp, ++offset) {
-        *(UINT64 *)(tbl + (offset * BYTES_PER_ITEM)) = phy | MMU_PTE_L3_DESCRIPTOR_PAGE;
+        *(UINT64*)(tbl + (offset * BYTES_PER_ITEM)) = phy | MMU_PTE_L3_DESCRIPTOR_PAGE;
         phy += PAGE_SIZE;
     }
     v8_dma_clean_range(tbl + ((offset - indexTemp) * BYTES_PER_ITEM), tbl + (offset * BYTES_PER_ITEM));
     __asm__ __volatile__("tlbi    vmalle1");
 }
 
-STATIC VOID CreatBlockMap(const BlockCB *blockCB)
+STATIC VOID CreatBlockMap(const BlockCB* blockCB)
 {
     UINT64 tbl = blockCB->tbl;
     UINT64 flags = blockCB->flags;
@@ -137,7 +138,7 @@ STATIC VOID CreatBlockMap(const BlockCB *blockCB)
     end &= ITEM_MASK;
     end += offsetGB << ADDR_WIDTH_DIFF;
     while (start <= end) {
-        *(UINT64 *)(tbl + (start * BYTES_PER_ITEM)) = phys;
+        *(UINT64*)(tbl + (start * BYTES_PER_ITEM)) = phys;
         start++;
         phys += ((UINT64)1UL << blockShift);
     }
@@ -151,8 +152,7 @@ VOID OsBlockMapsInit(UINT64 flags, UINT64 start, UINT64 end)
     BlockCB blockCB;
 
     if ((start & (MMU_1G - 1)) != 0) {
-        PRINT_ERR("%s, %d, the start of mapping addr is 0x%llx, should be aligned as 1G \n",
-                  __FUNCTION__, __LINE__, start);
+        PRINT_ERR("%s, %d, the start of mapping addr is 0x%llx, should be aligned as 1G \n", __FUNCTION__, __LINE__, start);
         return;
     }
     end = ((end + (MMU_1G - 1)) & ~(MMU_1G - 1));
@@ -160,8 +160,8 @@ VOID OsBlockMapsInit(UINT64 flags, UINT64 start, UINT64 end)
     startOffset = start >> SHIFT_1G;
     endOffset = end >> SHIFT_1G;
     if (endOffset > pageSize) {
-        PRINT_ERR("%s, %d, the end of mapping addr is 0x%llx, should not be bigger than 0x%llx \n",
-                  __FUNCTION__, __LINE__, end, pageSize << SHIFT_1G);
+        PRINT_ERR("%s, %d, the end of mapping addr is 0x%llx, should not be bigger than 0x%llx \n", __FUNCTION__, __LINE__, end,
+                  pageSize << SHIFT_1G);
         return;
     }
     for (; startOffset < endOffset; ++startOffset) {
@@ -183,14 +183,12 @@ VOID OsBlockMapsSet(UINT64 flags, UINT64 start, UINT64 end)
     UINT32 intSave;
 
     if ((start & ((1u << SHIFT_2M) - 1)) != 0) {
-        PRINT_ERR("%s, %d, the start of mapping addr is 0x%llx, should be aligned as 2M \n",
-                  __FUNCTION__, __LINE__, start);
+        PRINT_ERR("%s, %d, the start of mapping addr is 0x%llx, should be aligned as 2M \n", __FUNCTION__, __LINE__, start);
         return;
     }
 
     if (start >= end) {
-        PRINT_ERR("%s, %d, input parameters are error: start: 0x%llx, end: 0x%llx\n",
-                  __FUNCTION__, __LINE__, start, end);
+        PRINT_ERR("%s, %d, input parameters are error: start: 0x%llx, end: 0x%llx\n", __FUNCTION__, __LINE__, start, end);
         return;
     }
 
@@ -225,7 +223,7 @@ STATIC INLINE INT32 OsMMUFlagCheck(UINT64 flag)
     return LOS_OK;
 }
 
-VOID ArchMMUParamSet(MMU_PARAM *para)
+VOID ArchMMUParamSet(MMU_PARAM* para)
 {
     UINT64 pmdStart, pmdEnd, pmdTmp;
     UINT32 intSave;
@@ -244,16 +242,16 @@ VOID ArchMMUParamSet(MMU_PARAM *para)
         pmdStart = PMD_ADDR_GET(para->startAddr);
         pmdEnd = PMD_ADDR_GET(para->endAddr);
         for (pmdTmp = pmdStart; pmdTmp < pmdEnd; pmdTmp += BYTES_PER_ITEM) {
-            if (((*(UINTPTR *)pmdTmp) & ITEM_TYPE_MASK) != MMU_PTE_L012_DESCRIPTOR_BLOCK) {
+            if (((*(UINTPTR*)pmdTmp) & ITEM_TYPE_MASK) != MMU_PTE_L012_DESCRIPTOR_BLOCK) {
                 PRINT_ERR("not all mem belongs to pmd section(2M every item), descriptor types:0x%llx\n",
-                          ((*(UINTPTR *)pmdTmp) & ITEM_TYPE_MASK));
+                          ((*(UINTPTR*)pmdTmp) & ITEM_TYPE_MASK));
                 return;
             } else {
-                PRINT_DEBUG("pmdTmp = 0x%llx : 0x%llx\n", pmdTmp, *(UINTPTR *)pmdTmp);
+                PRINT_DEBUG("pmdTmp = 0x%llx : 0x%llx\n", pmdTmp, *(UINTPTR*)pmdTmp);
             }
         }
         OsBlockMapsSet(para->uwFlag | MMU_PTE_L012_DESCRIPTOR_BLOCK, para->startAddr, para->endAddr);
-        PRINT_DEBUG("pmdStart = 0x%llx : 0x%llx\n", pmdStart, *(UINTPTR *)pmdStart);
+        PRINT_DEBUG("pmdStart = 0x%llx : 0x%llx\n", pmdStart, *(UINTPTR*)pmdStart);
         v8_dma_clean_range(pmdStart, pmdEnd);
         __asm__ __volatile__("tlbi    vmalle1");
         return;
@@ -268,13 +266,12 @@ VOID ArchMMUParamSet(MMU_PARAM *para)
         para->endAddr = ALIGN(para->endAddr, MMU_4K);
     }
 
-    if ((para->startAddr < para->stPage->page_addr) ||
-        (para->endAddr > (para->stPage->page_length + para->stPage->page_addr))) {
+    if ((para->startAddr < para->stPage->page_addr) || (para->endAddr > (para->stPage->page_length + para->stPage->page_addr))) {
         PRINT_ERR("addr input not belongs to this second page \n"
                   "para->startAddr:0x%llx, para->stPage->page_addr:0x%llx\n",
                   para->startAddr, para->stPage->page_addr);
-        PRINT_ERR("para->endAddr:0x%llx, (para->stPage->page_length + para->stPage->page_addr):0x%llx\n",
-                  para->endAddr, para->stPage->page_length + para->stPage->page_addr);
+        PRINT_ERR("para->endAddr:0x%llx, (para->stPage->page_length + para->stPage->page_addr):0x%llx\n", para->endAddr,
+                  para->stPage->page_length + para->stPage->page_addr);
         return;
     }
     intSave = LOS_IntLock();
@@ -289,8 +286,8 @@ VOID OsKernelSecPteInit(UINTPTR startAddr, UINTPTR len, UINT64 flag)
     g_mmuOsPage.page_length = len;
     g_mmuOsPage.page_descriptor_addr = (UINTPTR)g_secondPageTableOs;
     if (g_mmuOsPage.page_length > SECOND_PAGE_TABLE_MAPPING_LEN(g_secondPageTableOs)) {
-        PRINT_ERR("the mapping size of os second page is 0x%llx, sholud be not bigger than 0x%llx\n",
-                  g_mmuOsPage.page_length, (UINT64)SECOND_PAGE_TABLE_MAPPING_LEN(g_secondPageTableOs));
+        PRINT_ERR("the mapping size of os second page is 0x%llx, sholud be not bigger than 0x%llx\n", g_mmuOsPage.page_length,
+                  (UINT64)SECOND_PAGE_TABLE_MAPPING_LEN(g_secondPageTableOs));
         return;
     }
     ArchSecPageEnable(&g_mmuOsPage, flag);
@@ -302,14 +299,14 @@ VOID OsAppSecPteInit(UINTPTR startAddr, UINTPTR len, UINT64 flag)
     g_mmuAppPage.page_length = len;
     g_mmuAppPage.page_descriptor_addr = (UINTPTR)g_secondPageTableApp;
     if (g_mmuAppPage.page_length > SECOND_PAGE_TABLE_MAPPING_LEN(g_secondPageTableApp)) {
-        PRINT_ERR("the mapping size of app second page is 0x%llx, sholud be not bigger than 0x%llx\n",
-                  g_mmuAppPage.page_length, (UINT64)SECOND_PAGE_TABLE_MAPPING_LEN(g_secondPageTableApp));
+        PRINT_ERR("the mapping size of app second page is 0x%llx, sholud be not bigger than 0x%llx\n", g_mmuAppPage.page_length,
+                  (UINT64)SECOND_PAGE_TABLE_MAPPING_LEN(g_secondPageTableApp));
         return;
     }
     ArchSecPageEnable(&g_mmuAppPage, flag);
 }
 
-VOID ArchSecPageEnable(SENCOND_PAGE *page, UINT64 flag)
+VOID ArchSecPageEnable(SENCOND_PAGE* page, UINT64 flag)
 {
     UINT32 intSave;
     MMU_PARAM para;
@@ -344,7 +341,7 @@ VOID RemapCachedMemAttr(UINTPTR physAddr, size_t size, UINTPTR flag)
     para.startAddr = physAddr;
     para.endAddr = physAddr + size;
     para.uwFlag = flag;
-    para.stPage = (SENCOND_PAGE *)&g_mmuAppPage;
+    para.stPage = (SENCOND_PAGE*)&g_mmuAppPage;
     para.uwArea = PTE_AREA;
     ArchMMUParamSet(&para);
 }
@@ -365,7 +362,7 @@ VOID ArchCodeProtect(VOID)
     para.startAddr = (unsigned long)&__text_start;
     para.endAddr = (unsigned long)&__ram_data_start;
     para.uwFlag = MMU_PTE_CACHE_RO_FLAGS;
-    para.stPage = (SENCOND_PAGE *)&g_mmuOsPage;
+    para.stPage = (SENCOND_PAGE*)&g_mmuOsPage;
     para.uwArea = PTE_AREA;
     PRINTK("para.startAddr = 0x%llx para.endAddr = 0x%llx\n", para.startAddr, para.endAddr);
     ArchMMUParamSet(&para);

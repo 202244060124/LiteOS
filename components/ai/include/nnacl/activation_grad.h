@@ -17,29 +17,30 @@
 #define MINDSPORE_LITE_NNACL_ACTIVATION_GRAD_H_
 
 #include <math.h>
-#include "nnacl/op_base.h"
-#include "nnacl/fp32/arithmetic.h"
 #include "nnacl/errorcode.h"
+#include "nnacl/fp32/arithmetic.h"
+#include "nnacl/op_base.h"
+
 
 typedef struct ActivationGradParameter {
-  OpParameter op_parameter;
-  int type_;
-  float alpha_;
+    OpParameter op_parameter;
+    int type_;
+    float alpha_;
 } ActivationGradParameter;
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-int ReluGrad(float *src0, float *src1, int length, float *dst);
-int Relu6Grad(float *src0, float *src1, int length, float *dst);
-int LReluGrad(float *src0, float *src1, int length, float *dst, float alpha);
-int SigmoidGrad(float *src0, float *src1, int length, float *dst);
-int TanhGrad(float *src0, float *src1, int length, float *dst);
-int HSwishGrad(float *src0, float *src1, int length, float *dst);
-int HSigmoidGrad(float *src0, float *src1, int length, float *dst);
+int ReluGrad(float* src0, float* src1, int length, float* dst);
+int Relu6Grad(float* src0, float* src1, int length, float* dst);
+int LReluGrad(float* src0, float* src1, int length, float* dst, float alpha);
+int SigmoidGrad(float* src0, float* src1, int length, float* dst);
+int TanhGrad(float* src0, float* src1, int length, float* dst);
+int HSwishGrad(float* src0, float* src1, int length, float* dst);
+int HSigmoidGrad(float* src0, float* src1, int length, float* dst);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_ACTIVATION_GRAD_H_
+#endif // MINDSPORE_LITE_NNACL_ACTIVATION_GRAD_H_

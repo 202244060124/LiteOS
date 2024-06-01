@@ -26,21 +26,22 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --------------------------------------------------------------------------- */
 
-#include "internals.h"
-#include "atiny_lwm2m/agenttiny.h"
 #include "atiny_context.h"
-#include "connection.h"
-#include "log/atiny_log.h"
+#include "atiny_lwm2m/agenttiny.h"
 #include "atiny_rpt.h"
+#include "connection.h"
+#include "internals.h"
+#include "log/atiny_log.h"
 #include "osdepends/atiny_osdep.h"
+
 #ifdef CONFIG_FEATURE_FOTA
 #include "atiny_fota_manager.h"
 #endif
 
 int g_reboot = 0;
 
-void observe_handle_ack(lwm2m_transaction_t *transacP, void *message);
-static int atiny_check_bootstrap_init_param(atiny_param_t *atiny_params);
+void observe_handle_ack(lwm2m_transaction_t* transacP, void* message);
+static int atiny_check_bootstrap_init_param(atiny_param_t* atiny_params);
 
 static handle_data_t g_atiny_handle;
 
@@ -52,7 +53,7 @@ static handle_data_t g_atiny_handle;
  *              fail:    ATINY_ARG_INVALID
  *
  */
-static int atiny_check_bootstrap_init_param(atiny_param_t *atiny_params)
+static int atiny_check_bootstrap_init_param(atiny_param_t* atiny_params)
 {
     if (atiny_params == NULL) {
         return ATINY_ARG_INVALID;
@@ -80,7 +81,7 @@ static int atiny_check_bootstrap_init_param(atiny_param_t *atiny_params)
 }
 
 #ifdef LWM2M_BOOTSTRAP
-static int atiny_check_psk_init_param(atiny_param_t *atiny_params)
+static int atiny_check_psk_init_param(atiny_param_t* atiny_params)
 {
     int i = 0;
     int psk_id_len = 0;
@@ -114,7 +115,7 @@ static int atiny_check_psk_init_param(atiny_param_t *atiny_params)
 }
 #endif
 
-int  atiny_init(atiny_param_t *atiny_params, void **phandle)
+int atiny_init(atiny_param_t* atiny_params, void** phandle)
 {
     int result;
 
@@ -140,7 +141,7 @@ int  atiny_init(atiny_param_t *atiny_params, void **phandle)
     }
 #endif
 
-    memset((void *)&g_atiny_handle, 0, sizeof(handle_data_t));
+    memset((void*)&g_atiny_handle, 0, sizeof(handle_data_t));
 
     g_atiny_handle.quit_sem = atiny_mutex_create();
     if (g_atiny_handle.quit_sem == NULL) {
@@ -167,23 +168,23 @@ int  atiny_init(atiny_param_t *atiny_params, void **phandle)
  *     in:  atiny_params
  *     out: lwm2m_context
  */
-void atiny_set_bootstrap_sequence_state(atiny_param_t *atiny_params, lwm2m_context_t *lwm2m_context)
+void atiny_set_bootstrap_sequence_state(atiny_param_t* atiny_params, lwm2m_context_t* lwm2m_context)
 {
     (void)lwm2m_initBootStrap(lwm2m_context, atiny_params->server_params.bootstrap_mode);
 }
 
 /*
-* modify info:
-*     date:    2018-05-30
-*     reason:  modify for bootstrap mode, origin code only support FACTORY mode.
-*/
-int atiny_init_objects(atiny_param_t *atiny_params, const atiny_device_info_t *device_info, handle_data_t *handle)
+ * modify info:
+ *     date:    2018-05-30
+ *     reason:  modify for bootstrap mode, origin code only support FACTORY mode.
+ */
+int atiny_init_objects(atiny_param_t* atiny_params, const atiny_device_info_t* device_info, handle_data_t* handle)
 {
     int result;
-    client_data_t *pdata;
-    lwm2m_context_t *lwm2m_context = NULL;
+    client_data_t* pdata;
+    lwm2m_context_t* lwm2m_context = NULL;
     uint16_t serverId = SERVER_ID;
-    char *epname = (char *)device_info->endpoint_name;
+    char* epname = (char*)device_info->endpoint_name;
 
     pdata = &handle->client_data;
     memset(pdata, 0, sizeof(client_data_t));
@@ -218,7 +219,8 @@ int atiny_init_objects(atiny_param_t *atiny_params, const atiny_device_info_t *d
     pdata->securityObjP = handle->obj_array[OBJ_SECURITY_INDEX];
 
     handle->obj_array[OBJ_SERVER_INDEX] = get_server_object(serverId, atiny_params->server_params.binding,
-        atiny_params->server_params.life_time, atiny_params->server_params.storing_cnt != 0);
+                                                            atiny_params->server_params.life_time,
+                                                            atiny_params->server_params.storing_cnt != 0);
     if (handle->obj_array[OBJ_SERVER_INDEX] == NULL) {
         ATINY_LOG(LOG_FATAL, "Failed to create server object");
         return ATINY_MALLOC_FAILED;
@@ -270,15 +272,15 @@ int atiny_init_objects(atiny_param_t *atiny_params, const atiny_device_info_t *d
     return ATINY_OK;
 }
 
-static int lwm2m_poll(handle_data_t *phandle, uint32_t *timeout)
+static int lwm2m_poll(handle_data_t* phandle, uint32_t* timeout)
 {
-    client_data_t *dataP;
+    client_data_t* dataP;
     int numBytes;
-    connection_t *connP;
-    lwm2m_context_t *contextP = phandle->lwm2m_context;
-    uint8_t *recv_buffer = phandle->recv_buffer;
+    connection_t* connP;
+    lwm2m_context_t* contextP = phandle->lwm2m_context;
+    uint8_t* recv_buffer = phandle->recv_buffer;
 
-    dataP = (client_data_t *)(contextP->userData);
+    dataP = (client_data_t*)(contextP->userData);
     connP = dataP->connList;
 
     while (connP != NULL) {
@@ -295,9 +297,9 @@ static int lwm2m_poll(handle_data_t *phandle, uint32_t *timeout)
     return ATINY_OK;
 }
 
-void atiny_destroy(void *handle)
+void atiny_destroy(void* handle)
 {
-    handle_data_t *handle_data = (handle_data_t *)handle;
+    handle_data_t* handle_data = (handle_data_t*)handle;
 
     if (handle_data == NULL) {
         return;
@@ -351,45 +353,45 @@ void atiny_destroy(void *handle)
     atiny_mutex_unlock(handle_data->quit_sem);
 }
 
-void atiny_event_handle(module_type_t type, int code, const char *arg, int arg_len)
+void atiny_event_handle(module_type_t type, int code, const char* arg, int arg_len)
 {
     switch (type) {
-    case MODULE_LWM2M: {
-        if (code == STATE_REGISTERED) {
-            atiny_event_notify(ATINY_REG_OK, NULL, 0);
+        case MODULE_LWM2M: {
+            if (code == STATE_REGISTERED) {
+                atiny_event_notify(ATINY_REG_OK, NULL, 0);
 #ifdef CONFIG_FEATURE_FOTA
-            (void)atiny_fota_manager_repot_result(atiny_fota_manager_get_instance());
+                (void)atiny_fota_manager_repot_result(atiny_fota_manager_get_instance());
 #endif
-        } else if (code == STATE_REG_FAILED) {
-            atiny_event_notify(ATINY_REG_FAIL, NULL, 0);
-        }
-        break;
-    }
-    case MODULE_NET: {
-        break;
-    }
-    case MODULE_URI: {
-        if ((arg == NULL) || (arg_len < sizeof(lwm2m_uri_t))) {
+            } else if (code == STATE_REG_FAILED) {
+                atiny_event_notify(ATINY_REG_FAIL, NULL, 0);
+            }
             break;
         }
-
-        if (code == OBSERVE_UNSUBSCRIBE) {
-            if (dm_isUriOpaqueHandle((lwm2m_uri_t *)arg)) {
-                atiny_report_type_e rpt_type = APP_DATA;
-                atiny_event_notify(ATINY_DATA_UNSUBSCRIBLE, (char *)&rpt_type, sizeof(rpt_type));
-            }
-            (void)atiny_clear_rpt_data((lwm2m_uri_t *)arg, SENT_FAIL);
-        } else if (code == OBSERVE_SUBSCRIBE) {
-            if (dm_isUriOpaqueHandle((lwm2m_uri_t *)arg)) {
-                atiny_report_type_e rpt_type = APP_DATA;
-                atiny_event_notify(ATINY_DATA_SUBSCRIBLE, (char *)&rpt_type, sizeof(rpt_type));
-            }
+        case MODULE_NET: {
+            break;
         }
+        case MODULE_URI: {
+            if ((arg == NULL) || (arg_len < sizeof(lwm2m_uri_t))) {
+                break;
+            }
 
-        break;
-    }
-    default:
-        break;
+            if (code == OBSERVE_UNSUBSCRIBE) {
+                if (dm_isUriOpaqueHandle((lwm2m_uri_t*)arg)) {
+                    atiny_report_type_e rpt_type = APP_DATA;
+                    atiny_event_notify(ATINY_DATA_UNSUBSCRIBLE, (char*)&rpt_type, sizeof(rpt_type));
+                }
+                (void)atiny_clear_rpt_data((lwm2m_uri_t*)arg, SENT_FAIL);
+            } else if (code == OBSERVE_SUBSCRIBE) {
+                if (dm_isUriOpaqueHandle((lwm2m_uri_t*)arg)) {
+                    atiny_report_type_e rpt_type = APP_DATA;
+                    atiny_event_notify(ATINY_DATA_SUBSCRIBLE, (char*)&rpt_type, sizeof(rpt_type));
+                }
+            }
+
+            break;
+        }
+        default:
+            break;
     }
 }
 
@@ -400,9 +402,9 @@ void reboot_check(void)
     }
 }
 
-static void atiny_connection_err_notify(lwm2m_context_t *context, connection_err_e err_type, bool boostrap_flag)
+static void atiny_connection_err_notify(lwm2m_context_t* context, connection_err_e err_type, bool boostrap_flag)
 {
-    handle_data_t *handle = NULL;
+    handle_data_t* handle = NULL;
 
     if ((context == NULL) || (context->userData == NULL)) {
         ATINY_LOG(LOG_ERR, "null point");
@@ -416,7 +418,7 @@ static void atiny_connection_err_notify(lwm2m_context_t *context, connection_err
     ATINY_LOG(LOG_INFO, "connection err type %d bootstrap %d", err_type, boostrap_flag);
 }
 
-static void atiny_handle_reconnect(handle_data_t *handle)
+static void atiny_handle_reconnect(handle_data_t* handle)
 {
     if (handle->reconnect_flag) {
         (void)lwm2m_reconnect(handle->lwm2m_context);
@@ -425,9 +427,9 @@ static void atiny_handle_reconnect(handle_data_t *handle)
     }
 }
 
-int atiny_bind(atiny_device_info_t *device_info, void *phandle)
+int atiny_bind(atiny_device_info_t* device_info, void* phandle)
 {
-    handle_data_t *handle = (handle_data_t *)phandle;
+    handle_data_t* handle = (handle_data_t*)phandle;
     uint32_t timeout;
     int ret;
 
@@ -462,7 +464,7 @@ int atiny_bind(atiny_device_info_t *device_info, void *phandle)
     lwm2m_register_event_handler(atiny_event_handle);
     lwm2m_register_connection_err_notify(atiny_connection_err_notify);
 
-    handle->recv_buffer = (uint8_t *)lwm2m_malloc(MAX_PACKET_SIZE);
+    handle->recv_buffer = (uint8_t*)lwm2m_malloc(MAX_PACKET_SIZE);
     if (handle->recv_buffer == NULL) {
         ATINY_LOG(LOG_FATAL, "memory not enough");
         return ATINY_MALLOC_FAILED;
@@ -473,7 +475,7 @@ int atiny_bind(atiny_device_info_t *device_info, void *phandle)
 
         (void)atiny_step_rpt(handle->lwm2m_context);
         atiny_handle_reconnect(handle);
-        (void)lwm2m_step(handle->lwm2m_context, (time_t *)&timeout);
+        (void)lwm2m_step(handle->lwm2m_context, (time_t*)&timeout);
         reboot_check();
         (void)lwm2m_poll(handle, &timeout);
     }
@@ -483,54 +485,55 @@ int atiny_bind(atiny_device_info_t *device_info, void *phandle)
     return ATINY_OK;
 }
 
-void atiny_deinit(void *phandle)
+void atiny_deinit(void* phandle)
 {
-    handle_data_t *handle;
-    void *sem = NULL;
+    handle_data_t* handle;
+    void* sem = NULL;
 
     if (phandle == NULL) {
         return;
     }
 
-    handle = (handle_data_t *)phandle;
+    handle = (handle_data_t*)phandle;
     handle->atiny_quit = 1;
     sem = handle->quit_sem;
     atiny_mutex_lock(sem);
     atiny_mutex_destroy(sem);
 }
 
-int atiny_data_report(void *phandle, data_report_t *report_data)
+int atiny_data_report(void* phandle, data_report_t* report_data)
 {
     lwm2m_uri_t uri;
     int ret;
     data_report_t data;
 
-    if ((phandle == NULL) || (report_data == NULL) || (report_data->len <= 0)
-            || (report_data->len > MAX_REPORT_DATA_LEN) || (report_data->buf == NULL)) {
+    if ((phandle == NULL) || (report_data == NULL) || (report_data->len <= 0) || (report_data->len > MAX_REPORT_DATA_LEN)
+        || (report_data->buf == NULL)) {
         ATINY_LOG(LOG_ERR, "invalid args");
         return ATINY_ARG_INVALID;
     }
 
-    memset((void *)&uri, 0, sizeof(uri));
+    memset((void*)&uri, 0, sizeof(uri));
 
     switch (report_data->type) {
-    case FIRMWARE_UPDATE_STATE: {
-        (void)lwm2m_stringToUri("/5/0/3", 6, &uri);
-        break;
-    }
-    case APP_DATA: {
-        get_resource_uri(BINARY_APP_DATA_OBJECT_ID, 0, BINARY_APP_DATA_RES_ID, &uri);
-        break;
-    }
-    default:
-        return ATINY_RESOURCE_NOT_FOUND;
+        case FIRMWARE_UPDATE_STATE: {
+            (void)lwm2m_stringToUri("/5/0/3", 6, &uri);
+            break;
+        }
+        case APP_DATA: {
+            get_resource_uri(BINARY_APP_DATA_OBJECT_ID, 0, BINARY_APP_DATA_RES_ID, &uri);
+            break;
+        }
+        default:
+            return ATINY_RESOURCE_NOT_FOUND;
     }
 
     memcpy(&data, report_data, sizeof(data));
     data.buf = lwm2m_malloc(report_data->len);
     if (data.buf == NULL) {
         ATINY_LOG(LOG_ERR, "lwm2m_malloc fail,len %d", data.len);
-        return ATINY_MALLOC_FAILED;;
+        return ATINY_MALLOC_FAILED;
+        ;
     }
     memcpy(data.buf, report_data->buf, report_data->len);
 
@@ -545,18 +548,18 @@ int atiny_data_report(void *phandle, data_report_t *report_data)
     return ret;
 }
 
-int atiny_data_change(void *phandle, const char *data_type)
+int atiny_data_change(void* phandle, const char* data_type)
 {
     lwm2m_uri_t uri;
-    handle_data_t *handle = NULL;
+    handle_data_t* handle = NULL;
 
     if ((phandle == NULL) || (data_type == NULL)) {
         ATINY_LOG(LOG_ERR, "invalid args");
         return ATINY_ARG_INVALID;
     }
 
-    memset((void *)&uri, 0, sizeof(uri));
-    handle = (handle_data_t *)phandle;
+    memset((void*)&uri, 0, sizeof(uri));
+    handle = (handle_data_t*)phandle;
 
     if (handle->lwm2m_context->state != STATE_READY) {
         ATINY_LOG(LOG_INFO, "not registered");
@@ -572,7 +575,7 @@ int atiny_data_change(void *phandle, const char *data_type)
     return ATINY_OK;
 }
 
-void observe_handle_ack(lwm2m_transaction_t *transacP, void *message)
+void observe_handle_ack(lwm2m_transaction_t* transacP, void* message)
 {
     atiny_ack_callback ack_callback = (atiny_ack_callback)transacP->cfg.callback;
     if (transacP->ack_received) {
@@ -584,9 +587,9 @@ void observe_handle_ack(lwm2m_transaction_t *transacP, void *message)
     }
 }
 
-int atiny_reconnect(void *phandle)
+int atiny_reconnect(void* phandle)
 {
-    handle_data_t *handle = (handle_data_t *)phandle;
+    handle_data_t* handle = (handle_data_t*)phandle;
 
     if (phandle == NULL) {
         ATINY_LOG(LOG_FATAL, "Parameter null");
@@ -601,4 +604,3 @@ void atiny_set_reboot_flag()
 {
     g_reboot = true;
 }
-

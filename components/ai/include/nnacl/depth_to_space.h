@@ -20,9 +20,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void DepthToSpaceForNHWC(const void *input, void *output, int *in_shape, DepthToSpaceParameter *param);
+void DepthToSpaceForNHWC(const void* input, void* output, int* in_shape, DepthToSpaceParameter* param);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_DEPTH_TO_SPACE_H_
+#endif // MINDSPORE_LITE_NNACL_DEPTH_TO_SPACE_H_

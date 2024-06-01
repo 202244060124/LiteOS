@@ -19,12 +19,12 @@
 
 #include "nnacl/op_base.h"
 typedef struct ScaleParameter {
-  OpParameter op_parameter_;
-  int outer_size_;
-  int axis_size_;
-  int inner_size_;
-  int axis_;
-  bool const_scale_;
+    OpParameter op_parameter_;
+    int outer_size_;
+    int axis_size_;
+    int inner_size_;
+    int axis_;
+    bool const_scale_;
 } ScaleParameter;
 
-#endif  // MINDSPORE_LITE_NNACL_SCALE_H_
+#endif // MINDSPORE_LITE_NNACL_SCALE_H_

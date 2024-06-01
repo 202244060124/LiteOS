@@ -38,8 +38,8 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-#define MPU_DISABLE 0
-#define MPU_ENABLE  0x7
+#define MPU_DISABLE     0
+#define MPU_ENABLE      0x7
 
 /**
  * @ingroup mpu
@@ -52,51 +52,51 @@ extern "C" {
  * Region size.
  */
 #ifndef MPU_REGION_SIZE_32B
-#define MPU_REGION_SIZE_32B   0x04
+#define MPU_REGION_SIZE_32B 0x04
 #endif
 
 #ifndef MPU_REGION_SIZE_64B
-#define MPU_REGION_SIZE_64B   0x05
+#define MPU_REGION_SIZE_64B 0x05
 #endif
 
 #ifndef MPU_REGION_SIZE_128B
-#define MPU_REGION_SIZE_128B  0x06
+#define MPU_REGION_SIZE_128B 0x06
 #endif
 
 #ifndef MPU_REGION_SIZE_256B
-#define MPU_REGION_SIZE_256B  0x07
+#define MPU_REGION_SIZE_256B 0x07
 #endif
 
 #ifndef MPU_REGION_SIZE_512B
-#define MPU_REGION_SIZE_512B  0x08
+#define MPU_REGION_SIZE_512B 0x08
 #endif
 
 #ifndef MPU_REGION_SIZE_1KB
-#define MPU_REGION_SIZE_1KB   0x09
+#define MPU_REGION_SIZE_1KB 0x09
 #endif
 
 #ifndef MPU_REGION_SIZE_2KB
-#define MPU_REGION_SIZE_2KB   0x0A
+#define MPU_REGION_SIZE_2KB 0x0A
 #endif
 
 #ifndef MPU_REGION_SIZE_4KB
-#define MPU_REGION_SIZE_4KB   0x0B
+#define MPU_REGION_SIZE_4KB 0x0B
 #endif
 
 #ifndef MPU_REGION_SIZE_8KB
-#define MPU_REGION_SIZE_8KB   0x0C
+#define MPU_REGION_SIZE_8KB 0x0C
 #endif
 
 #ifndef MPU_REGION_SIZE_16KB
-#define MPU_REGION_SIZE_16KB  0x0D
+#define MPU_REGION_SIZE_16KB 0x0D
 #endif
 
 #ifndef MPU_REGION_SIZE_32KB
-#define MPU_REGION_SIZE_32KB  0x0E
+#define MPU_REGION_SIZE_32KB 0x0E
 #endif
 
 #ifndef MPU_REGION_SIZE_64KB
-#define MPU_REGION_SIZE_64KB  0x0F
+#define MPU_REGION_SIZE_64KB 0x0F
 #endif
 
 #ifndef MPU_REGION_SIZE_128KB
@@ -112,31 +112,31 @@ extern "C" {
 #endif
 
 #ifndef MPU_REGION_SIZE_1MB
-#define MPU_REGION_SIZE_1MB   0x13
+#define MPU_REGION_SIZE_1MB 0x13
 #endif
 
 #ifndef MPU_REGION_SIZE_2MB
-#define MPU_REGION_SIZE_2MB   0x14
+#define MPU_REGION_SIZE_2MB 0x14
 #endif
 
 #ifndef MPU_REGION_SIZE_4MB
-#define MPU_REGION_SIZE_4MB   0x15
+#define MPU_REGION_SIZE_4MB 0x15
 #endif
 
 #ifndef MPU_REGION_SIZE_8MB
-#define MPU_REGION_SIZE_8MB   0x16
+#define MPU_REGION_SIZE_8MB 0x16
 #endif
 
 #ifndef MPU_REGION_SIZE_16MB
-#define MPU_REGION_SIZE_16MB  0x17
+#define MPU_REGION_SIZE_16MB 0x17
 #endif
 
 #ifndef MPU_REGION_SIZE_32MB
-#define MPU_REGION_SIZE_32MB  0x18
+#define MPU_REGION_SIZE_32MB 0x18
 #endif
 
 #ifndef MPU_REGION_SIZE_64MB
-#define MPU_REGION_SIZE_64MB  0x19
+#define MPU_REGION_SIZE_64MB 0x19
 #endif
 
 #ifndef MPU_REGION_SIZE_128MB
@@ -152,63 +152,63 @@ extern "C" {
 #endif
 
 #ifndef MPU_REGION_SIZE_1GB
-#define MPU_REGION_SIZE_1GB   0x1D
+#define MPU_REGION_SIZE_1GB 0x1D
 #endif
 
 #ifndef MPU_REGION_SIZE_2GB
-#define MPU_REGION_SIZE_2GB   0x1E
+#define MPU_REGION_SIZE_2GB 0x1E
 #endif
 
 #ifndef MPU_REGION_SIZE_4GB
-#define MPU_REGION_SIZE_4GB   0x1F
+#define MPU_REGION_SIZE_4GB 0x1F
 #endif
 
 #ifndef MPU_REGION_ENABLE
-#define MPU_REGION_ENABLE     0x01U
+#define MPU_REGION_ENABLE 0x01U
 #endif
 
 #ifndef MPU_REGION_DISABLE
-#define MPU_REGION_DISABLE    0x00U
+#define MPU_REGION_DISABLE 0x00U
 #endif
 
 #ifndef MPU_INSTRUCTION_ACCESS_ENABLE
-#define MPU_INSTRUCTION_ACCESS_ENABLE      0x00U
+#define MPU_INSTRUCTION_ACCESS_ENABLE 0x00U
 #endif
 
 #ifndef MPU_INSTRUCTION_ACCESS_DISABLE
-#define MPU_INSTRUCTION_ACCESS_DISABLE     0x01U
+#define MPU_INSTRUCTION_ACCESS_DISABLE 0x01U
 #endif
 
 #ifndef MPU_ACCESS_SHAREABLE
-#define MPU_ACCESS_SHAREABLE         0x01U
+#define MPU_ACCESS_SHAREABLE 0x01U
 #endif
 
 #ifndef MPU_ACCESS_NOT_SHAREABLE
-#define MPU_ACCESS_NOT_SHAREABLE     0x00U
+#define MPU_ACCESS_NOT_SHAREABLE 0x00U
 #endif
 
 #ifndef MPU_ACCESS_CACHEABLE
-#define MPU_ACCESS_CACHEABLE         0x01U
+#define MPU_ACCESS_CACHEABLE 0x01U
 #endif
 
 #ifndef MPU_ACCESS_NOT_CACHEABLE
-#define MPU_ACCESS_NOT_CACHEABLE     0x00U
+#define MPU_ACCESS_NOT_CACHEABLE 0x00U
 #endif
 
 #ifndef MPU_ACCESS_BUFFERABLE
-#define MPU_ACCESS_BUFFERABLE        0x01U
+#define MPU_ACCESS_BUFFERABLE 0x01U
 #endif
 
 #ifndef MPU_ACCESS_NOT_BUFFERABLE
-#define MPU_ACCESS_NOT_BUFFERABLE    0x00U
+#define MPU_ACCESS_NOT_BUFFERABLE 0x00U
 #endif
 
 #ifndef MPU_HFNMIENA_ENABLE
-#define MPU_HFNMIENA_ENABLE     0x01U
+#define MPU_HFNMIENA_ENABLE 0x01U
 #endif
 
 #ifndef MPU_HFNMIENA_DISABLE
-#define MPU_HFNMIENA_DISABLE    0x00U
+#define MPU_HFNMIENA_DISABLE 0x00U
 #endif
 
 /**
@@ -229,18 +229,18 @@ extern "C" {
  * uwAccessPermission and uwRegionSize are not arbitrary input, selected by the definition of the macro
  */
 typedef struct {
-    UINT8 number;             /* number of MPU register to be checked */
-    UINT32 baseAddress;       /* set the base address of the protected region,
-                                 the base address must be in the range of RAM */
-    UINT32 accessPermission;  /* privilege level and user level access permission */
-    BOOL sharable;            /* whether to share */
-    BOOL cachable;            /* whether cache */
-    BOOL buffable;            /* whether buffer */
-    UINT32 regionSize;        /* region size */
-    BOOL hfnmiena;            /* Whether in the NMI and hard fault service routine
-                                 is not mandatory in addition to MPU */
-    BOOL xn;                  /* To indicate whether instructions are fetchable in this region,
-                                 0 fetchable; 1: otherwise */
+    UINT8 number;            /* number of MPU register to be checked */
+    UINT32 baseAddress;      /* set the base address of the protected region,
+                                the base address must be in the range of RAM */
+    UINT32 accessPermission; /* privilege level and user level access permission */
+    BOOL sharable;           /* whether to share */
+    BOOL cachable;           /* whether cache */
+    BOOL buffable;           /* whether buffer */
+    UINT32 regionSize;       /* region size */
+    BOOL hfnmiena;           /* Whether in the NMI and hard fault service routine
+                                is not mandatory in addition to MPU */
+    BOOL xn;                 /* To indicate whether instructions are fetchable in this region,
+                                0 fetchable; 1: otherwise */
 } MPU_REGION_INFO;
 
 /**
@@ -251,7 +251,7 @@ typedef struct {
  *
  * Solution: Check whether the pointer to the input parameter is usable.
  */
-#define LOS_ERRNO_MPU_PTR_NULL LOS_ERRNO_OS_ERROR(LOS_MOD_MPU, 0x00)
+#define LOS_ERRNO_MPU_PTR_NULL                LOS_ERRNO_OS_ERROR(LOS_MOD_MPU, 0x00)
 
 /**
  * @ingroup mpu
@@ -261,7 +261,7 @@ typedef struct {
  *
  * Solution: Check base address.
  */
-#define LOS_ERRNO_MPU_INVALID_BASE_ADDRESS LOS_ERRNO_OS_ERROR(LOS_MOD_MPU, 0x01)
+#define LOS_ERRNO_MPU_INVALID_BASE_ADDRESS    LOS_ERRNO_OS_ERROR(LOS_MOD_MPU, 0x01)
 
 /**
  * @ingroup mpu
@@ -271,7 +271,7 @@ typedef struct {
  *
  * Solution: Guaranteed that the capacity is greater than or equal to 32 bytes.
  */
-#define LOS_ERRNO_MPU_INVALID_CAPACITY LOS_ERRNO_OS_ERROR(LOS_MOD_MPU, 0x02)
+#define LOS_ERRNO_MPU_INVALID_CAPACITY        LOS_ERRNO_OS_ERROR(LOS_MOD_MPU, 0x02)
 
 /**
  * @ingroup mpu
@@ -281,7 +281,7 @@ typedef struct {
  *
  * Solution: Make sure the chip is configured with MPU.
  */
-#define LOS_ERRNO_MPU_NOT_CONFIGURED LOS_ERRNO_OS_ERROR(LOS_MOD_MPU, 0x03)
+#define LOS_ERRNO_MPU_NOT_CONFIGURED          LOS_ERRNO_OS_ERROR(LOS_MOD_MPU, 0x03)
 
 /**
  * @ingroup mpu
@@ -291,7 +291,7 @@ typedef struct {
  *
  * Solution: Enter a valid number.
  */
-#define LOS_ERRNO_MPU_INVALID_NUMBER LOS_ERRNO_OS_ERROR(LOS_MOD_MPU, 0x04)
+#define LOS_ERRNO_MPU_INVALID_NUMBER          LOS_ERRNO_OS_ERROR(LOS_MOD_MPU, 0x04)
 
 /**
  * @ingroup mpu
@@ -301,7 +301,7 @@ typedef struct {
  *
  * Solution: If you want to re enable the region, please first in addition to the region.
  */
-#define LOS_ERRNO_MPU_REGION_IS_ENABLED LOS_ERRNO_OS_ERROR(LOS_MOD_MPU, 0x05)
+#define LOS_ERRNO_MPU_REGION_IS_ENABLED       LOS_ERRNO_OS_ERROR(LOS_MOD_MPU, 0x05)
 
 /**
  * @ingroup mpu
@@ -311,7 +311,7 @@ typedef struct {
  *
  * Solution: If you want to re enable the region, please first in addition to the region.
  */
-#define LOS_ERRNO_MPU_REGION_IS_DISABLED LOS_ERRNO_OS_ERROR(LOS_MOD_MPU, 0x06)
+#define LOS_ERRNO_MPU_REGION_IS_DISABLED      LOS_ERRNO_OS_ERROR(LOS_MOD_MPU, 0x06)
 
 /**
  * @ingroup mpu
@@ -321,7 +321,7 @@ typedef struct {
  *
  * Solution: Checking whether the access is correct.
  */
-#define LOS_ERRNO_MPU_REGION_INVALID_ACCESS LOS_ERRNO_OS_ERROR(LOS_MOD_MPU, 0x07)
+#define LOS_ERRNO_MPU_REGION_INVALID_ACCESS   LOS_ERRNO_OS_ERROR(LOS_MOD_MPU, 0x07)
 
 /**
  * @ingroup mpu
@@ -341,7 +341,7 @@ typedef struct {
  *
  * Solution: baseAddress + regionSize must not exceed RAM Max address
  */
-#define LOS_ERRNO_MPU_REGION_SIZE_IS_TOO_BIG LOS_ERRNO_OS_ERROR(LOS_MOD_MPU, 0x09)
+#define LOS_ERRNO_MPU_REGION_SIZE_IS_TOO_BIG  LOS_ERRNO_OS_ERROR(LOS_MOD_MPU, 0x09)
 
 /**
  * @ingroup mpu
@@ -368,7 +368,7 @@ typedef struct {
  * <ul><li>mpu.h: the header file that contains the API declaration.</li></ul>
  * @since Huawei LiteOS V100R001C00
  */
-extern UINT32 ArchProtectionRegionSet(MPU_REGION_INFO *mpuInfo);
+extern UINT32 ArchProtectionRegionSet(MPU_REGION_INFO* mpuInfo);
 
 /**
  * @ingroup mpu

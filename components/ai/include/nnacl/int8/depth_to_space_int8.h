@@ -22,10 +22,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void DepthToSpaceForNHWCInt8(const int8_t *input, int8_t *output, int *in_shape, DepthToSpaceParameter *param,
-                             QuantArg *in_quant_arg, QuantArg *out_quant_arg);
+void DepthToSpaceForNHWCInt8(const int8_t* input, int8_t* output, int* in_shape, DepthToSpaceParameter* param, QuantArg* in_quant_arg,
+                             QuantArg* out_quant_arg);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_INT8_DEPTH_TO_SPACE_INT8_H_
+#endif // MINDSPORE_LITE_NNACL_INT8_DEPTH_TO_SPACE_INT8_H_

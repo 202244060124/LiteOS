@@ -21,7 +21,7 @@
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-static void theme_apply(lv_obj_t * obj, lv_theme_style_t name);
+static void theme_apply(lv_obj_t* obj, lv_theme_style_t name);
 
 /**********************
  *  STATIC VARIABLES
@@ -36,61 +36,60 @@ static lv_style_t style_round;
 static lv_style_t style_no_radius;
 static lv_style_t style_fg_color;
 static lv_style_t style_border_none;
-static lv_style_t style_big_line_space;       /*In roller or dropdownlist*/
+static lv_style_t style_big_line_space; /*In roller or dropdownlist*/
 static lv_style_t style_pad_none;
 static lv_style_t style_pad_normal;
 static lv_style_t style_pad_small;
 static lv_style_t style_pad_inner;
 
 #if LV_USE_ARC
-    static lv_style_t style_arc_bg, style_arc_indic;
+static lv_style_t style_arc_bg, style_arc_indic;
 #endif
 
 #if LV_USE_LIST
-    static lv_style_t style_list_btn;
+static lv_style_t style_list_btn;
 #endif
 
 #if LV_USE_CALENDAR
-    static lv_style_t style_calendar_date;
+static lv_style_t style_calendar_date;
 #endif
 
 #if LV_USE_CHART
-    static lv_style_t style_chart_series;
+static lv_style_t style_chart_series;
 #endif
 
 #if LV_USE_LINEMETER
-    static lv_style_t style_linemeter;
+static lv_style_t style_linemeter;
 #endif
 
 #if LV_USE_GAUGE
-    static lv_style_t style_gauge_needle, style_gauge_major;
+static lv_style_t style_gauge_needle, style_gauge_major;
 #endif
 
 #if LV_USE_PAGE
-    static lv_style_t style_sb;
+static lv_style_t style_sb;
 #endif
 
 #if LV_USE_SPINNER
-    static lv_style_t style_tick_line;
+static lv_style_t style_tick_line;
 #endif
 
 #if LV_USE_TEXTAREA
-    static lv_style_t style_ta_cursor;
+static lv_style_t style_ta_cursor;
 #endif
 
 #if LV_USE_TABVIEW
-    static lv_style_t style_tab_bg;
+static lv_style_t style_tab_bg;
 #endif
-
 
 /**********************
  *      MACROS
  **********************/
-#define COLOR_INV(c)    ((c).ch.red == 0 ? LV_COLOR_WHITE : LV_COLOR_BLACK)
-#define BG_COLOR        theme.color_primary.ch.red == 0 ? LV_COLOR_WHITE : LV_COLOR_BLACK
-#define FG_COLOR        COLOR_INV(BG_COLOR)
-#define RADIUS          (LV_MATH_MAX(LV_DPI / 30, 2))
-#define BORDER_WIDTH    (LV_MATH_MAX(LV_DPI / 60, 1))
+#define COLOR_INV(c) ((c).ch.red == 0 ? LV_COLOR_WHITE : LV_COLOR_BLACK)
+#define BG_COLOR     theme.color_primary.ch.red == 0 ? LV_COLOR_WHITE : LV_COLOR_BLACK
+#define FG_COLOR     COLOR_INV(BG_COLOR)
+#define RADIUS       (LV_MATH_MAX(LV_DPI / 30, 2))
+#define BORDER_WIDTH (LV_MATH_MAX(LV_DPI / 60, 1))
 
 /**********************
  *   STATIC FUNCTIONS
@@ -127,7 +126,6 @@ static void basic_init(void)
     lv_style_init(&style_clip_corner);
     lv_style_set_clip_corner(&style_clip_corner, LV_STATE_DEFAULT, true);
 
-
     lv_style_init(&style_btn);
     lv_style_set_radius(&style_btn, LV_STATE_DEFAULT, RADIUS);
     lv_style_set_border_width(&style_btn, LV_STATE_DEFAULT, BORDER_WIDTH);
@@ -155,10 +153,8 @@ static void basic_init(void)
     lv_style_init(&style_no_radius);
     lv_style_set_radius(&style_no_radius, LV_STATE_DEFAULT, 0);
 
-
     lv_style_init(&style_border_none);
     lv_style_set_border_width(&style_border_none, LV_STATE_DEFAULT, 0);
-
 
     lv_style_init(&style_fg_color);
     lv_style_set_bg_color(&style_fg_color, LV_STATE_DEFAULT, FG_COLOR);
@@ -221,14 +217,12 @@ static void btn_init(void)
 #endif
 }
 
-
 static void btnmatrix_init(void)
 {
 #if LV_USE_BTNMATRIX
 
 #endif
 }
-
 
 static void calendar_init(void)
 {
@@ -238,8 +232,7 @@ static void calendar_init(void)
     lv_style_set_value_font(&style_calendar_date, LV_STATE_CHECKED, LV_THEME_DEFAULT_FONT_TITLE);
     lv_style_set_value_align(&style_calendar_date, LV_STATE_CHECKED, LV_ALIGN_IN_TOP_RIGHT);
     lv_style_set_value_color(&style_calendar_date, LV_STATE_CHECKED, FG_COLOR);
-    lv_style_set_value_ofs_y(&style_calendar_date, LV_STATE_CHECKED,
-                             - lv_font_get_line_height(LV_THEME_DEFAULT_FONT_TITLE) / 4);
+    lv_style_set_value_ofs_y(&style_calendar_date, LV_STATE_CHECKED, -lv_font_get_line_height(LV_THEME_DEFAULT_FONT_TITLE) / 4);
     lv_style_set_bg_color(&style_calendar_date, LV_STATE_CHECKED, BG_COLOR);
     lv_style_set_text_color(&style_calendar_date, LV_STATE_CHECKED, FG_COLOR);
     lv_style_set_value_color(&style_calendar_date, LV_STATE_CHECKED | LV_STATE_PRESSED, BG_COLOR);
@@ -262,7 +255,6 @@ static void chart_init(void)
 #endif
 }
 
-
 static void cpicker_init(void)
 {
 #if LV_USE_CPICKER
@@ -277,14 +269,12 @@ static void checkbox_init(void)
 #endif
 }
 
-
 static void cont_init(void)
 {
 #if LV_USE_CONT != 0
 
 #endif
 }
-
 
 static void gauge_init(void)
 {
@@ -320,7 +310,6 @@ static void label_init(void)
 
 #endif
 }
-
 
 static void linemeter_init(void)
 {
@@ -372,14 +361,12 @@ static void switch_init(void)
 #endif
 }
 
-
 static void spinbox_init(void)
 {
 #if LV_USE_SPINBOX
 
 #endif
 }
-
 
 static void spinner_init(void)
 {
@@ -471,7 +458,6 @@ static void win_init(void)
 #endif
 }
 
-
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/
@@ -487,9 +473,8 @@ static void win_init(void)
  * @param font_title pointer to a extra large font
  * @return a pointer to reference this theme later
  */
-lv_theme_t * lv_theme_mono_init(lv_color_t color_primary, lv_color_t color_secondary, uint32_t flags,
-                                const lv_font_t * font_small, const lv_font_t * font_normal, const lv_font_t * font_subtitle,
-                                const lv_font_t * font_title)
+lv_theme_t* lv_theme_mono_init(lv_color_t color_primary, lv_color_t color_secondary, uint32_t flags, const lv_font_t* font_small,
+                               const lv_font_t* font_normal, const lv_font_t* font_subtitle, const lv_font_t* font_title)
 {
     theme.color_primary = color_primary;
     theme.color_secondary = color_secondary;
@@ -536,12 +521,11 @@ lv_theme_t * lv_theme_mono_init(lv_color_t color_primary, lv_color_t color_secon
     return &theme;
 }
 
-
-static void theme_apply(lv_obj_t * obj, lv_theme_style_t name)
+static void theme_apply(lv_obj_t* obj, lv_theme_style_t name)
 {
-    lv_style_list_t * list;
+    lv_style_list_t* list;
 
-    switch(name) {
+    switch (name) {
         case LV_THEME_NONE:
             break;
 
@@ -821,7 +805,6 @@ static void theme_apply(lv_obj_t * obj, lv_theme_style_t name)
             break;
 #endif
 
-
 #if LV_USE_ROLLER
         case LV_THEME_ROLLER:
             lv_obj_clean_style_list(obj, LV_ROLLER_PART_BG);
@@ -836,7 +819,6 @@ static void theme_apply(lv_obj_t * obj, lv_theme_style_t name)
             _lv_style_list_add_style(list, &style_no_radius);
             break;
 #endif
-
 
 #if LV_USE_OBJMASK
         case LV_THEME_OBJMASK:
@@ -983,7 +965,6 @@ static void theme_apply(lv_obj_t * obj, lv_theme_style_t name)
             break;
 #endif
 
-
 #if LV_USE_SPINBOX
         case LV_THEME_SPINBOX:
             lv_obj_clean_style_list(obj, LV_SPINBOX_PART_BG);
@@ -1073,15 +1054,11 @@ static void theme_apply(lv_obj_t * obj, lv_theme_style_t name)
             break;
     }
 
-
     lv_obj_refresh_style(obj, LV_STYLE_PROP_ALL);
-
-
 }
 
 /**********************
  *   STATIC FUNCTIONS
  **********************/
-
 
 #endif

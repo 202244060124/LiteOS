@@ -22,9 +22,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void Concat(void **input, int input_num, int axis, int **inputs_output_shape, size_t shape_size, void *output);
+void Concat(void** input, int input_num, int axis, int** inputs_output_shape, size_t shape_size, void* output);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_FP32_CONCAT_H_
+#endif // MINDSPORE_LITE_NNACL_FP32_CONCAT_H_

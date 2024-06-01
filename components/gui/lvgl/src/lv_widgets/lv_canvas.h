@@ -18,8 +18,9 @@ extern "C" {
 #if LV_USE_CANVAS != 0
 
 #include "../lv_core/lv_obj.h"
-#include "../lv_widgets/lv_img.h"
 #include "../lv_draw/lv_draw_img.h"
+#include "../lv_widgets/lv_img.h"
+
 
 /*********************
  *      DEFINES
@@ -51,7 +52,7 @@ typedef uint8_t lv_canvas_part_t;
  * @param copy pointer to a canvas object, if not NULL then the new object will be copied from it
  * @return pointer to the created canvas
  */
-lv_obj_t * lv_canvas_create(lv_obj_t * par, const lv_obj_t * copy);
+lv_obj_t* lv_canvas_create(lv_obj_t* par, const lv_obj_t* copy);
 
 /*=====================
  * Setter functions
@@ -69,7 +70,7 @@ lv_obj_t * lv_canvas_create(lv_obj_t * par, const lv_obj_t * copy);
  * @param h height of the canvas
  * @param cf color format. `LV_IMG_CF_...`
  */
-void lv_canvas_set_buffer(lv_obj_t * canvas, void * buf, lv_coord_t w, lv_coord_t h, lv_img_cf_t cf);
+void lv_canvas_set_buffer(lv_obj_t* canvas, void* buf, lv_coord_t w, lv_coord_t h, lv_img_cf_t cf);
 
 /**
  * Set the color of a pixel on the canvas
@@ -78,7 +79,7 @@ void lv_canvas_set_buffer(lv_obj_t * canvas, void * buf, lv_coord_t w, lv_coord_
  * @param y x coordinate of the point to set
  * @param c color of the point
  */
-void lv_canvas_set_px(lv_obj_t * canvas, lv_coord_t x, lv_coord_t y, lv_color_t c);
+void lv_canvas_set_px(lv_obj_t* canvas, lv_coord_t x, lv_coord_t y, lv_color_t c);
 
 /**
  * Set the palette color of a canvas with index format. Valid only for `LV_IMG_CF_INDEXED1/2/4/8`
@@ -90,7 +91,7 @@ void lv_canvas_set_px(lv_obj_t * canvas, lv_coord_t x, lv_coord_t y, lv_color_t 
  *   - for `LV_IMG_CF_INDEXED8`: 0..255
  * @param c the color to set
  */
-void lv_canvas_set_palette(lv_obj_t * canvas, uint8_t id, lv_color_t c);
+void lv_canvas_set_palette(lv_obj_t* canvas, uint8_t id, lv_color_t c);
 
 /*=====================
  * Getter functions
@@ -103,14 +104,14 @@ void lv_canvas_set_palette(lv_obj_t * canvas, uint8_t id, lv_color_t c);
  * @param y x coordinate of the point to set
  * @return color of the point
  */
-lv_color_t lv_canvas_get_px(lv_obj_t * canvas, lv_coord_t x, lv_coord_t y);
+lv_color_t lv_canvas_get_px(lv_obj_t* canvas, lv_coord_t x, lv_coord_t y);
 
 /**
  * Get the image of the canvas as a pointer to an `lv_img_dsc_t` variable.
  * @param canvas pointer to a canvas object
  * @return pointer to the image descriptor.
  */
-lv_img_dsc_t * lv_canvas_get_img(lv_obj_t * canvas);
+lv_img_dsc_t* lv_canvas_get_img(lv_obj_t* canvas);
 
 /*=====================
  * Other functions
@@ -126,8 +127,7 @@ lv_img_dsc_t * lv_canvas_get_img(lv_obj_t * canvas);
  * @param w width of the buffer to copy
  * @param h height of the buffer to copy
  */
-void lv_canvas_copy_buf(lv_obj_t * canvas, const void * to_copy, lv_coord_t x, lv_coord_t y, lv_coord_t w,
-                        lv_coord_t h);
+void lv_canvas_copy_buf(lv_obj_t* canvas, const void* to_copy, lv_coord_t x, lv_coord_t y, lv_coord_t w, lv_coord_t h);
 
 /**
  * Transform and image and store the result on a canvas.
@@ -144,18 +144,15 @@ void lv_canvas_copy_buf(lv_obj_t * canvas, const void * to_copy, lv_coord_t x, l
  *                Set to `source height / 2` to rotate around the center
  * @param antialias apply anti-aliasing during the transformation. Looks better but slower.
  */
-void lv_canvas_transform(lv_obj_t * canvas, lv_img_dsc_t * img, int16_t angle, uint16_t zoom, lv_coord_t offset_x,
-                         lv_coord_t offset_y,
+void lv_canvas_transform(lv_obj_t* canvas, lv_img_dsc_t* img, int16_t angle, uint16_t zoom, lv_coord_t offset_x, lv_coord_t offset_y,
                          int32_t pivot_x, int32_t pivot_y, bool antialias);
-
-
 
 /**
  * Apply horizontal blur on the canvas
  * @param canvas pointer to a canvas object
  * @param r radius of the blur
  */
-void lv_canvas_blur_hor(lv_obj_t * canvas, const lv_area_t * area, uint16_t r);
+void lv_canvas_blur_hor(lv_obj_t* canvas, const lv_area_t* area, uint16_t r);
 
 /**
  * Apply vertical blur on the canvas
@@ -163,14 +160,14 @@ void lv_canvas_blur_hor(lv_obj_t * canvas, const lv_area_t * area, uint16_t r);
  * @param area the area to blur. If `NULL` the whole canvas will be blurred.
  * @param r radius of the blur
  */
-void lv_canvas_blur_ver(lv_obj_t * canvas, const lv_area_t * area, uint16_t r);
+void lv_canvas_blur_ver(lv_obj_t* canvas, const lv_area_t* area, uint16_t r);
 
 /**
  * Fill the canvas with color
  * @param canvas pointer to a canvas
  * @param color the background color
  */
-void lv_canvas_fill_bg(lv_obj_t * canvas, lv_color_t color, lv_opa_t opa);
+void lv_canvas_fill_bg(lv_obj_t* canvas, lv_color_t color, lv_opa_t opa);
 
 /**
  * Draw a rectangle on the canvas
@@ -181,8 +178,7 @@ void lv_canvas_fill_bg(lv_obj_t * canvas, lv_color_t color, lv_opa_t opa);
  * @param h height of the rectangle
  * @param style style of the rectangle (`body` properties are used except `padding`)
  */
-void lv_canvas_draw_rect(lv_obj_t * canvas, lv_coord_t x, lv_coord_t y, lv_coord_t w, lv_coord_t h,
-                         lv_draw_rect_dsc_t * rect_dsc);
+void lv_canvas_draw_rect(lv_obj_t* canvas, lv_coord_t x, lv_coord_t y, lv_coord_t w, lv_coord_t h, lv_draw_rect_dsc_t* rect_dsc);
 
 /**
  * Draw a text on the canvas.
@@ -194,9 +190,8 @@ void lv_canvas_draw_rect(lv_obj_t * canvas, lv_coord_t x, lv_coord_t y, lv_coord
  * @param txt text to display
  * @param align align of the text (`LV_LABEL_ALIGN_LEFT/RIGHT/CENTER`)
  */
-void lv_canvas_draw_text(lv_obj_t * canvas, lv_coord_t x, lv_coord_t y, lv_coord_t max_w,
-                         lv_draw_label_dsc_t * label_draw_dsc,
-                         const char * txt, lv_label_align_t align);
+void lv_canvas_draw_text(lv_obj_t* canvas, lv_coord_t x, lv_coord_t y, lv_coord_t max_w, lv_draw_label_dsc_t* label_draw_dsc,
+                         const char* txt, lv_label_align_t align);
 
 /**
  * Draw an image on the canvas
@@ -204,8 +199,7 @@ void lv_canvas_draw_text(lv_obj_t * canvas, lv_coord_t x, lv_coord_t y, lv_coord
  * @param src image source. Can be a pointer an `lv_img_dsc_t` variable or a path an image.
  * @param style style of the image (`image` properties are used)
  */
-void lv_canvas_draw_img(lv_obj_t * canvas, lv_coord_t x, lv_coord_t y, const void * src,
-                        lv_draw_img_dsc_t * img_draw_dsc);
+void lv_canvas_draw_img(lv_obj_t* canvas, lv_coord_t x, lv_coord_t y, const void* src, lv_draw_img_dsc_t* img_draw_dsc);
 
 /**
  * Draw a line on the canvas
@@ -214,8 +208,7 @@ void lv_canvas_draw_img(lv_obj_t * canvas, lv_coord_t x, lv_coord_t y, const voi
  * @param point_cnt number of points
  * @param style style of the line (`line` properties are used)
  */
-void lv_canvas_draw_line(lv_obj_t * canvas, const lv_point_t points[], uint32_t point_cnt,
-                         lv_draw_line_dsc_t * line_draw_dsc);
+void lv_canvas_draw_line(lv_obj_t* canvas, const lv_point_t points[], uint32_t point_cnt, lv_draw_line_dsc_t* line_draw_dsc);
 
 /**
  * Draw a polygon on the canvas
@@ -224,8 +217,7 @@ void lv_canvas_draw_line(lv_obj_t * canvas, const lv_point_t points[], uint32_t 
  * @param point_cnt number of points
  * @param style style of the polygon (`body.main_color` and `body.opa` is used)
  */
-void lv_canvas_draw_polygon(lv_obj_t * canvas, const lv_point_t points[], uint32_t point_cnt,
-                            lv_draw_rect_dsc_t * poly_draw_dsc);
+void lv_canvas_draw_polygon(lv_obj_t* canvas, const lv_point_t points[], uint32_t point_cnt, lv_draw_rect_dsc_t* poly_draw_dsc);
 
 /**
  * Draw an arc on the canvas
@@ -237,27 +229,27 @@ void lv_canvas_draw_polygon(lv_obj_t * canvas, const lv_point_t points[], uint32
  * @param end_angle end angle in degrees
  * @param style style of the polygon (`body.main_color` and `body.opa` is used)
  */
-void lv_canvas_draw_arc(lv_obj_t * canvas, lv_coord_t x, lv_coord_t y, lv_coord_t r, int32_t start_angle,
-                        int32_t end_angle, lv_draw_line_dsc_t * arc_draw_dsc);
+void lv_canvas_draw_arc(lv_obj_t* canvas, lv_coord_t x, lv_coord_t y, lv_coord_t r, int32_t start_angle, int32_t end_angle,
+                        lv_draw_line_dsc_t* arc_draw_dsc);
 
 /**********************
  *      MACROS
  **********************/
-#define LV_CANVAS_BUF_SIZE_TRUE_COLOR(w, h) LV_IMG_BUF_SIZE_TRUE_COLOR(w, h)
+#define LV_CANVAS_BUF_SIZE_TRUE_COLOR(w, h)              LV_IMG_BUF_SIZE_TRUE_COLOR(w, h)
 #define LV_CANVAS_BUF_SIZE_TRUE_COLOR_CHROMA_KEYED(w, h) LV_IMG_BUF_SIZE_TRUE_COLOR_CHROMA_KEYED(w, h)
-#define LV_CANVAS_BUF_SIZE_TRUE_COLOR_ALPHA(w, h) LV_IMG_BUF_SIZE_TRUE_COLOR_ALPHA(w, h)
+#define LV_CANVAS_BUF_SIZE_TRUE_COLOR_ALPHA(w, h)        LV_IMG_BUF_SIZE_TRUE_COLOR_ALPHA(w, h)
 
 /*+ 1: to be sure no fractional row*/
-#define LV_CANVAS_BUF_SIZE_ALPHA_1BIT(w, h) LV_IMG_BUF_SIZE_ALPHA_1BIT(w, h)
-#define LV_CANVAS_BUF_SIZE_ALPHA_2BIT(w, h) LV_IMG_BUF_SIZE_ALPHA_2BIT(w, h)
-#define LV_CANVAS_BUF_SIZE_ALPHA_4BIT(w, h) LV_IMG_BUF_SIZE_ALPHA_4BIT(w, h)
-#define LV_CANVAS_BUF_SIZE_ALPHA_8BIT(w, h) LV_IMG_BUF_SIZE_ALPHA_8BIT(w, h)
+#define LV_CANVAS_BUF_SIZE_ALPHA_1BIT(w, h)              LV_IMG_BUF_SIZE_ALPHA_1BIT(w, h)
+#define LV_CANVAS_BUF_SIZE_ALPHA_2BIT(w, h)              LV_IMG_BUF_SIZE_ALPHA_2BIT(w, h)
+#define LV_CANVAS_BUF_SIZE_ALPHA_4BIT(w, h)              LV_IMG_BUF_SIZE_ALPHA_4BIT(w, h)
+#define LV_CANVAS_BUF_SIZE_ALPHA_8BIT(w, h)              LV_IMG_BUF_SIZE_ALPHA_8BIT(w, h)
 
 /*4 * X: for palette*/
-#define LV_CANVAS_BUF_SIZE_INDEXED_1BIT(w, h) LV_IMG_BUF_SIZE_INDEXED_1BIT(w, h)
-#define LV_CANVAS_BUF_SIZE_INDEXED_2BIT(w, h) LV_IMG_BUF_SIZE_INDEXED_2BIT(w, h)
-#define LV_CANVAS_BUF_SIZE_INDEXED_4BIT(w, h) LV_IMG_BUF_SIZE_INDEXED_4BIT(w, h)
-#define LV_CANVAS_BUF_SIZE_INDEXED_8BIT(w, h) LV_IMG_BUF_SIZE_INDEXED_8BIT(w, h)
+#define LV_CANVAS_BUF_SIZE_INDEXED_1BIT(w, h)            LV_IMG_BUF_SIZE_INDEXED_1BIT(w, h)
+#define LV_CANVAS_BUF_SIZE_INDEXED_2BIT(w, h)            LV_IMG_BUF_SIZE_INDEXED_2BIT(w, h)
+#define LV_CANVAS_BUF_SIZE_INDEXED_4BIT(w, h)            LV_IMG_BUF_SIZE_INDEXED_4BIT(w, h)
+#define LV_CANVAS_BUF_SIZE_INDEXED_8BIT(w, h)            LV_IMG_BUF_SIZE_INDEXED_8BIT(w, h)
 
 #endif /*LV_USE_CANVAS*/
 

@@ -17,18 +17,19 @@
 #ifndef MINDSPORE_LITE_NNACL_INT8_BATCHNORM_H_
 #define MINDSPORE_LITE_NNACL_INT8_BATCHNORM_H_
 
-#include "nnacl/op_base.h"
 #include "nnacl/batchnorm_parameter.h"
+#include "nnacl/op_base.h"
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void BatchNormInt8(int8_t *output_ptr, const int8_t *input_ptr, const float *alpha_ptr, const float *beta_ptr,
-                   int task_id, BatchNormParameter *param);
+void BatchNormInt8(int8_t* output_ptr, const int8_t* input_ptr, const float* alpha_ptr, const float* beta_ptr, int task_id,
+                   BatchNormParameter* param);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_INT8_BATCHNORM_H_
+#endif // MINDSPORE_LITE_NNACL_INT8_BATCHNORM_H_

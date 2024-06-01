@@ -34,9 +34,10 @@
 #ifndef _ARCH_TASK_H
 #define _ARCH_TASK_H
 
-#include "los_typedef.h"
 #include "arch/cpu.h"
 #include "arch/regs.h"
+#include "los_typedef.h"
+
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -46,22 +47,21 @@ extern "C" {
 
 #define LOSCFG_STACK_POINT_ALIGN_SIZE (sizeof(UINTPTR) * 2)
 
-extern VOID *g_runTask;
-extern VOID *g_oldTask;
+extern VOID* g_runTask;
+extern VOID* g_oldTask;
 
-STATIC INLINE VOID *ArchCurrTaskGet(VOID)
+STATIC INLINE VOID* ArchCurrTaskGet(VOID)
 {
     return g_runTask;
 }
 
-STATIC INLINE VOID ArchCurrTaskSet(VOID *val)
+STATIC INLINE VOID ArchCurrTaskSet(VOID* val)
 {
     g_runTask = val;
 }
 
 typedef struct tagContext {
-#if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)) && \
-     (defined (__FPU_USED) && (__FPU_USED == 1U)))
+#if ((defined(__FPU_PRESENT) && (__FPU_PRESENT == 1U)) && (defined(__FPU_USED) && (__FPU_USED == 1U)))
     UINT32 S16;
     UINT32 S17;
     UINT32 S18;
@@ -96,8 +96,7 @@ typedef struct tagContext {
     UINT32 LR;
     UINT32 PC;
     UINT32 xPSR;
-#if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)) && \
-     (defined (__FPU_USED) && (__FPU_USED == 1U)))
+#if ((defined(__FPU_PRESENT) && (__FPU_PRESENT == 1U)) && (defined(__FPU_USED) && (__FPU_USED == 1U)))
     UINT32 S0;
     UINT32 S1;
     UINT32 S2;
@@ -126,7 +125,7 @@ typedef struct tagContext {
  *               topStack  -- stack top of task (low address)
  * Return      : pointer to the task context
  */
-extern VOID *OsTaskStackInit(UINT32 taskId, UINT32 stackSize, VOID *topStack);
+extern VOID* OsTaskStackInit(UINT32 taskId, UINT32 stackSize, VOID* topStack);
 
 #ifdef __cplusplus
 #if __cplusplus

@@ -17,27 +17,28 @@
 #define MINDSPORE_LITE_NNACL_INT8_RELU_INT8_H_
 
 #include <math.h>
-#include "nnacl/op_base.h"
 #include "nnacl/errorcode.h"
+#include "nnacl/op_base.h"
 #include "nnacl/quantization/fixed_point.h"
 #include "nnacl/quantization/quantize.h"
 
+
 typedef struct ReluXQuantArg {
-  QuantArg input_arg;
-  QuantArg output_arg;
-  int input_multiplier_;
-  int left_shift_;
-  int right_shift_;
-  int quantized_output_min;
-  int quantized_output_max;
+    QuantArg input_arg;
+    QuantArg output_arg;
+    int input_multiplier_;
+    int left_shift_;
+    int right_shift_;
+    int quantized_output_min;
+    int quantized_output_max;
 } ReluXQuantArg;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-void ReluXInt8(const int8_t *src, int length, int8_t *dst, ReluXQuantArg *arg);
+void ReluXInt8(const int8_t* src, int length, int8_t* dst, ReluXQuantArg* arg);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_INT8_RELU_INT8_H_
+#endif // MINDSPORE_LITE_NNACL_INT8_RELU_INT8_H_

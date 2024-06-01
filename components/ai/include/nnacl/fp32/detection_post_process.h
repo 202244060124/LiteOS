@@ -17,26 +17,27 @@
 #ifndef MINDSPORE_LITE_NNACL_FP32_DETECTION_POST_PROCESS_H_
 #define MINDSPORE_LITE_NNACL_FP32_DETECTION_POST_PROCESS_H_
 
-#include "nnacl/op_base.h"
 #include "nnacl/detection_post_process_parameter.h"
+#include "nnacl/op_base.h"
+
 
 typedef struct {
-  float y;
-  float x;
-  float h;
-  float w;
+    float y;
+    float x;
+    float h;
+    float w;
 } BboxCenter;
 
 typedef struct {
-  float ymin;
-  float xmin;
-  float ymax;
-  float xmax;
+    float ymin;
+    float xmin;
+    float ymax;
+    float xmax;
 } BboxCorner;
 
 typedef struct {
-  float score;
-  int index;
+    float score;
+    int index;
 } ScoreWithIndex;
 
 #ifdef __cplusplus
@@ -47,11 +48,11 @@ void nms_multi_classes_regular();
 
 void nms_multi_classes_fase();
 
-int DetectionPostProcess(const int num_boxes, const int num_classes_with_bg, float *input_boxes, float *input_scores,
-                         float *input_anchors, float *output_boxes, float *output_classes, float *output_scores,
-                         float *output_num, DetectionPostProcessParameter *param);
+int DetectionPostProcess(const int num_boxes, const int num_classes_with_bg, float* input_boxes, float* input_scores, float* input_anchors,
+                         float* output_boxes, float* output_classes, float* output_scores, float* output_num,
+                         DetectionPostProcessParameter* param);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_FP32_DETECTION_POST_PROCESS_H_
+#endif // MINDSPORE_LITE_NNACL_FP32_DETECTION_POST_PROCESS_H_

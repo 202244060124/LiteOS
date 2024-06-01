@@ -20,17 +20,17 @@
 #include "nnacl/op_base.h"
 
 typedef struct SqueezeParameter {
-  OpParameter op_parameter_;
-  int axes_[8];
+    OpParameter op_parameter_;
+    int axes_[8];
 } SqueezeParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-int DoSqueeze(float *input_ptr, float *output_ptr, size_t data_size);
-int DoSqueezeInt32(int32_t *in_data, int32_t *out_data, size_t data_size);
+int DoSqueeze(float* input_ptr, float* output_ptr, size_t data_size);
+int DoSqueezeInt32(int32_t* in_data, int32_t* out_data, size_t data_size);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_SQUEEZE_H_
+#endif // MINDSPORE_LITE_NNACL_SQUEEZE_H_

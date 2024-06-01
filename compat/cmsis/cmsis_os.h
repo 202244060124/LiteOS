@@ -39,5 +39,4 @@
 #error CMSIS Only Support Version 1.0 or 2.0
 #endif
 
-#endif  // _CMSIS_OS_H
-
+#endif // _CMSIS_OS_H

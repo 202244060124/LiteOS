@@ -19,19 +19,18 @@
 #include "nnacl/op_base.h"
 
 typedef struct StackParameter {
-  OpParameter op_parameter_;
-  int32_t axis_;
+    OpParameter op_parameter_;
+    int32_t axis_;
 } StackParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-void DoStack(const float *const *inputs, size_t input_num, int *in_shape, size_t shape_size, int axis, float *output);
-void DoStackInt32(const int32_t *const *inputs, size_t input_num, int *in_shape, size_t shape_size, int axis,
-                  int32_t *output);
-void DoStackOneInput(const int8_t *input, int8_t *output, size_t data_size);
+void DoStack(const float* const* inputs, size_t input_num, int* in_shape, size_t shape_size, int axis, float* output);
+void DoStackInt32(const int32_t* const* inputs, size_t input_num, int* in_shape, size_t shape_size, int axis, int32_t* output);
+void DoStackOneInput(const int8_t* input, int8_t* output, size_t data_size);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_FP32_STACK_H_
+#endif // MINDSPORE_LITE_NNACL_FP32_STACK_H_

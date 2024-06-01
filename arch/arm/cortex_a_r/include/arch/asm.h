@@ -37,11 +37,11 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-#define FUNCTION(x)     \
-    .global x;          \
-    .text;              \
-    .code 32;           \
-x:                      \
+#define FUNCTION(x) \
+    .global x;      \
+    .text;          \
+    .code 32;       \
+    x:
 
 /*
  * Used to set current cpu's exception stack pointer.

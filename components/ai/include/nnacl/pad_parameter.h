@@ -19,15 +19,15 @@
 #include "nnacl/op_base.h"
 #include "nnacl/quantization/quantize.h"
 
-#define MAX_PAD_SIZE 8
+#define MAX_PAD_SIZE      8
 #define DEFAULT_PAD_NDIMS 4
 
 typedef struct PadParameter {
-  OpParameter op_parameter_;
-  PadQuantArg pad_quant_arg_;
-  int paddings_[MAX_PAD_SIZE];
-  int pad_mode_;
-  float constant_value_;
+    OpParameter op_parameter_;
+    PadQuantArg pad_quant_arg_;
+    int paddings_[MAX_PAD_SIZE];
+    int pad_mode_;
+    float constant_value_;
 } PadParameter;
 
-#endif  // MINDSPORE_LITE_NNACL_PAD_PARAMETER_H_
+#endif // MINDSPORE_LITE_NNACL_PAD_PARAMETER_H_

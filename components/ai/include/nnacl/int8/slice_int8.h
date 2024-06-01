@@ -22,11 +22,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-int SliceInt8NoParallel(const int8_t *input, int8_t *output, SliceParameter *param);
-int SliceInt8(const int8_t *input, int8_t *output, SliceParameter *param, int thread_id);
+int SliceInt8NoParallel(const int8_t* input, int8_t* output, SliceParameter* param);
+int SliceInt8(const int8_t* input, int8_t* output, SliceParameter* param, int thread_id);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_INT8_SLICE_INT8_H_
-
+#endif // MINDSPORE_LITE_NNACL_INT8_SLICE_INT8_H_

@@ -28,8 +28,9 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
+
 
 #ifdef __GNUC__
 #include <errno.h>
@@ -37,32 +38,33 @@
 
 #include <los_printf.h>
 
-#include <los_vfs.h>
 #include <los_kifs.h>
+#include <los_vfs.h>
+
 
 struct kifs_node {
-    char                       name [LOS_MAX_FILE_NAME_LEN];
-    uint32_t                   attr;        /* R(readable)/W(writable)/E(exclusive)/D(dir)/B(buffer) */
-    struct kifs_node           *sibling;
-    struct kifs_node           *parent;
+    char name[LOS_MAX_FILE_NAME_LEN];
+    uint32_t attr; /* R(readable)/W(writable)/E(exclusive)/D(dir)/B(buffer) */
+    struct kifs_node* sibling;
+    struct kifs_node* parent;
     union {
-        struct kifs_ops        *kiops;      /* kiops if is file with ops */
-        void                   *buff;       /* buff addr, if file is linked to buffer */
-        struct kifs_node       *child;      /* child if is dir */
+        struct kifs_ops* kiops;  /* kiops if is file with ops */
+        void* buff;              /* buff addr, if file is linked to buffer */
+        struct kifs_node* child; /* child if is dir */
     };
     union {
-        void                   *arg;        /* arg for ops if is file with ops */
-        size_t                 size;        /* buff size, if file is linked to buffer */
+        void* arg;   /* arg for ops if is file with ops */
+        size_t size; /* buff size, if file is linked to buffer */
     };
 };
 
-static struct kifs_node *kifs_file_find(struct kifs_node *root, const char *path_in_mp, const char **path_unresolved)
+static struct kifs_node* kifs_file_find(struct kifs_node* root, const char* path_in_mp, const char** path_unresolved)
 {
-    struct kifs_node *dir = root;
+    struct kifs_node* dir = root;
 
     while (1) {
-        const char *c;
-        struct kifs_node *t;
+        const char* c;
+        struct kifs_node* t;
         int l;
 
         if ((dir->attr & KIFS_ATTR_D) == 0) {
@@ -87,14 +89,13 @@ static struct kifs_node *kifs_file_find(struct kifs_node *root, const char *path
         }
 
         for (t = dir->child; t != NULL; t = t->sibling) {
-            if ((strncmp(t->name, path_in_mp, l) == 0) &&
-                    (t->name [l] == '\0')) {
+            if ((strncmp(t->name, path_in_mp, l) == 0) && (t->name[l] == '\0')) {
                 break;
             }
         }
 
         if (t == NULL) {
-            break;  /* no match */
+            break; /* no match */
         }
 
         path_in_mp += l;
@@ -110,12 +111,11 @@ static struct kifs_node *kifs_file_find(struct kifs_node *root, const char *path
     return dir;
 }
 
-static int kifs_open(struct file *file, const char *path_in_mp, int flags)
+static int kifs_open(struct file* file, const char* path_in_mp, int flags)
 {
-    struct kifs_node *node;
+    struct kifs_node* node;
 
-    node = kifs_file_find((struct kifs_node *)file->f_mp->m_data, path_in_mp,
-                           &path_in_mp);
+    node = kifs_file_find((struct kifs_node*)file->f_mp->m_data, path_in_mp, &path_in_mp);
     if (node == NULL) {
         return -1;
     }
@@ -130,7 +130,7 @@ static int kifs_open(struct file *file, const char *path_in_mp, int flags)
         return -1;
     }
 
-    file->f_data = (void *) node;
+    file->f_data = (void*)node;
 
     if ((node->attr & KIFS_ATTR_B) != 0) {
         /* linked buffer do not have kiops */
@@ -138,15 +138,15 @@ static int kifs_open(struct file *file, const char *path_in_mp, int flags)
     }
 
     if (node->kiops->open == NULL) {
-        return 0;   /* if open is NULL, means the file do not need it! */
+        return 0; /* if open is NULL, means the file do not need it! */
     }
 
-    return node->kiops->open (node->arg, flags);
+    return node->kiops->open(node->arg, flags);
 }
 
-static int kifs_close(struct file *file)
+static int kifs_close(struct file* file)
 {
-    struct kifs_node *node = (struct kifs_node *)file->f_data;
+    struct kifs_node* node = (struct kifs_node*)file->f_data;
 
     if (node == NULL) {
         return -1;
@@ -157,19 +157,19 @@ static int kifs_close(struct file *file)
     }
 
     if (node->kiops->close == NULL) {
-        return 0;   /* if close is NULL, means the file do not need it! */
+        return 0; /* if close is NULL, means the file do not need it! */
     }
 
     return node->kiops->close(node->arg);
 }
 
-static ssize_t kifs_read(struct file *file, char *buff, size_t bytes)
+static ssize_t kifs_read(struct file* file, char* buff, size_t bytes)
 {
-    struct kifs_node *node = (struct kifs_node *)file->f_data;
+    struct kifs_node* node = (struct kifs_node*)file->f_data;
 
     if ((node->attr & KIFS_ATTR_R) == 0) {
         VFS_ERRNO_SET(EACCES);
-        return (ssize_t) - 1;
+        return (ssize_t)-1;
     }
 
     if (node->attr & KIFS_ATTR_B) {
@@ -182,19 +182,19 @@ static ssize_t kifs_read(struct file *file, char *buff, size_t bytes)
 
     if (node->kiops->read == NULL) {
         VFS_ERRNO_SET(EACCES);
-        return (ssize_t) - 1;
+        return (ssize_t)-1;
     }
 
     return node->kiops->read(node->arg, buff, bytes);
 }
 
-static ssize_t kifs_write(struct file *file, const char *buff, size_t bytes)
+static ssize_t kifs_write(struct file* file, const char* buff, size_t bytes)
 {
-    struct kifs_node *node = (struct kifs_node *)file->f_data;
+    struct kifs_node* node = (struct kifs_node*)file->f_data;
 
     if ((node->attr & KIFS_ATTR_W) == 0) {
         VFS_ERRNO_SET(EACCES);
-        return (ssize_t) - 1;
+        return (ssize_t)-1;
     }
 
     if (node->attr & KIFS_ATTR_B) {
@@ -205,15 +205,15 @@ static ssize_t kifs_write(struct file *file, const char *buff, size_t bytes)
 
     if (node->kiops->write == NULL) {
         VFS_ERRNO_SET(EACCES);
-        return (ssize_t) - 1;
+        return (ssize_t)-1;
     }
 
     return node->kiops->write(node->arg, buff, bytes);
 }
 
-static int kifs_ioctl(struct file *file, int func, unsigned long arg)
+static int kifs_ioctl(struct file* file, int func, unsigned long arg)
 {
-    struct kifs_node *node = (struct kifs_node *) file->f_data;
+    struct kifs_node* node = (struct kifs_node*)file->f_data;
 
     if (node->attr & KIFS_ATTR_B) {
         return -1;
@@ -229,12 +229,11 @@ static int kifs_ioctl(struct file *file, int func, unsigned long arg)
     return node->kiops->ioctl(node->arg, func, arg);
 }
 
-static int kifs_opendir(struct dir *dir, const char *path_in_mp)
+static int kifs_opendir(struct dir* dir, const char* path_in_mp)
 {
-    struct kifs_node *node;
+    struct kifs_node* node;
 
-    node = kifs_file_find((struct kifs_node *) dir->d_mp->m_data, path_in_mp,
-                           &path_in_mp);
+    node = kifs_file_find((struct kifs_node*)dir->d_mp->m_data, path_in_mp, &path_in_mp);
     if ((node == NULL) || (*path_in_mp != '\0')) {
         VFS_ERRNO_SET(ENOENT);
         return -1;
@@ -245,25 +244,23 @@ static int kifs_opendir(struct dir *dir, const char *path_in_mp)
         return -1;
     }
 
-    dir->d_data = (void *) node;
+    dir->d_data = (void*)node;
     dir->d_offset = 0;
 
     return 0;
 }
 
-static int kifs_readdir(struct dir *dir, struct dirent *dent)
+static int kifs_readdir(struct dir* dir, struct dirent* dent)
 {
-    struct kifs_node *node = (struct kifs_node *)dir->d_data;
-    struct kifs_node *child;
+    struct kifs_node* node = (struct kifs_node*)dir->d_data;
+    struct kifs_node* child;
     off_t i;
 
     if (node == NULL) {
         return -1;
     }
 
-    for (i = 0, child = node->child;
-            i < dir->d_offset && child != NULL;
-            i++, child = child->sibling) {
+    for (i = 0, child = node->child; i < dir->d_offset && child != NULL; i++, child = child->sibling) {
         /* nop */
     }
 
@@ -273,7 +270,7 @@ static int kifs_readdir(struct dir *dir, struct dirent *dent)
     }
 
     strncpy(dent->name, child->name, LOS_MAX_FILE_NAME_LEN - 1);
-    dent->name [LOS_MAX_FILE_NAME_LEN - 1] = '\0';
+    dent->name[LOS_MAX_FILE_NAME_LEN - 1] = '\0';
     dent->size = 0;
 
     if ((child->attr & KIFS_ATTR_D) != 0) {
@@ -288,46 +285,34 @@ static int kifs_readdir(struct dir *dir, struct dirent *dent)
     return 0;
 }
 
-static int kifs_closedir(struct dir *dir)
+static int kifs_closedir(struct dir* dir)
 {
     return 0;
 }
 
 static struct file_ops kifs_ops = {
-    kifs_open,
-    kifs_close,
-    kifs_read,
-    kifs_write,
-    NULL,           /* lseek not suported */
-    NULL,           /* stat not supported */
-    NULL,           /* unlink not supported */
-    NULL,           /* rename not supported */
-    kifs_ioctl,     /* ioctl not supported */
-    NULL,           /* sync not supported */
-    kifs_opendir,
-    kifs_readdir,
-    kifs_closedir,
-    NULL            /* mkdir not supported */
+    kifs_open,    kifs_close,   kifs_read,     kifs_write, NULL, /* lseek not suported */
+    NULL,                                                        /* stat not supported */
+    NULL,                                                        /* unlink not supported */
+    NULL,                                                        /* rename not supported */
+    kifs_ioctl,                                                  /* ioctl not supported */
+    NULL,                                                        /* sync not supported */
+    kifs_opendir, kifs_readdir, kifs_closedir, NULL              /* mkdir not supported */
 };
 
-static struct file_system kifs_fs = {
-    "kifs",
-    &kifs_ops,
-    NULL,
-    0
-};
+static struct file_system kifs_fs = {"kifs", &kifs_ops, NULL, 0};
 
-static struct kifs_node *kifs_file_creat(void *root, const char *path_in_mp, uint32_t flags)
+static struct kifs_node* kifs_file_creat(void* root, const char* path_in_mp, uint32_t flags)
 {
-    struct kifs_node *dir;
-    struct kifs_node *node;
-    const char *t;
+    struct kifs_node* dir;
+    struct kifs_node* node;
+    const char* t;
 
-    if (path_in_mp [strlen(path_in_mp) - 1] == '/') {
+    if (path_in_mp[strlen(path_in_mp) - 1] == '/') {
         return NULL;
     }
 
-    dir = kifs_file_find((struct kifs_node *) root, path_in_mp, &path_in_mp);
+    dir = kifs_file_find((struct kifs_node*)root, path_in_mp, &path_in_mp);
     if (dir == NULL) { /* impossible */
         return NULL;
     }
@@ -345,14 +330,14 @@ static struct kifs_node *kifs_file_creat(void *root, const char *path_in_mp, uin
             return NULL;
         }
 
-        node = (struct kifs_node *)malloc(sizeof(struct kifs_node));
+        node = (struct kifs_node*)malloc(sizeof(struct kifs_node));
         if (node == NULL) {
-            PRINT_ERR ("fail to malloc memory in KIFS, <malloc.c> is needed,"
-                       "make sure it is added\n");
+            PRINT_ERR("fail to malloc memory in KIFS, <malloc.c> is needed,"
+                      "make sure it is added\n");
             return NULL;
         }
 
-        memset(node, 0, sizeof (struct kifs_node));
+        memset(node, 0, sizeof(struct kifs_node));
         strncpy(node->name, path_in_mp, t - path_in_mp);
 
         node->parent = dir;
@@ -371,10 +356,10 @@ static struct kifs_node *kifs_file_creat(void *root, const char *path_in_mp, uin
         return NULL;
     }
 
-    node = (struct kifs_node *)malloc(sizeof(struct kifs_node));
+    node = (struct kifs_node*)malloc(sizeof(struct kifs_node));
     if (node == NULL) {
         PRINT_ERR("fail to malloc memory in KIFS, <malloc.c> is needed,"
-                   "make sure it is added\n");
+                  "make sure it is added\n");
         return NULL;
     }
 
@@ -389,10 +374,9 @@ static struct kifs_node *kifs_file_creat(void *root, const char *path_in_mp, uin
     return node;
 }
 
-int los_kifs_create(void *root, const char *path_in_mp, uint32_t flags,
-                    struct kifs_ops *kiops, void *arg)
+int los_kifs_create(void* root, const char* path_in_mp, uint32_t flags, struct kifs_ops* kiops, void* arg)
 {
-    struct kifs_node *node;
+    struct kifs_node* node;
 
     if ((kiops == NULL) || ((flags & (KIFS_ATTR_R | KIFS_ATTR_W)) == 0)) {
         return -1;
@@ -409,10 +393,9 @@ int los_kifs_create(void *root, const char *path_in_mp, uint32_t flags,
     return 0;
 }
 
-int los_kifs_link(void *root, const char *path_in_mp, uint32_t flags,
-                  void *buff, size_t size)
+int los_kifs_link(void* root, const char* path_in_mp, uint32_t flags, void* buff, size_t size)
 {
-    struct kifs_node *node;
+    struct kifs_node* node;
 
     if ((buff == NULL) || ((flags & (KIFS_ATTR_R | KIFS_ATTR_W)) == 0)) {
         return -1;
@@ -430,23 +413,23 @@ int los_kifs_link(void *root, const char *path_in_mp, uint32_t flags,
     return 0;
 }
 
-void *los_kifs_mount(const char *path)
+void* los_kifs_mount(const char* path)
 {
-    struct kifs_node *root;
+    struct kifs_node* root;
 
     if (los_vfs_init() != LOS_OK) {
         PRINT_ERR("vfs init fail!\n");
         return NULL;
     }
 
-    if (strlen (path) >= LOS_MAX_FILE_NAME_LEN) {
+    if (strlen(path) >= LOS_MAX_FILE_NAME_LEN) {
         return NULL;
     }
 
-    root = (struct kifs_node *)malloc(sizeof(struct kifs_node));
+    root = (struct kifs_node*)malloc(sizeof(struct kifs_node));
     if (root == NULL) {
         PRINT_ERR("fail to malloc memory in KIFS, <malloc.c> is needed,"
-                   "make sure it is added\n");
+                  "make sure it is added\n");
         return NULL;
     }
 
@@ -457,10 +440,10 @@ void *los_kifs_mount(const char *path)
     root->attr = KIFS_ATTR_D;
 
     if (los_fs_mount("kifs", path, root) == LOS_OK) {
-        return (void *) root;
+        return (void*)root;
     }
 
-    free (root);
+    free(root);
 
     return NULL;
 }

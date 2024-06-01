@@ -21,9 +21,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void Rank(float *output, int rank);
+void Rank(float* output, int rank);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_RANK_H_
+#endif // MINDSPORE_LITE_NNACL_RANK_H_

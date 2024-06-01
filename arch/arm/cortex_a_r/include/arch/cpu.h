@@ -34,8 +34,9 @@
 #ifndef _ARCH_CPU_H
 #define _ARCH_CPU_H
 
-#include "los_typedef.h"
 #include "arch/regs.h"
+#include "los_typedef.h"
+
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -45,15 +46,15 @@ extern "C" {
 
 typedef struct {
     const UINT32 partNo;
-    const CHAR *cpuName;
+    const CHAR* cpuName;
 } CpuVendor;
 
 extern UINT64 g_cpuMap[];
 
-#define CPU_MAP_GET(cpuid)          g_cpuMap[(cpuid)]
-#define CPU_MAP_SET(cpuid, hwid)    (g_cpuMap[(cpuid)] = (hwid))
+#define CPU_MAP_GET(cpuid)       g_cpuMap[(cpuid)]
+#define CPU_MAP_SET(cpuid, hwid) (g_cpuMap[(cpuid)] = (hwid))
 
-extern const CHAR *ArchCpuInfo(VOID);
+extern const CHAR* ArchCpuInfo(VOID);
 
 STATIC INLINE UINT32 ArchCurrCpuid(VOID)
 {

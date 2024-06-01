@@ -20,19 +20,19 @@
 #include "nnacl/op_base.h"
 
 typedef struct RangeParameter {
-  OpParameter op_parameter_;
-  int dType_;
-  int start_;
-  int limit_;
-  int delta_;
+    OpParameter op_parameter_;
+    int dType_;
+    int start_;
+    int limit_;
+    int delta_;
 } RangeParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-void Range(float *output_ptr, int start, int limit, int delta);
+void Range(float* output_ptr, int start, int limit, int delta);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_RANGE_H_
+#endif // MINDSPORE_LITE_NNACL_RANGE_H_

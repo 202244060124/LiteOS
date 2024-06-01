@@ -20,35 +20,35 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void MatrixG4x2(float *matrix_data);
+void MatrixG4x2(float* matrix_data);
 
-void MatrixGT2x4(float *matrix_data);
+void MatrixGT2x4(float* matrix_data);
 
-void MatrixG8x2(float *matrix_data);
+void MatrixG8x2(float* matrix_data);
 
-void MatrixGT2x8(float *matrix_data);
+void MatrixGT2x8(float* matrix_data);
 
-void MatrixG8x3(float *matrix_data);
+void MatrixG8x3(float* matrix_data);
 
-void MatrixGT3x8(float *matrix_data);
+void MatrixGT3x8(float* matrix_data);
 
-void MatrixG8x4(float *matrix_data);
+void MatrixG8x4(float* matrix_data);
 
-void MatrixGT4x8(float *matrix_data);
+void MatrixGT4x8(float* matrix_data);
 
-void MatrixG8x5(float *matrix_data);
+void MatrixG8x5(float* matrix_data);
 
-void MatrixGT5x8(float *matrix_data);
+void MatrixGT5x8(float* matrix_data);
 
-void MatrixG8x6(float *matrix_data);
+void MatrixG8x6(float* matrix_data);
 
-void MatrixGT6x8(float *matrix_data);
+void MatrixGT6x8(float* matrix_data);
 
-void MatrixG8x7(float *matrix_data);
+void MatrixG8x7(float* matrix_data);
 
-void MatrixGT7x8(float *matrix_data);
+void MatrixGT7x8(float* matrix_data);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_MATRIX_TABLE_H_
+#endif // MINDSPORE_LITE_NNACL_MATRIX_TABLE_H_

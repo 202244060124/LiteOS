@@ -25,7 +25,7 @@ extern "C" {
  *********************/
 
 /**Default value of points. Can be used to not draw a point*/
-#define LV_CHART_POINT_DEF (LV_COORD_MIN)
+#define LV_CHART_POINT_DEF        (LV_COORD_MIN)
 
 /**Automatically calculate the tick length*/
 #define LV_CHART_TICK_LENGTH_AUTO 255
@@ -39,35 +39,35 @@ LV_EXPORT_CONST_INT(LV_CHART_TICK_LENGTH_AUTO);
 
 /** Chart types*/
 enum {
-    LV_CHART_TYPE_NONE     = 0x00, /**< Don't draw the series*/
-    LV_CHART_TYPE_LINE     = 0x01, /**< Connect the points with lines*/
-    LV_CHART_TYPE_COLUMN   = 0x02, /**< Draw columns*/
+    LV_CHART_TYPE_NONE = 0x00,   /**< Don't draw the series*/
+    LV_CHART_TYPE_LINE = 0x01,   /**< Connect the points with lines*/
+    LV_CHART_TYPE_COLUMN = 0x02, /**< Draw columns*/
 };
 typedef uint8_t lv_chart_type_t;
 
 /** Chart update mode for `lv_chart_set_next`*/
 enum {
-    LV_CHART_UPDATE_MODE_SHIFT,     /**< Shift old data to the left and add the new one o the right*/
-    LV_CHART_UPDATE_MODE_CIRCULAR,  /**< Add the new data in a circular way*/
+    LV_CHART_UPDATE_MODE_SHIFT,    /**< Shift old data to the left and add the new one o the right*/
+    LV_CHART_UPDATE_MODE_CIRCULAR, /**< Add the new data in a circular way*/
 };
 typedef uint8_t lv_chart_update_mode_t;
 
 typedef struct {
-    lv_coord_t * points;
+    lv_coord_t* points;
     lv_color_t color;
     uint16_t start_point;
 } lv_chart_series_t;
 
 /** Data of axis */
 enum {
-    LV_CHART_AXIS_SKIP_LAST_TICK = 0x00,            /**< don't draw the last tick */
-    LV_CHART_AXIS_DRAW_LAST_TICK = 0x01,            /**< draw the last tick */
-    LV_CHART_AXIS_INVERSE_LABELS_ORDER = 0x02       /**< draw tick labels in an inversed order*/
+    LV_CHART_AXIS_SKIP_LAST_TICK = 0x00,      /**< don't draw the last tick */
+    LV_CHART_AXIS_DRAW_LAST_TICK = 0x01,      /**< draw the last tick */
+    LV_CHART_AXIS_INVERSE_LABELS_ORDER = 0x02 /**< draw tick labels in an inversed order*/
 };
 typedef uint8_t lv_chart_axis_options_t;
 
 typedef struct {
-    const char * list_of_values;
+    const char* list_of_values;
     lv_chart_axis_options_t options;
     uint8_t num_tick_marks;
     uint8_t major_tick_len;
@@ -78,12 +78,12 @@ typedef struct {
 typedef struct {
     /*No inherited ext*/ /*Ext. of ancestor*/
     /*New data for this type */
-    lv_ll_t series_ll;    /*Linked list for the data line pointers (stores lv_chart_dl_t)*/
-    lv_coord_t ymin;      /*y min value (used to scale the data)*/
-    lv_coord_t ymax;      /*y max value (used to scale the data)*/
-    uint8_t hdiv_cnt;     /*Number of horizontal division lines*/
-    uint8_t vdiv_cnt;     /*Number of vertical division lines*/
-    uint16_t point_cnt;   /*Point number in a data line*/
+    lv_ll_t series_ll;  /*Linked list for the data line pointers (stores lv_chart_dl_t)*/
+    lv_coord_t ymin;    /*y min value (used to scale the data)*/
+    lv_coord_t ymax;    /*y max value (used to scale the data)*/
+    uint8_t hdiv_cnt;   /*Number of horizontal division lines*/
+    uint8_t vdiv_cnt;   /*Number of vertical division lines*/
+    uint16_t point_cnt; /*Point number in a data line*/
     lv_style_list_t style_series_bg;
     lv_style_list_t style_series;
     lv_chart_type_t type; /*Line, column or point chart (from 'lv_chart_type_t')*/
@@ -94,11 +94,7 @@ typedef struct {
 } lv_chart_ext_t;
 
 /*Parts of the chart*/
-enum {
-    LV_CHART_PART_BG = LV_OBJ_PART_MAIN,
-    LV_CHART_PART_SERIES_BG = _LV_OBJ_PART_VIRTUAL_LAST,
-    LV_CHART_PART_SERIES
-};
+enum { LV_CHART_PART_BG = LV_OBJ_PART_MAIN, LV_CHART_PART_SERIES_BG = _LV_OBJ_PART_VIRTUAL_LAST, LV_CHART_PART_SERIES };
 
 /**********************
  * GLOBAL PROTOTYPES
@@ -111,7 +107,7 @@ enum {
  * from it
  * @return pointer to the created chart background
  */
-lv_obj_t * lv_chart_create(lv_obj_t * par, const lv_obj_t * copy);
+lv_obj_t* lv_chart_create(lv_obj_t* par, const lv_obj_t* copy);
 
 /*======================
  * Add/remove functions
@@ -123,14 +119,14 @@ lv_obj_t * lv_chart_create(lv_obj_t * par, const lv_obj_t * copy);
  * @param color color of the data series
  * @return pointer to the allocated data series
  */
-lv_chart_series_t * lv_chart_add_series(lv_obj_t * chart, lv_color_t color);
+lv_chart_series_t* lv_chart_add_series(lv_obj_t* chart, lv_color_t color);
 
 /**
  * Clear the point of a serie
  * @param chart pointer to a chart object
  * @param serie pointer to the chart's serie to clear
  */
-void lv_chart_clear_serie(lv_obj_t * chart, lv_chart_series_t * serie);
+void lv_chart_clear_serie(lv_obj_t* chart, lv_chart_series_t* serie);
 
 /*=====================
  * Setter functions
@@ -142,7 +138,7 @@ void lv_chart_clear_serie(lv_obj_t * chart, lv_chart_series_t * serie);
  * @param hdiv number of horizontal division lines
  * @param vdiv number of vertical division lines
  */
-void lv_chart_set_div_line_count(lv_obj_t * chart, uint8_t hdiv, uint8_t vdiv);
+void lv_chart_set_div_line_count(lv_obj_t* chart, uint8_t hdiv, uint8_t vdiv);
 
 /**
  * Set the minimal and maximal y values
@@ -150,21 +146,21 @@ void lv_chart_set_div_line_count(lv_obj_t * chart, uint8_t hdiv, uint8_t vdiv);
  * @param ymin y minimum value
  * @param ymax y maximum value
  */
-void lv_chart_set_range(lv_obj_t * chart, lv_coord_t ymin, lv_coord_t ymax);
+void lv_chart_set_range(lv_obj_t* chart, lv_coord_t ymin, lv_coord_t ymax);
 
 /**
  * Set a new type for a chart
  * @param chart pointer to a chart object
  * @param type new type of the chart (from 'lv_chart_type_t' enum)
  */
-void lv_chart_set_type(lv_obj_t * chart, lv_chart_type_t type);
+void lv_chart_set_type(lv_obj_t* chart, lv_chart_type_t type);
 
 /**
  * Set the number of points on a data line on a chart
  * @param chart pointer r to chart object
  * @param point_cnt new number of points on the data lines
  */
-void lv_chart_set_point_count(lv_obj_t * chart, uint16_t point_cnt);
+void lv_chart_set_point_count(lv_obj_t* chart, uint16_t point_cnt);
 
 /**
  * Initialize all data points with a value
@@ -172,7 +168,7 @@ void lv_chart_set_point_count(lv_obj_t * chart, uint16_t point_cnt);
  * @param ser pointer to a data series on 'chart'
  * @param y the new value  for all points
  */
-void lv_chart_init_points(lv_obj_t * chart, lv_chart_series_t * ser, lv_coord_t y);
+void lv_chart_init_points(lv_obj_t* chart, lv_chart_series_t* ser, lv_coord_t y);
 
 /**
  * Set the value of points from an array
@@ -180,7 +176,7 @@ void lv_chart_init_points(lv_obj_t * chart, lv_chart_series_t * ser, lv_coord_t 
  * @param ser pointer to a data series on 'chart'
  * @param y_array array of 'lv_coord_t' points (with 'points count' elements )
  */
-void lv_chart_set_points(lv_obj_t * chart, lv_chart_series_t * ser, lv_coord_t y_array[]);
+void lv_chart_set_points(lv_obj_t* chart, lv_chart_series_t* ser, lv_coord_t y_array[]);
 
 /**
  * Shift all data right and set the most right data on a data line
@@ -188,14 +184,14 @@ void lv_chart_set_points(lv_obj_t * chart, lv_chart_series_t * ser, lv_coord_t y
  * @param ser pointer to a data series on 'chart'
  * @param y the new value of the most right data
  */
-void lv_chart_set_next(lv_obj_t * chart, lv_chart_series_t * ser, lv_coord_t y);
+void lv_chart_set_next(lv_obj_t* chart, lv_chart_series_t* ser, lv_coord_t y);
 
 /**
  * Set update mode of the chart object.
  * @param chart pointer to a chart object
  * @param update mode
  */
-void lv_chart_set_update_mode(lv_obj_t * chart, lv_chart_update_mode_t update_mode);
+void lv_chart_set_update_mode(lv_obj_t* chart, lv_chart_update_mode_t update_mode);
 
 /**
  * Set the length of the tick marks on the x axis
@@ -205,7 +201,7 @@ void lv_chart_set_update_mode(lv_obj_t * chart, lv_chart_update_mode_t update_mo
  * @param minor_tick_len the length of the minor tick, `LV_CHART_TICK_LENGTH_AUTO` to set automatically
  *                       (where no labels are added)
  */
-void lv_chart_set_x_tick_length(lv_obj_t * chart, uint8_t major_tick_len, uint8_t minor_tick_len);
+void lv_chart_set_x_tick_length(lv_obj_t* chart, uint8_t major_tick_len, uint8_t minor_tick_len);
 
 /**
  * Set the length of the tick marks on the y axis
@@ -215,7 +211,7 @@ void lv_chart_set_x_tick_length(lv_obj_t * chart, uint8_t major_tick_len, uint8_
  * @param minor_tick_len the length of the minor tick, `LV_CHART_TICK_LENGTH_AUTO` to set automatically
  *                       (where no labels are added)
  */
-void lv_chart_set_y_tick_length(lv_obj_t * chart, uint8_t major_tick_len, uint8_t minor_tick_len);
+void lv_chart_set_y_tick_length(lv_obj_t* chart, uint8_t major_tick_len, uint8_t minor_tick_len);
 
 /**
  * Set the length of the tick marks on the secondary y axis
@@ -225,7 +221,7 @@ void lv_chart_set_y_tick_length(lv_obj_t * chart, uint8_t major_tick_len, uint8_
  * @param minor_tick_len the length of the minor tick, `LV_CHART_TICK_LENGTH_AUTO` to set automatically
  *                       (where no labels are added)
  */
-void lv_chart_set_secondary_y_tick_length(lv_obj_t * chart, uint8_t major_tick_len, uint8_t minor_tick_len);
+void lv_chart_set_secondary_y_tick_length(lv_obj_t* chart, uint8_t major_tick_len, uint8_t minor_tick_len);
 
 /**
  * Set the x-axis tick count and labels of a chart
@@ -235,8 +231,7 @@ void lv_chart_set_secondary_y_tick_length(lv_obj_t * chart, uint8_t major_tick_l
  *                          else number of ticks between two value labels
  * @param options           extra options
  */
-void lv_chart_set_x_tick_texts(lv_obj_t * chart, const char * list_of_values, uint8_t num_tick_marks,
-                               lv_chart_axis_options_t options);
+void lv_chart_set_x_tick_texts(lv_obj_t* chart, const char* list_of_values, uint8_t num_tick_marks, lv_chart_axis_options_t options);
 
 /**
  * Set the secondary y-axis tick count and labels of a chart
@@ -246,7 +241,7 @@ void lv_chart_set_x_tick_texts(lv_obj_t * chart, const char * list_of_values, ui
  *                          else number of ticks between two value labels
  * @param options           extra options
  */
-void lv_chart_set_secondary_y_tick_texts(lv_obj_t * chart, const char * list_of_values, uint8_t num_tick_marks,
+void lv_chart_set_secondary_y_tick_texts(lv_obj_t* chart, const char* list_of_values, uint8_t num_tick_marks,
                                          lv_chart_axis_options_t options);
 
 /**
@@ -257,8 +252,7 @@ void lv_chart_set_secondary_y_tick_texts(lv_obj_t * chart, const char * list_of_
  *                          else number of ticks between two value labels
  * @param options           extra options
  */
-void lv_chart_set_y_tick_texts(lv_obj_t * chart, const char * list_of_values, uint8_t num_tick_marks,
-                               lv_chart_axis_options_t options);
+void lv_chart_set_y_tick_texts(lv_obj_t* chart, const char* list_of_values, uint8_t num_tick_marks, lv_chart_axis_options_t options);
 
 /*=====================
  * Getter functions
@@ -269,14 +263,14 @@ void lv_chart_set_y_tick_texts(lv_obj_t * chart, const char * list_of_values, ui
  * @param chart pointer to chart object
  * @return type of the chart (from 'lv_chart_t' enum)
  */
-lv_chart_type_t lv_chart_get_type(const lv_obj_t * chart);
+lv_chart_type_t lv_chart_get_type(const lv_obj_t* chart);
 
 /**
  * Get the data point number per data line on chart
  * @param chart pointer to chart object
  * @return point number on each data line
  */
-uint16_t lv_chart_get_point_count(const lv_obj_t * chart);
+uint16_t lv_chart_get_point_count(const lv_obj_t* chart);
 
 /*=====================
  * Other functions
@@ -286,7 +280,7 @@ uint16_t lv_chart_get_point_count(const lv_obj_t * chart);
  * Refresh a chart if its data line has changed
  * @param chart pointer to chart object
  */
-void lv_chart_refresh(lv_obj_t * chart);
+void lv_chart_refresh(lv_obj_t* chart);
 
 /**********************
  *      MACROS

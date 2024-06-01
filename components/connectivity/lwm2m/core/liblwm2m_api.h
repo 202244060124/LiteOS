@@ -43,11 +43,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 // bootstrap at least have one mode, we have three mode.
-typedef enum {
-    BOOTSTRAP_FACTORY = 0,
-    BOOTSTRAP_CLIENT_INITIATED,
-    BOOTSTRAP_SEQUENCE
-} lwm2m_bootstrap_type_e;
+typedef enum { BOOTSTRAP_FACTORY = 0, BOOTSTRAP_CLIENT_INITIATED, BOOTSTRAP_SEQUENCE } lwm2m_bootstrap_type_e;
 
 #ifdef __cplusplus
 #if __cplusplus

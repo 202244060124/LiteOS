@@ -28,11 +28,11 @@ extern "C" {
 /**
  * Type for async callback.
  */
-typedef void (*lv_async_cb_t)(void *);
+typedef void (*lv_async_cb_t)(void*);
 
 typedef struct _lv_async_info_t {
     lv_async_cb_t cb;
-    void * user_data;
+    void* user_data;
 } lv_async_info_t;
 
 struct _lv_obj_t;
@@ -49,7 +49,7 @@ struct _lv_obj_t;
  *                  the `func_name(object, callback, ...)` convention)
  * @param user_data custom parameter
  */
-lv_res_t lv_async_call(lv_async_cb_t async_xcb, void * user_data);
+lv_res_t lv_async_call(lv_async_cb_t async_xcb, void* user_data);
 
 /**********************
  *      MACROS

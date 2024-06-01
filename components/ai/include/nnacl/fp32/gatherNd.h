@@ -20,16 +20,16 @@
 #include "nnacl/op_base.h"
 
 typedef struct GatherNdParameter {
-  OpParameter op_parameter_;
-  int batchDims_;
+    OpParameter op_parameter_;
+    int batchDims_;
 } GatherNdParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-int GatherNd(float *input, float *output, int *in_offset, int area, int count);
+int GatherNd(float* input, float* output, int* in_offset, int area, int count);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_GATHERND_H_
+#endif // MINDSPORE_LITE_NNACL_GATHERND_H_

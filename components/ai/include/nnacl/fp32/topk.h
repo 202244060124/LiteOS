@@ -20,25 +20,25 @@
 #include "nnacl/op_base.h"
 
 typedef struct TopkNode {
-  float element;
-  int32_t index;
+    float element;
+    int32_t index;
 } TopkNode;
 
 typedef struct TopkParameter {
-  OpParameter op_parameter_;
-  int last_dim_size_;
-  int loop_num_;
-  int k_;
-  bool sorted_;
-  void *topk_node_list_;
+    OpParameter op_parameter_;
+    int last_dim_size_;
+    int loop_num_;
+    int k_;
+    bool sorted_;
+    void* topk_node_list_;
 } TopkParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-void Topk(float *input_data, float *output_data, int32_t *output_index, TopkParameter *parameter);
+void Topk(float* input_data, float* output_data, int32_t* output_index, TopkParameter* parameter);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_TOPK_H_
+#endif // MINDSPORE_LITE_NNACL_TOPK_H_

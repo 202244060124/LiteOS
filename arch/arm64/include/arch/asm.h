@@ -35,10 +35,10 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-#define FUNCTION(x)     \
-    .global x;          \
-    .text;              \
-x:                      \
+#define FUNCTION(x) \
+    .global x;      \
+    .text;          \
+    x:
 
 #ifdef __cplusplus
 #if __cplusplus

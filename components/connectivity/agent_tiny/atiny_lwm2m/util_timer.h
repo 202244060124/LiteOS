@@ -26,7 +26,6 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --------------------------------------------------------------------------- */
 
-
 /**@defgroup agent AgentTiny
  * @defgroup agenttiny Agenttiny Definition
  * @ingroup agent
@@ -34,10 +33,11 @@
 
 #ifndef _UTIL_TIMER_H
 #define _UTIL_TIMER_H
-#include <stdint.h>
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 #include <time.h>
+
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -52,16 +52,15 @@ extern "C" {
 typedef struct {
     time_t expireTime;
     time_t interval;
-    void(*callback)(void *param);
-    void *param;
+    void (*callback)(void* param);
+    void* param;
     bool startFlag;
 } util_timer_t;
 
-void timer_init(util_timer_t *timer, time_t interval, void(*callback)(void *param), void *param);
-void timer_start(util_timer_t *timer);
-void timer_stop(util_timer_t *timer);
-void timer_step(util_timer_t *timer);
-
+void timer_init(util_timer_t* timer, time_t interval, void (*callback)(void* param), void* param);
+void timer_start(util_timer_t* timer);
+void timer_stop(util_timer_t* timer);
+void timer_step(util_timer_t* timer);
 
 #endif // LWM2M_CLIENT_MODE
 #endif // LWM2M_BOOTSTRAP

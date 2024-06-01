@@ -20,13 +20,13 @@
 #include "nnacl/op_base.h"
 
 typedef struct L2NormParameter {
-  OpParameter op_parameter_;
-  int *axis_;
-  size_t axis_num_;
-  float epsilon_;
-  float data_num_;
-  int *shape_;
-  int shape_num_;
+    OpParameter op_parameter_;
+    int* axis_;
+    size_t axis_num_;
+    float epsilon_;
+    float data_num_;
+    int* shape_;
+    int shape_num_;
 } L2NormParameter;
 
-#endif  // MINDSPORE_LITE_NNACL_L2NORM_PARAMETER_H_
+#endif // MINDSPORE_LITE_NNACL_L2NORM_PARAMETER_H_

@@ -26,32 +26,33 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --------------------------------------------------------------------------- */
 
-#include <stdint.h>
-#include <string.h>
-#include <stdlib.h>
 #include <stdarg.h>
-#include "los_config.h"
-#include "los_mux.h"
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 #include "errno.h"
 #include "fcntl.h"
 #include "fs/los_vfs.h"
+#include "los_config.h"
+#include "los_mux.h"
+
 
 struct file files[LOS_MAX_FILES];
 UINT32 fs_mutex = LOS_ERRNO_MUX_PTR_NULL;
-struct mount_point *mount_points = NULL;
-struct file_system *file_systems = NULL;
+struct mount_point* mount_points = NULL;
+struct file_system* file_systems = NULL;
 
-static int _file_2_fd(struct file *file)
+static int _file_2_fd(struct file* file)
 {
     return file - files;
 }
 
-static struct file *_fd_2_file(int fd)
+static struct file* _fd_2_file(int fd)
 {
     return &files[fd];
 }
 
-static struct file *los_file_get(void)
+static struct file* los_file_get(void)
 {
     int i;
 
@@ -66,7 +67,7 @@ static struct file *los_file_get(void)
     return NULL;
 }
 
-static void los_file_put(struct file *file)
+static void los_file_put(struct file* file)
 {
     file->f_flags = 0;
     file->f_fops = NULL;
@@ -78,10 +79,10 @@ static void los_file_put(struct file *file)
     file->f_status = FILE_STATUS_NOT_USED;
 }
 
-struct mount_point *los_mp_find(const char *path, const char **path_in_mp)
+struct mount_point* los_mp_find(const char* path, const char** path_in_mp)
 {
-    struct mount_point *mp = mount_points;
-    struct mount_point *best_mp = NULL;
+    struct mount_point* mp = mount_points;
+    struct mount_point* best_mp = NULL;
     int best_matches = 0;
 
     if (path == NULL) {
@@ -93,10 +94,10 @@ struct mount_point *los_mp_find(const char *path, const char **path_in_mp)
     }
 
     while (mp != NULL) {
-        const char *m_path = mp->m_path; /* mount point path */
-        const char *i_path = path;       /* input path */
+        const char* m_path = mp->m_path; /* mount point path */
+        const char* i_path = path;       /* input path */
         int matches = 0;
-        const char *t;
+        const char* t;
 
         do {
             while (*m_path == '/') {
@@ -164,12 +165,12 @@ struct mount_point *los_mp_find(const char *path, const char **path_in_mp)
     return best_mp;
 }
 
-int los_open(const char *path, int flags)
+int los_open(const char* path, int flags)
 {
-    struct file *file = NULL;
+    struct file* file = NULL;
     int fd = -1;
-    const char *path_in_mp = NULL;
-    struct mount_point *mp;
+    const char* path_in_mp = NULL;
+    struct mount_point* mp;
 
     if (path == NULL) {
         VFS_ERRNO_SET(EINVAL);
@@ -243,9 +244,9 @@ err_post_exit:
 
 /* attach to a file and then set new status */
 
-static struct file *_los_attach_file(int fd, UINT32 status)
+static struct file* _los_attach_file(int fd, UINT32 status)
 {
-    struct file *file = NULL;
+    struct file* file = NULL;
 
     if ((fd < 0) || (fd >= LOS_MAX_FILES)) {
         VFS_ERRNO_SET(EBADF);
@@ -254,51 +255,53 @@ static struct file *_los_attach_file(int fd, UINT32 status)
 
     file = _fd_2_file(fd);
 
-/*
-* Prevent file closed after the checking of:
-*
-*     if (file->f_status == FILE_STATUS_READY)
-*
-* Because our files are not privated to one task, it may be operated
-* by every task.
-* So we should take the mutex of current mount point before operating it,
-* but for now we don't know if this file is valid (FILE_STATUS_READY), if
-* this file is not valid, the f_mp may be incorrect. so
-* we must check the status first, but this file may be closed/removed
-* after the checking if the senquence is not correct.
-*
-* Consider the following code:
-*
-* los_attach_file (...)
-* {
-*     if (file->f_status == FILE_STATUS_READY)
-*     {
-*         while (LOS_MuxPend (file->f_mp->m_mutex, LOS_WAIT_FOREVER) != LOS_OK);
-*
-*         return file;
-*     }
-* }
-*
-* It is not safe:
-*
-* If current task is interrupted by an IRQ just after the checking and then
-* a new task is swapped in and the new task just closed this file.
-*
-* So <fs_mutex> is acquire first and then check if it is valid: if not, just
-* return NULL (which means fail); If yes, the mutex for current mount point
-* is qcquired. And the close operation will also set task to
-* FILE_STATUS_CLOSING to prevent other tasks operate on this file (and also
-* prevent other tasks pend on the mutex of this mount point for this file).
-* At last <fs_mutex> is released. And return the file handle (struct file *).
-*
-* As this logic used in almost all the operation routines, this routine is
-* made to reduce the redundant code.
-*/
+    /*
+     * Prevent file closed after the checking of:
+     *
+     *     if (file->f_status == FILE_STATUS_READY)
+     *
+     * Because our files are not privated to one task, it may be operated
+     * by every task.
+     * So we should take the mutex of current mount point before operating it,
+     * but for now we don't know if this file is valid (FILE_STATUS_READY), if
+     * this file is not valid, the f_mp may be incorrect. so
+     * we must check the status first, but this file may be closed/removed
+     * after the checking if the senquence is not correct.
+     *
+     * Consider the following code:
+     *
+     * los_attach_file (...)
+     * {
+     *     if (file->f_status == FILE_STATUS_READY)
+     *     {
+     *         while (LOS_MuxPend (file->f_mp->m_mutex, LOS_WAIT_FOREVER) != LOS_OK);
+     *
+     *         return file;
+     *     }
+     * }
+     *
+     * It is not safe:
+     *
+     * If current task is interrupted by an IRQ just after the checking and then
+     * a new task is swapped in and the new task just closed this file.
+     *
+     * So <fs_mutex> is acquire first and then check if it is valid: if not, just
+     * return NULL (which means fail); If yes, the mutex for current mount point
+     * is qcquired. And the close operation will also set task to
+     * FILE_STATUS_CLOSING to prevent other tasks operate on this file (and also
+     * prevent other tasks pend on the mutex of this mount point for this file).
+     * At last <fs_mutex> is released. And return the file handle (struct file *).
+     *
+     * As this logic used in almost all the operation routines, this routine is
+     * made to reduce the redundant code.
+     */
 
-    while (LOS_MuxPend(fs_mutex, LOS_WAIT_FOREVER) != LOS_OK) {};
+    while (LOS_MuxPend(fs_mutex, LOS_WAIT_FOREVER) != LOS_OK) {
+    };
 
     if (file->f_status == FILE_STATUS_READY) {
-        while (LOS_MuxPend(file->f_mp->m_mutex, LOS_WAIT_FOREVER) != LOS_OK);
+        while (LOS_MuxPend(file->f_mp->m_mutex, LOS_WAIT_FOREVER) != LOS_OK)
+            ;
 
         if (status != FILE_STATUS_READY) {
             file->f_status = status;
@@ -313,24 +316,24 @@ static struct file *_los_attach_file(int fd, UINT32 status)
     return file;
 }
 
-static struct file *los_attach_file(int fd)
+static struct file* los_attach_file(int fd)
 {
     return _los_attach_file(fd, FILE_STATUS_READY);
 }
 
-static struct file *los_attach_file_with_status(int fd, int status)
+static struct file* los_attach_file_with_status(int fd, int status)
 {
     return _los_attach_file(fd, status);
 }
 
-static UINT32 los_detach_file(struct file *file)
+static UINT32 los_detach_file(struct file* file)
 {
     return LOS_MuxPost(file->f_mp->m_mutex);
 }
 
 int los_close(int fd)
 {
-    struct file *file;
+    struct file* file;
     int ret = -1;
 
     file = los_attach_file_with_status(fd, FILE_STATUS_CLOSING);
@@ -356,9 +359,9 @@ int los_close(int fd)
     return ret;
 }
 
-ssize_t los_read(int fd, char *buff, size_t bytes)
+ssize_t los_read(int fd, char* buff, size_t bytes)
 {
-    struct file *file;
+    struct file* file;
     ssize_t ret = (ssize_t)-1;
 
     if ((buff == NULL) || (bytes == 0)) {
@@ -387,9 +390,9 @@ ssize_t los_read(int fd, char *buff, size_t bytes)
     return ret;
 }
 
-ssize_t los_write(int fd, const void *buff, size_t bytes)
+ssize_t los_write(int fd, const void* buff, size_t bytes)
 {
-    struct file *file;
+    struct file* file;
     ssize_t ret = -1;
 
     if ((buff == NULL) || (bytes == 0)) {
@@ -419,7 +422,7 @@ ssize_t los_write(int fd, const void *buff, size_t bytes)
 
 off_t los_lseek(int fd, off_t off, int whence)
 {
-    struct file *file;
+    struct file* file;
     off_t ret = -1;
 
     file = los_attach_file(fd);
@@ -439,10 +442,10 @@ off_t los_lseek(int fd, off_t off, int whence)
     return ret;
 }
 
-int los_stat(const char *path, struct stat *stat)
+int los_stat(const char* path, struct stat* stat)
 {
-    struct mount_point *mp = NULL;
-    const char *path_in_mp = NULL;
+    struct mount_point* mp = NULL;
+    const char* path_in_mp = NULL;
     int ret = -1;
 
     if ((path == NULL) || (stat == NULL)) {
@@ -474,10 +477,10 @@ int los_stat(const char *path, struct stat *stat)
     return ret;
 }
 
-int los_unlink(const char *path)
+int los_unlink(const char* path)
 {
-    struct mount_point *mp;
-    const char *path_in_mp = NULL;
+    struct mount_point* mp;
+    const char* path_in_mp = NULL;
     int ret = -1;
 
     if (path == NULL) {
@@ -502,12 +505,12 @@ out:
     return ret;
 }
 
-int los_rename(const char *old, const char *new)
+int los_rename(const char* old, const char* new)
 {
-    struct mount_point *mp_old;
-    struct mount_point *mp_new;
-    const char *path_in_mp_old = NULL;
-    const char *path_in_mp_new = NULL;
+    struct mount_point* mp_old;
+    struct mount_point* mp_new;
+    const char* path_in_mp_old = NULL;
+    const char* path_in_mp_new = NULL;
     int ret = -1;
 
     if ((old == NULL) || (new == NULL)) {
@@ -531,8 +534,7 @@ int los_rename(const char *old, const char *new)
 
     mp_new = los_mp_find(new, &path_in_mp_new);
 
-    if ((mp_new == NULL) || (path_in_mp_new == NULL) || (*path_in_mp_new == '\0') ||
-        (mp_new->m_fs->fs_fops->unlink == NULL)) {
+    if ((mp_new == NULL) || (path_in_mp_new == NULL) || (*path_in_mp_new == '\0') || (mp_new->m_fs->fs_fops->unlink == NULL)) {
         VFS_ERRNO_SET(EINVAL);
         goto out;
     }
@@ -558,7 +560,7 @@ int los_ioctl(int fd, int func, ...)
 {
     va_list ap;
     unsigned long arg;
-    struct file *file;
+    struct file* file;
     int ret = -1;
 
     va_start(ap, func);
@@ -584,7 +586,7 @@ int los_ioctl(int fd, int func, ...)
 
 int los_sync(int fd)
 {
-    struct file *file;
+    struct file* file;
     int ret = -1;
 
     file = los_attach_file(fd);
@@ -604,11 +606,11 @@ int los_sync(int fd)
     return ret;
 }
 
-struct dir *los_opendir(const char *path)
+struct dir* los_opendir(const char* path)
 {
-    struct mount_point *mp;
-    const char *path_in_mp = NULL;
-    struct dir *dir = NULL;
+    struct mount_point* mp;
+    const char* path_in_mp = NULL;
+    struct dir* dir = NULL;
     int ret = -1;
 
     if (path == NULL) {
@@ -616,11 +618,11 @@ struct dir *los_opendir(const char *path)
         return NULL;
     }
 
-    dir = (struct dir *)malloc(sizeof(struct dir));
+    dir = (struct dir*)malloc(sizeof(struct dir));
 
     if (dir == NULL) {
         PRINT_ERR("fail to malloc memory in VFS, <malloc.c> is needed,"
-            "make sure it is added\n");
+                  "make sure it is added\n");
         VFS_ERRNO_SET(ENOMEM);
         return NULL;
     }
@@ -673,10 +675,10 @@ struct dir *los_opendir(const char *path)
     return dir;
 }
 
-struct dirent *los_readdir(struct dir *dir)
+struct dirent* los_readdir(struct dir* dir)
 {
-    struct mount_point *mp;
-    struct dirent *ret = NULL;
+    struct mount_point* mp;
+    struct dirent* ret = NULL;
 
     if (dir == NULL) {
         VFS_ERRNO_SET(EINVAL);
@@ -705,9 +707,9 @@ struct dirent *los_readdir(struct dir *dir)
     return ret;
 }
 
-int los_closedir(struct dir *dir)
+int los_closedir(struct dir* dir)
 {
-    struct mount_point *mp;
+    struct mount_point* mp;
     int ret = -1;
 
     if (dir == NULL) {
@@ -740,10 +742,10 @@ int los_closedir(struct dir *dir)
     return ret;
 }
 
-int los_mkdir(const char *path, int mode)
+int los_mkdir(const char* path, int mode)
 {
-    struct mount_point *mp;
-    const char *path_in_mp = NULL;
+    struct mount_point* mp;
+    const char* path_in_mp = NULL;
     int ret = -1;
 
     (void)mode;
@@ -787,7 +789,7 @@ int los_mkdir(const char *path, int mode)
     return ret;
 }
 
-static int los_fs_name_check(const char *name)
+static int los_fs_name_check(const char* name)
 {
     char ch;
     int len = 0;
@@ -799,8 +801,7 @@ static int los_fs_name_check(const char *name)
             break;
         }
 
-        if ((('a' <= ch) && (ch <= 'z')) || (('A' <= ch) && (ch <= 'Z')) || (('0' <= ch) && (ch <= '9')) ||
-            (ch == '_') || (ch == '-')) {
+        if ((('a' <= ch) && (ch <= 'z')) || (('A' <= ch) && (ch <= 'Z')) || (('0' <= ch) && (ch <= '9')) || (ch == '_') || (ch == '-')) {
             len++;
 
             if (len == LOS_FS_MAX_NAME_LEN) {
@@ -816,9 +817,9 @@ static int los_fs_name_check(const char *name)
     return len == 0 ? LOS_NOK : LOS_OK;
 }
 
-static struct file_system *los_fs_find(const char *name)
+static struct file_system* los_fs_find(const char* name)
 {
-    struct file_system *fs;
+    struct file_system* fs;
 
     for (fs = file_systems; fs != NULL; fs = fs->fs_next) {
         if (strncmp(fs->fs_name, name, LOS_FS_MAX_NAME_LEN) == 0) {
@@ -829,7 +830,7 @@ static struct file_system *los_fs_find(const char *name)
     return fs;
 }
 
-int los_fs_register(struct file_system *fs)
+int los_fs_register(struct file_system* fs)
 {
     if ((fs == NULL) || (fs->fs_fops == NULL) || (fs->fs_fops->open == NULL)) {
         return LOS_NOK;
@@ -856,9 +857,9 @@ int los_fs_register(struct file_system *fs)
     return LOS_OK;
 }
 
-int los_fs_unregister(struct file_system *fs)
+int los_fs_unregister(struct file_system* fs)
 {
-    struct file_system *prev;
+    struct file_system* prev;
     int ret = LOS_OK;
 
     if (fs == NULL) {
@@ -900,11 +901,11 @@ out:
     return ret;
 }
 
-int los_fs_mount(const char *fsname, const char *path, void *data)
+int los_fs_mount(const char* fsname, const char* path, void* data)
 {
-    struct file_system *fs;
-    struct mount_point *mp;
-    const char *tmp = NULL;
+    struct file_system* fs;
+    struct mount_point* mp;
+    const char* tmp = NULL;
 
     if ((fsname == NULL) || (path == NULL) || (path[0] != '/') || (path[0] == '\0')) {
         return LOS_NOK;
@@ -927,7 +928,7 @@ int los_fs_mount(const char *fsname, const char *path, void *data)
     mp = malloc(sizeof(struct mount_point));
     if (mp == NULL) {
         PRINT_ERR("fail to malloc memory in VFS, <malloc.c> is needed,"
-            "make sure it is added\n");
+                  "make sure it is added\n");
         goto err_post_exit;
     }
 
@@ -958,11 +959,11 @@ err_post_exit:
     return LOS_NOK;
 }
 
-int los_fs_unmount(const char *path)
+int los_fs_unmount(const char* path)
 {
-    struct mount_point *mp;
-    struct mount_point *prev;
-    const char *tmp = NULL;
+    struct mount_point* mp;
+    struct mount_point* prev;
+    const char* tmp = NULL;
     int ret = LOS_NOK;
 
     if (path == NULL) {
@@ -1018,12 +1019,11 @@ int los_vfs_init(void)
     return LOS_NOK;
 }
 
-
 #ifndef WITH_LINUX
 
 #define MAP_TO_POSIX_RET(ret) ((ret) < 0 ? -1 : (ret))
 
-int open(const char *path, int flags, ...)
+int open(const char* path, int flags, ...)
 {
     int ret = los_open(path, flags);
     return MAP_TO_POSIX_RET(ret);
@@ -1035,13 +1035,13 @@ int close(int fd)
     return MAP_TO_POSIX_RET(ret);
 }
 
-ssize_t read(int fd, void *buff, size_t bytes)
+ssize_t read(int fd, void* buff, size_t bytes)
 {
     ssize_t ret = los_read(fd, buff, bytes);
     return MAP_TO_POSIX_RET(ret);
 }
 
-ssize_t write(int fd, const void *buff, size_t bytes)
+ssize_t write(int fd, const void* buff, size_t bytes)
 {
     ssize_t ret = los_write(fd, buff, bytes);
     return MAP_TO_POSIX_RET(ret);
@@ -1053,19 +1053,19 @@ off_t lseek(int fd, off_t off, int whence)
     return MAP_TO_POSIX_RET(ret);
 }
 
-int stat(const char *path, struct stat *stat)
+int stat(const char* path, struct stat* stat)
 {
     int ret = los_stat(path, stat);
     return MAP_TO_POSIX_RET(ret);
 }
 
-int unlink(const char *path)
+int unlink(const char* path)
 {
     int ret = los_unlink(path);
     return MAP_TO_POSIX_RET(ret);
 }
 
-int rename(const char *oldpath, const char *newpath)
+int rename(const char* oldpath, const char* newpath)
 {
     int ret = los_rename(oldpath, newpath);
     return MAP_TO_POSIX_RET(ret);
@@ -1077,23 +1077,23 @@ int fsync(int fd)
     return MAP_TO_POSIX_RET(ret);
 }
 
-struct dir *opendir(const char *path)
+struct dir* opendir(const char* path)
 {
     return los_opendir(path);
 }
 
-struct dirent *readdir(struct dir *dir)
+struct dirent* readdir(struct dir* dir)
 {
     return los_readdir(dir);
 }
 
-int closedir(struct dir *dir)
+int closedir(struct dir* dir)
 {
     int ret = los_closedir(dir);
     return MAP_TO_POSIX_RET(ret);
 }
 
-int mkdir(const char *path, mode_t mode)
+int mkdir(const char* path, mode_t mode)
 {
     int ret = los_mkdir(path, mode);
     return MAP_TO_POSIX_RET(ret);

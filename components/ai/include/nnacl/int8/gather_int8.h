@@ -23,10 +23,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-int GatherInt8(int8_t *in_data, int8_t *out_data, int outer_size, int inner_size, int limit, int *indices,
-               int indices_element_size, GatherQuantArg para);
+int GatherInt8(int8_t* in_data, int8_t* out_data, int outer_size, int inner_size, int limit, int* indices, int indices_element_size,
+               GatherQuantArg para);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_SRC_RUNTIME_KERNEL_ARM_NNACL_INT8_GATHER_INT8_H_
+#endif // MINDSPORE_LITE_SRC_RUNTIME_KERNEL_ARM_NNACL_INT8_GATHER_INT8_H_

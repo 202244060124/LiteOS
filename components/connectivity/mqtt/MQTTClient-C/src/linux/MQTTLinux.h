@@ -18,37 +18,38 @@
 #define __MQTT_LINUX_
 
 #if defined(WIN32_DLL) || defined(WIN64_DLL)
-  #define DLLImport __declspec(dllimport)
-  #define DLLExport __declspec(dllexport)
+#define DLLImport __declspec(dllimport)
+#define DLLExport __declspec(dllexport)
 #elif defined(LINUX_SO)
-  #define DLLImport extern
-  #define DLLExport  __attribute__ ((visibility ("default")))
+#define DLLImport extern
+#define DLLExport __attribute__((visibility("default")))
 #else
-  #define DLLImport
-  #define DLLExport
+#define DLLImport
+#define DLLExport
 #endif
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/param.h>
-#include <sys/time.h>
-#include <sys/select.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
 #include <arpa/inet.h>
-#include <netdb.h>
-#include <stdio.h>
-#include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <stdio.h>
+#include <sys/param.h>
+#include <sys/select.h>
+#include <sys/socket.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
 
+
+#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
-#include <signal.h>
 
-typedef struct Timer
-{
-	struct timeval end_time;
+
+typedef struct Timer {
+    struct timeval end_time;
 } Timer;
 
 void TimerInit(Timer*);
@@ -57,11 +58,10 @@ void TimerCountdownMS(Timer*, unsigned int);
 void TimerCountdown(Timer*, unsigned int);
 int TimerLeftMS(Timer*);
 
-typedef struct Network
-{
-	int my_socket;
-	int (*mqttread) (struct Network*, unsigned char*, int, int);
-	int (*mqttwrite) (struct Network*, unsigned char*, int, int);
+typedef struct Network {
+    int my_socket;
+    int (*mqttread)(struct Network*, unsigned char*, int, int);
+    int (*mqttwrite)(struct Network*, unsigned char*, int, int);
 } Network;
 
 int linux_read(Network*, unsigned char*, int, int);

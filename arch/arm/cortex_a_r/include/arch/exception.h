@@ -49,27 +49,27 @@ extern "C" {
 
 /* Define core num */
 #ifdef LOSCFG_KERNEL_SMP
-#define CORE_NUM                 LOSCFG_KERNEL_SMP_CORE_NUM
+#define CORE_NUM LOSCFG_KERNEL_SMP_CORE_NUM
 #else
-#define CORE_NUM                 1
+#define CORE_NUM 1
 #endif
 
 /* Initial bit32 stack value. */
-#define OS_STACK_INIT            0xCACACACA
+#define OS_STACK_INIT       0xCACACACA
 /* Bit32 stack top magic number. */
-#define OS_STACK_MAGIC_WORD      0xCCCCCCCC
+#define OS_STACK_MAGIC_WORD 0xCCCCCCCC
 
 #ifdef LOSCFG_GDB
-#define OS_EXC_UNDEF_STACK_SIZE  512
-#define OS_EXC_ABT_STACK_SIZE    512
+#define OS_EXC_UNDEF_STACK_SIZE 512
+#define OS_EXC_ABT_STACK_SIZE   512
 #else
-#define OS_EXC_UNDEF_STACK_SIZE  40
-#define OS_EXC_ABT_STACK_SIZE    40
+#define OS_EXC_UNDEF_STACK_SIZE 40
+#define OS_EXC_ABT_STACK_SIZE   40
 #endif
-#define OS_EXC_FIQ_STACK_SIZE    64
-#define OS_EXC_IRQ_STACK_SIZE    64
-#define OS_EXC_SVC_STACK_SIZE    0x2000
-#define OS_EXC_STACK_SIZE        0x1000
+#define OS_EXC_FIQ_STACK_SIZE 64
+#define OS_EXC_IRQ_STACK_SIZE 64
+#define OS_EXC_SVC_STACK_SIZE 0x2000
+#define OS_EXC_STACK_SIZE     0x1000
 
 #ifndef __ASSEMBLER__
 
@@ -111,14 +111,15 @@ typedef struct {
     UINT16 type;         /**< Exception type */
     UINT16 nestCnt;      /**< Count of nested exception */
     UINT16 reserved;     /**< Reserved for alignment */
-    ExcContext *context; /**< Hardware context when an exception occurs */
+    ExcContext* context; /**< Hardware context when an exception occurs */
 } ExcInfo;
 
-#define ArchGetFp() ({ \
-    UINTPTR _regFp; \
-    __asm__ __volatile__("mov %0, fp" : "=r"(_regFp)); \
-    _regFp; \
-})
+#define ArchGetFp()                                        \
+    ({                                                     \
+        UINTPTR _regFp;                                    \
+        __asm__ __volatile__("mov %0, fp" : "=r"(_regFp)); \
+        _regFp;                                            \
+    })
 
 typedef VOID (*EXC_PROC_FUNC)(UINT32, ExcContext*);
 
@@ -130,40 +131,36 @@ STATIC INLINE VOID ArchHaltCpu(VOID)
     __asm__ __volatile__("swi 0");
 }
 
-VOID ArchBackTraceWithSp(const VOID *stackPointer);
+VOID ArchBackTraceWithSp(const VOID* stackPointer);
 VOID ArchBackTrace(VOID);
 VOID ArchExcInit(VOID);
-UINT32 ArchBackTraceGet(UINTPTR fp, UINTPTR *callChain, UINT32 maxDepth);
+UINT32 ArchBackTraceGet(UINTPTR fp, UINTPTR* callChain, UINT32 maxDepth);
 
 STATIC INLINE UINT32 OsGetDFSR(VOID)
 {
     UINT32 regDFSR;
-    __asm__ __volatile__("mrc p15, 0, %0, c5, c0, 0"
-                         : "=r"(regDFSR));
+    __asm__ __volatile__("mrc p15, 0, %0, c5, c0, 0" : "=r"(regDFSR));
     return regDFSR;
 }
 
 STATIC INLINE UINT32 OsGetIFSR(VOID)
 {
     UINT32 regIFSR;
-    __asm__ __volatile__("mrc p15, 0, %0, c5, c0, 1"
-                         : "=r"(regIFSR));
+    __asm__ __volatile__("mrc p15, 0, %0, c5, c0, 1" : "=r"(regIFSR));
     return regIFSR;
 }
 
 STATIC INLINE UINT32 OsGetDFAR(VOID)
 {
     UINT32 regDFAR;
-    __asm__ __volatile__("mrc p15, 0, %0, c6, c0, 0"
-                         : "=r"(regDFAR));
+    __asm__ __volatile__("mrc p15, 0, %0, c6, c0, 0" : "=r"(regDFAR));
     return regDFAR;
 }
 
 STATIC INLINE UINT32 OsGetIFAR(VOID)
 {
     UINT32 regIFAR;
-    __asm__ __volatile__("mrc p15, 0, %0, c6, c0, 2"
-                         : "=r"(regIFAR));
+    __asm__ __volatile__("mrc p15, 0, %0, c6, c0, 2" : "=r"(regIFAR));
     return regIFAR;
 }
 

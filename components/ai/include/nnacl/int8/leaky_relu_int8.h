@@ -23,9 +23,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-int DoLeakReluInt8(int8_t *inputs, int8_t *output_ptr, LeakyReluQuantArg *quant_Prelu_parm, int task_id);
+int DoLeakReluInt8(int8_t* inputs, int8_t* output_ptr, LeakyReluQuantArg* quant_Prelu_parm, int task_id);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_SRC_RUNTIME_KERNEL_ARM_OPCLIB_INT8_PRELU_INT8_H_
+#endif // MINDSPORE_LITE_SRC_RUNTIME_KERNEL_ARM_OPCLIB_INT8_PRELU_INT8_H_

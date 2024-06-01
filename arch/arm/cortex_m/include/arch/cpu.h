@@ -39,18 +39,18 @@
 #ifdef __cplusplus
 #if __cplusplus
 extern "C" {
-#endif /* __cplusplus */
-#endif /* __cplusplus */
+#endif                                   /* __cplusplus */
+#endif                                   /* __cplusplus */
 
-#define CPUID_BASE              0xE000ED00    /* Main ID Register */
-#define ARM_SYSREG_READ(addr)   (*(volatile unsigned *)(uintptr_t)(addr))
+#define CPUID_BASE            0xE000ED00 /* Main ID Register */
+#define ARM_SYSREG_READ(addr) (*(volatile unsigned*)(uintptr_t)(addr))
 
 typedef struct {
     const UINT32 partNo;
-    const CHAR *cpuName;
+    const CHAR* cpuName;
 } CpuVendor;
 
-extern const CHAR *ArchCpuInfo(VOID);
+extern const CHAR* ArchCpuInfo(VOID);
 
 STATIC INLINE UINT32 OsMainIDGet(VOID)
 {

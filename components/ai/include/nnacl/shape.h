@@ -20,7 +20,7 @@
 #include "nnacl/op_base.h"
 
 typedef struct ShapeParameter {
-  OpParameter op_parameter_;
+    OpParameter op_parameter_;
 } ShapeParameter;
 
-#endif  // MINDSPORE_CCSRC_KERNEL_CPU_ARM_NNACL_SHAPE_H_
+#endif // MINDSPORE_CCSRC_KERNEL_CPU_ARM_NNACL_SHAPE_H_

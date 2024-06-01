@@ -17,15 +17,16 @@
 #ifndef MINDSPORE_LITE_NNACL_FP32_REDUCE_GRAD_H_
 #define MINDSPORE_LITE_NNACL_FP32_REDUCE_GRAD_H_
 
-#include <cstddef.h>
 #include <algorithm.h>
+#include <cstddef.h>
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-float ReduceMeanAll(const float *src, int size);
-void ReduceSumByAxes(const float *input, const int *input_dims, float *output, const int *output_dims, int num_dims);
+float ReduceMeanAll(const float* src, int size);
+void ReduceSumByAxes(const float* input, const int* input_dims, float* output, const int* output_dims, int num_dims);
 #ifdef __cplusplus
 }
 #endif
-#endif  // MINDSPORE_LITE_NNACL_FP32_REDUCE_GRAD_H_
+#endif // MINDSPORE_LITE_NNACL_FP32_REDUCE_GRAD_H_

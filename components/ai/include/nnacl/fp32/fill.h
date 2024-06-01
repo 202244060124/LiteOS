@@ -19,23 +19,24 @@
 #ifdef ENABLE_NEON
 #include <arm_neon.h>
 #endif
-#include "nnacl/op_base.h"
 #include "nnacl/errorcode.h"
+#include "nnacl/op_base.h"
+
 
 #define FILL_DIMS_MAX_SIZE 4
 
 typedef struct FillParameter {
-  OpParameter op_parameter_;
-  int dims_[FILL_DIMS_MAX_SIZE];
-  int num_dims_;
+    OpParameter op_parameter_;
+    int dims_[FILL_DIMS_MAX_SIZE];
+    int num_dims_;
 } FillParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-int Fill(float *output, int size, float data);
+int Fill(float* output, int size, float data);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_FILL_H_
+#endif // MINDSPORE_LITE_NNACL_FILL_H_

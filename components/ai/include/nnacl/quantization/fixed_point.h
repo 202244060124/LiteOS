@@ -17,8 +17,9 @@
 #ifndef MINDSPORE_LITE_NNACL_QUANTIZATION_FIXED_POINT_H_
 #define MINDSPORE_LITE_NNACL_QUANTIZATION_FIXED_POINT_H_
 
-#include <stdint.h>
 #include <limits.h>
+#include <stdint.h>
+
 #ifdef ENABLE_NEON
 #include <arm_neon.h>
 #endif
@@ -46,7 +47,7 @@ int32_t Rescale(int x, int kIntegerBitsSrc, int kIntegerBitsDst);
 
 int CountLeadingSignBits(int32_t x);
 
-int32_t ComputerReciprocal(int32_t x, int x_digits, int *recip_shift);
+int32_t ComputerReciprocal(int32_t x, int x_digits, int* recip_shift);
 
 int exp_on_negative_values(int a, const int tIntegerBits);
 
@@ -60,4 +61,4 @@ int32x4_t RoundingDivideByPOTInt32x4(int32x4_t x, int exponent);
 int32x4_t SaturatingRoundingDoublingHighMulInt32x4(int32x4_t a, int32x4_t b);
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_QUANTIZATION_FIXED_POINT_H_
+#endif // MINDSPORE_LITE_NNACL_QUANTIZATION_FIXED_POINT_H_

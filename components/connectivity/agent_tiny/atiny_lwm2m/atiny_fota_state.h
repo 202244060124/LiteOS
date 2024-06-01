@@ -46,19 +46,22 @@
 #ifndef _ATINY_FOTA_STATE_H
 #define _ATINY_FOTA_STATE_H
 #include "atiny_fota_manager.h"
+#include "flag_manager.h"
 #include "log/atiny_log.h"
 #include "object_comm.h"
-#include "flag_manager.h"
 #include "upgrade_flag.h"
 
-#define ASSERT_THIS(do_something) if (thi == NULL) { \
-        ATINY_LOG(LOG_ERR, "this null pointer");     \
-        do_something;                                \
+
+#define ASSERT_THIS(do_something)                \
+    if (thi == NULL) {                           \
+        ATINY_LOG(LOG_ERR, "this null pointer"); \
+        do_something;                            \
     }
 
 #define ATINY_GET_STATE(state) (&((state).interface))
 
-#define CALL_MEM_FUNCTION_R(object, func, ret, ...) do {   \
+#define CALL_MEM_FUNCTION_R(object, func, ret, ...)        \
+    do {                                                   \
         if ((object) != NULL) && ((object)->func) != NULL) \
             {                                              \
                 (ret) = (object)->func(__VA_ARGS__);       \
@@ -66,12 +69,12 @@
     } while (0)
 
 typedef struct atiny_fota_state_tag_s {
-    int (*start_download)(struct atiny_fota_state_tag_s *thi, const char *uri);
-    int (*execute_update)(struct atiny_fota_state_tag_s *thi);
-    int (*finish_download)(struct atiny_fota_state_tag_s *thi, int result);
-    int (*repot_result)(struct atiny_fota_state_tag_s *thi);
-    int (*recv_notify_ack)(struct atiny_fota_state_tag_s *thi, data_send_status_e status);
-    atiny_fota_manager_s *manager;
+    int (*start_download)(struct atiny_fota_state_tag_s* thi, const char* uri);
+    int (*execute_update)(struct atiny_fota_state_tag_s* thi);
+    int (*finish_download)(struct atiny_fota_state_tag_s* thi, int result);
+    int (*repot_result)(struct atiny_fota_state_tag_s* thi);
+    int (*recv_notify_ack)(struct atiny_fota_state_tag_s* thi, data_send_status_e status);
+    atiny_fota_manager_s* manager;
 } atiny_fota_state_s;
 
 typedef struct {
@@ -94,12 +97,12 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-void atiny_fota_state_init(atiny_fota_state_s *thi, atiny_fota_manager_s *manager);
-void atiny_fota_idle_state_init(atiny_fota_idle_state_s *thi, atiny_fota_manager_s *manager);
-int atiny_fota_idle_state_int_report_result(atiny_fota_idle_state_s *thi);
-void atiny_fota_downloading_state_init(atiny_fota_downloading_state_s *thi, atiny_fota_manager_s *manager);
-void atiny_fota_downloaded_state_init(atiny_fota_downloaded_state_s *thi, atiny_fota_manager_s *manager);
-void atiny_fota_updating_state_init(atiny_fota_updating_state_s *thi, atiny_fota_manager_s *manager);
+void atiny_fota_state_init(atiny_fota_state_s* thi, atiny_fota_manager_s* manager);
+void atiny_fota_idle_state_init(atiny_fota_idle_state_s* thi, atiny_fota_manager_s* manager);
+int atiny_fota_idle_state_int_report_result(atiny_fota_idle_state_s* thi);
+void atiny_fota_downloading_state_init(atiny_fota_downloading_state_s* thi, atiny_fota_manager_s* manager);
+void atiny_fota_downloaded_state_init(atiny_fota_downloaded_state_s* thi, atiny_fota_manager_s* manager);
+void atiny_fota_updating_state_init(atiny_fota_updating_state_s* thi, atiny_fota_manager_s* manager);
 
 #ifdef __cplusplus
 #if __cplusplus

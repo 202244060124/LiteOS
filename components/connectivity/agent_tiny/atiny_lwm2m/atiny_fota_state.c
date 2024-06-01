@@ -26,31 +26,31 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --------------------------------------------------------------------------- */
 
-#include "atiny_fota_state.h"
 #include <string.h>
+#include "atiny_fota_state.h"
 #include "firmware_update.h"
 
+
 // set the update detail result
-static int atiny_fota_state_default_handle(struct atiny_fota_state_tag_s *thi)
+static int atiny_fota_state_default_handle(struct atiny_fota_state_tag_s* thi)
 {
     ASSERT_THIS(return ATINY_ERR);
 
-    ATINY_LOG(LOG_ERR, "err state handle state %d", thi->manager ?
-              atiny_fota_manager_get_state(thi->manager) : -1);
+    ATINY_LOG(LOG_ERR, "err state handle state %d", thi->manager ? atiny_fota_manager_get_state(thi->manager) : -1);
     return ATINY_ERR;
 }
 
-void atiny_fota_state_init(atiny_fota_state_s *thi, atiny_fota_manager_s *manager)
+void atiny_fota_state_init(atiny_fota_state_s* thi, atiny_fota_manager_s* manager)
 {
-    thi->start_download = (int (*)(struct atiny_fota_state_tag_s *thi, const char *uri))atiny_fota_state_default_handle;
+    thi->start_download = (int (*)(struct atiny_fota_state_tag_s* thi, const char* uri))atiny_fota_state_default_handle;
     thi->execute_update = atiny_fota_state_default_handle;
-    thi->finish_download = (int (*)(struct atiny_fota_state_tag_s *thi, int result))atiny_fota_state_default_handle;
+    thi->finish_download = (int (*)(struct atiny_fota_state_tag_s* thi, int result))atiny_fota_state_default_handle;
     thi->repot_result = atiny_fota_state_default_handle;
-    thi->recv_notify_ack = (int (*)(struct atiny_fota_state_tag_s *thi, data_send_status_e status))atiny_fota_state_default_handle;
+    thi->recv_notify_ack = (int (*)(struct atiny_fota_state_tag_s* thi, data_send_status_e status))atiny_fota_state_default_handle;
     thi->manager = manager;
 }
 
-static int atiny_fota_start_download(atiny_fota_state_s *thi, const char *uri)
+static int atiny_fota_start_download(atiny_fota_state_s* thi, const char* uri)
 {
     ASSERT_THIS(return ATINY_ARG_INVALID);
 
@@ -59,7 +59,7 @@ static int atiny_fota_start_download(atiny_fota_state_s *thi, const char *uri)
     return atiny_fota_manager_rpt_state(thi->manager, ATINY_FOTA_DOWNLOADING);
 }
 
-static int atiny_fota_idle_state_recv_notify_ack(atiny_fota_state_s *thi, data_send_status_e status)
+static int atiny_fota_idle_state_recv_notify_ack(atiny_fota_state_s* thi, data_send_status_e status)
 {
     int ret;
     atiny_fota_state_e rpt_state;
@@ -70,7 +70,7 @@ static int atiny_fota_idle_state_recv_notify_ack(atiny_fota_state_s *thi, data_s
         return atiny_fota_manager_set_state(thi->manager, ATINY_FOTA_IDLE);
     }
 
-    rpt_state = atiny_fota_manager_get_rpt_state(thi->manager) ;
+    rpt_state = atiny_fota_manager_get_rpt_state(thi->manager);
 
     // idle and downloaded rpt ack
     if ((rpt_state == ATINY_FOTA_IDLE) || (rpt_state == ATINY_FOTA_DOWNLOADED)) {
@@ -85,12 +85,10 @@ static int atiny_fota_idle_state_recv_notify_ack(atiny_fota_state_s *thi, data_s
 
     // downloading rpt ack
     // should return proper result ?
-    ret = start_firmware_download(atiny_fota_manager_get_lwm2m_context(thi->manager),
-                                  atiny_fota_manager_get_pkg_uri(thi->manager),
+    ret = start_firmware_download(atiny_fota_manager_get_lwm2m_context(thi->manager), atiny_fota_manager_get_pkg_uri(thi->manager),
                                   atiny_fota_manager_get_storage_device(thi->manager));
-    if (ret  == ATINY_OK) {
+    if (ret == ATINY_OK) {
         return atiny_fota_manager_set_state(thi->manager, ATINY_FOTA_DOWNLOADING);
-
     }
     ATINY_LOG(LOG_ERR, "start_firmware_download fail %d", ret);
     atiny_fota_manager_set_update_result(thi->manager, ATINY_FIRMWARE_UPDATE_FAIL);
@@ -99,17 +97,17 @@ static int atiny_fota_idle_state_recv_notify_ack(atiny_fota_state_s *thi, data_s
 
 static int atiny_fota_idle_state_get_result(void)
 {
-   upgrade_state_e state;
+    upgrade_state_e state;
 
-   if (flag_upgrade_get_result(&state) != ATINY_OK) {
+    if (flag_upgrade_get_result(&state) != ATINY_OK) {
         ATINY_LOG(LOG_ERR, "ota_check_update_state fail");
         return ATINY_ERR;
-   }
+    }
 
-   return (OTA_SUCCEED == state) ? ATINY_OK : ATINY_ERR;
+    return (OTA_SUCCEED == state) ? ATINY_OK : ATINY_ERR;
 }
 
-int atiny_fota_idle_state_int_report_result(atiny_fota_idle_state_s *thi)
+int atiny_fota_idle_state_int_report_result(atiny_fota_idle_state_s* thi)
 {
     lwm2m_observe_info_t observe_info;
     int ret = ATINY_ERR;
@@ -146,10 +144,10 @@ EXIT:
     return result;
 }
 
-static int atiny_fota_idle_state_report_result(atiny_fota_state_s *thi)
+static int atiny_fota_idle_state_report_result(atiny_fota_state_s* thi)
 {
     int ret = ATINY_ERR;
-    atiny_fota_idle_state_s *idle_stat = (atiny_fota_idle_state_s *)thi;
+    atiny_fota_idle_state_s* idle_stat = (atiny_fota_idle_state_s*)thi;
     int state;
     lwm2m_data_cfg_t dataCfg = {0};
 
@@ -161,17 +159,17 @@ static int atiny_fota_idle_state_report_result(atiny_fota_state_s *thi)
 
     idle_stat->report_flag = false;
 
-    state = ((ATINY_OK == idle_stat->report_result) ?  ATINY_FOTA_IDLE : ATINY_FOTA_DOWNLOADED);
-    atiny_fota_manager_set_update_result(thi->manager, (ATINY_OK == idle_stat->report_result) ? ATINY_FIRMWARE_UPDATE_SUCCESS : ATINY_FIRMWARE_UPDATE_FAIL);
+    state = ((ATINY_OK == idle_stat->report_result) ? ATINY_FOTA_IDLE : ATINY_FOTA_DOWNLOADED);
+    atiny_fota_manager_set_update_result(thi->manager, (ATINY_OK == idle_stat->report_result) ? ATINY_FIRMWARE_UPDATE_SUCCESS
+                                                                                              : ATINY_FIRMWARE_UPDATE_FAIL);
     atiny_fota_manager_save_rpt_state(thi->manager, state);
     atiny_fota_manager_get_data_cfg(thi->manager, &dataCfg);
-    ret = lwm2m_send_notify(atiny_fota_manager_get_lwm2m_context(thi->manager),
-                            &idle_stat->observe_info, state, &dataCfg);
+    ret = lwm2m_send_notify(atiny_fota_manager_get_lwm2m_context(thi->manager), &idle_stat->observe_info, state, &dataCfg);
     ATINY_LOG(LOG_INFO, "lwm2m_send_notify result %d, state %d", ret, state);
     return ret;
 }
 
-void atiny_fota_idle_state_init(atiny_fota_idle_state_s *thi, atiny_fota_manager_s *manager)
+void atiny_fota_idle_state_init(atiny_fota_idle_state_s* thi, atiny_fota_manager_s* manager)
 {
     memset(thi, 0, sizeof(*thi));
     atiny_fota_state_init(&thi->interface, manager);
@@ -180,7 +178,7 @@ void atiny_fota_idle_state_init(atiny_fota_idle_state_s *thi, atiny_fota_manager
     thi->interface.recv_notify_ack = atiny_fota_idle_state_recv_notify_ack;
 }
 
-static int atiny_fota_downloading_state_finish_download(atiny_fota_state_s *thi, int result)
+static int atiny_fota_downloading_state_finish_download(atiny_fota_state_s* thi, int result)
 {
     ASSERT_THIS(return ATINY_ARG_INVALID);
     if (result != ATINY_OK) {
@@ -190,7 +188,7 @@ static int atiny_fota_downloading_state_finish_download(atiny_fota_state_s *thi,
     return atiny_fota_manager_rpt_state(thi->manager, (result == ATINY_OK) ? ATINY_FOTA_DOWNLOADED : ATINY_FOTA_IDLE);
 }
 
-static int atiny_fota_downloading_state_recv_notify_ack(atiny_fota_state_s *thi, data_send_status_e status)
+static int atiny_fota_downloading_state_recv_notify_ack(atiny_fota_state_s* thi, data_send_status_e status)
 {
     atiny_fota_state_e rpt_state;
 
@@ -201,7 +199,7 @@ static int atiny_fota_downloading_state_recv_notify_ack(atiny_fota_state_s *thi,
     }
 
     rpt_state = atiny_fota_manager_get_rpt_state(thi->manager);
-    if ((rpt_state == ATINY_FOTA_IDLE) || (rpt_state == ATINY_FOTA_DOWNLOADED))  {
+    if ((rpt_state == ATINY_FOTA_IDLE) || (rpt_state == ATINY_FOTA_DOWNLOADED)) {
         return atiny_fota_manager_set_state(thi->manager, rpt_state);
     } else {
         ATINY_LOG(LOG_ERR, "recv notify ack err in downloading state, rpt state %d", rpt_state);
@@ -209,14 +207,14 @@ static int atiny_fota_downloading_state_recv_notify_ack(atiny_fota_state_s *thi,
     }
 }
 
-void atiny_fota_downloading_state_init(atiny_fota_downloading_state_s *thi, atiny_fota_manager_s *manager)
+void atiny_fota_downloading_state_init(atiny_fota_downloading_state_s* thi, atiny_fota_manager_s* manager)
 {
     atiny_fota_state_init(&thi->interface, manager);
     thi->interface.finish_download = atiny_fota_downloading_state_finish_download;
     thi->interface.recv_notify_ack = atiny_fota_downloading_state_recv_notify_ack;
 }
 
-static int atiny_fota_downloaded_state_execute_update(atiny_fota_state_s *thi)
+static int atiny_fota_downloaded_state_execute_update(atiny_fota_state_s* thi)
 {
     atiny_fota_state_e rpt_state = ATINY_FOTA_UPDATING;
 
@@ -230,12 +228,12 @@ static int atiny_fota_downloaded_state_execute_update(atiny_fota_state_s *thi)
     return atiny_fota_manager_rpt_state(thi->manager, rpt_state);
 }
 
-static int atiny_fota_downloaded_state_recv_notify_ack(atiny_fota_state_s *thi, data_send_status_e status)
+static int atiny_fota_downloaded_state_recv_notify_ack(atiny_fota_state_s* thi, data_send_status_e status)
 {
     int ret;
     atiny_fota_state_e rpt_state;
     lwm2m_observe_info_t observe_info;
-    pack_storage_device_api_s *device = NULL;
+    pack_storage_device_api_s* device = NULL;
 
     ASSERT_THIS(return ATINY_ARG_INVALID);
     if (status != SENT_SUCCESS) {
@@ -270,7 +268,7 @@ static int atiny_fota_downloaded_state_recv_notify_ack(atiny_fota_state_s *thi, 
 
     // rpt updating state ack
     if (lwm2m_get_observe_info(atiny_fota_manager_get_lwm2m_context(thi->manager), &observe_info) != COAP_NO_ERROR
-            || 0 == observe_info.tokenLen) {
+        || 0 == observe_info.tokenLen) {
         ATINY_LOG(LOG_ERR, "lwm2m_get_observe_info fail");
         goto EXIT_DOWNLOADED;
     }
@@ -295,7 +293,7 @@ EXIT_DOWNLOADED:
     return ATINY_ERR;
 }
 
-void atiny_fota_downloaded_state_init(atiny_fota_downloaded_state_s *thi, atiny_fota_manager_s *manager)
+void atiny_fota_downloaded_state_init(atiny_fota_downloaded_state_s* thi, atiny_fota_manager_s* manager)
 {
     atiny_fota_state_init(&thi->interface, manager);
     thi->interface.start_download = atiny_fota_start_download;
@@ -303,7 +301,7 @@ void atiny_fota_downloaded_state_init(atiny_fota_downloaded_state_s *thi, atiny_
     thi->interface.recv_notify_ack = atiny_fota_downloaded_state_recv_notify_ack;
 }
 
-void atiny_fota_updating_state_init(atiny_fota_updating_state_s *thi, atiny_fota_manager_s *manager)
+void atiny_fota_updating_state_init(atiny_fota_updating_state_s* thi, atiny_fota_manager_s* manager)
 {
     atiny_fota_state_init(&thi->interface, manager);
 }

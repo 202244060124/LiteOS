@@ -20,23 +20,24 @@
 #ifdef ENABLE_NEON
 #include <arm_neon.h>
 #endif
-#include "nnacl/op_base.h"
 #include "nnacl/fp32/pooling.h"
+#include "nnacl/op_base.h"
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-void AvgPoolingInt8(const int8_t *input_ptr, int8_t *output_ptr, PoolingParameter *pooling_param, int task_id);
+void AvgPoolingInt8(const int8_t* input_ptr, int8_t* output_ptr, PoolingParameter* pooling_param, int task_id);
 
-void AvgPoolingOptInt8(const int8_t *input_ptr, int8_t *output_ptr, PoolingParameter *pooling_param, int task_id);
+void AvgPoolingOptInt8(const int8_t* input_ptr, int8_t* output_ptr, PoolingParameter* pooling_param, int task_id);
 
-void MaxPoolingInt8(const int8_t *input_ptr, int8_t *output_ptr, PoolingParameter *pooling_param, int task_id);
+void MaxPoolingInt8(const int8_t* input_ptr, int8_t* output_ptr, PoolingParameter* pooling_param, int task_id);
 
-void MaxPoolingWithQuantInt8(const int8_t *input_ptr, int8_t *output_ptr, PoolingParameter *pooling_param, int task_id);
+void MaxPoolingWithQuantInt8(const int8_t* input_ptr, int8_t* output_ptr, PoolingParameter* pooling_param, int task_id);
 
-void MaxPoolingOptInt8(const int8_t *input_ptr, int8_t *output_ptr, PoolingParameter *pooling_param, int task_id);
+void MaxPoolingOptInt8(const int8_t* input_ptr, int8_t* output_ptr, PoolingParameter* pooling_param, int task_id);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_INT8_POOLING_H_
+#endif // MINDSPORE_LITE_NNACL_INT8_POOLING_H_

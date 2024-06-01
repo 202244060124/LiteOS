@@ -20,15 +20,15 @@
 #include "nnacl/op_base.h"
 
 typedef struct UniqueParameter {
-  OpParameter op_parameter_;
+    OpParameter op_parameter_;
 } UniqueParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-void Unique(float *input, int input_len, float *output0, int *output0_len, int *output1);
+void Unique(float* input, int input_len, float* output0, int* output0_len, int* output1);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_UNIQUE_H
+#endif // MINDSPORE_LITE_NNACL_UNIQUE_H

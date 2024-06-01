@@ -27,12 +27,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void AvgPooling(const float *input_ptr, float *output_ptr, PoolingParameter *pooling_param, int task_id, float minf,
-                float maxf);
-void MaxPooling(const float *input_ptr, float *output_ptr, PoolingParameter *pooling_param, int task_id, float minf,
-                float maxf);
+void AvgPooling(const float* input_ptr, float* output_ptr, PoolingParameter* pooling_param, int task_id, float minf, float maxf);
+void MaxPooling(const float* input_ptr, float* output_ptr, PoolingParameter* pooling_param, int task_id, float minf, float maxf);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_FP32_POOLING_H_
+#endif // MINDSPORE_LITE_NNACL_FP32_POOLING_H_

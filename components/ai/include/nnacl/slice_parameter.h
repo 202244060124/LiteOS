@@ -23,13 +23,13 @@
 #define SLICE_SHAPE_MAX_SIZE 4
 
 typedef struct SliceParameter {
-  OpParameter op_parameter_;
-  SliceQuantArg quant_arg_;
-  int32_t begin_[SLICE_SHAPE_MAX_SIZE];
-  int32_t end_[SLICE_SHAPE_MAX_SIZE];
-  int32_t size_[SLICE_SHAPE_MAX_SIZE];
-  int32_t shape_[SLICE_SHAPE_MAX_SIZE];
-  int32_t param_length_;
+    OpParameter op_parameter_;
+    SliceQuantArg quant_arg_;
+    int32_t begin_[SLICE_SHAPE_MAX_SIZE];
+    int32_t end_[SLICE_SHAPE_MAX_SIZE];
+    int32_t size_[SLICE_SHAPE_MAX_SIZE];
+    int32_t shape_[SLICE_SHAPE_MAX_SIZE];
+    int32_t param_length_;
 } SliceParameter;
 
-#endif  // MINDSPORE_LITE_NNACL_SLICE_PARAMETER_H_
+#endif // MINDSPORE_LITE_NNACL_SLICE_PARAMETER_H_

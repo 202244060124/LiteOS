@@ -22,9 +22,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void Softmax(const float *input_ptr, float *output_ptr, float *sum_data, SoftmaxParameter *parameter);
+void Softmax(const float* input_ptr, float* output_ptr, float* sum_data, SoftmaxParameter* parameter);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_FP32_SOFTMAX_H_
+#endif // MINDSPORE_LITE_NNACL_FP32_SOFTMAX_H_

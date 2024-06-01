@@ -19,12 +19,12 @@
 
 #include "nnacl/op_base.h"
 typedef struct PReluParameter {
-  OpParameter op_parameter_;
-  float *slope_;
-  bool channelShared;
-  int tile_block_;
-  int channel_num_;
-  int input_num_;
+    OpParameter op_parameter_;
+    float* slope_;
+    bool channelShared;
+    int tile_block_;
+    int channel_num_;
+    int input_num_;
 } PReluParameter;
 
-#endif  // MINDSPORE_LITE_NNACL_PRELU_PARAMETER_H_
+#endif // MINDSPORE_LITE_NNACL_PRELU_PARAMETER_H_

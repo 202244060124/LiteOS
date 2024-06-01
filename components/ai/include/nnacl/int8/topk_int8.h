@@ -17,20 +17,21 @@
 #ifndef MINDSPORE_LITE_NNACL_INT8_TOPK_INT8_H_
 #define MINDSPORE_LITE_NNACL_INT8_TOPK_INT8_H_
 
-#include "nnacl/op_base.h"
 #include "nnacl/fp32/topk.h"
+#include "nnacl/op_base.h"
+
 
 typedef struct TopkNodeInt8 {
-  int8_t element;
-  int32_t index;
+    int8_t element;
+    int32_t index;
 } TopkNodeInt8;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-void TopkInt8(int8_t *input_data, int8_t *output_data, int32_t *output_index, TopkParameter *parameter);
+void TopkInt8(int8_t* input_data, int8_t* output_data, int32_t* output_index, TopkParameter* parameter);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_INT8_TOPK_INT8_H_
+#endif // MINDSPORE_LITE_NNACL_INT8_TOPK_INT8_H_

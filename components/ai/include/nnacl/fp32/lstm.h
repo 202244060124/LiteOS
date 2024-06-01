@@ -20,23 +20,23 @@
 #include "nnacl/op_base.h"
 
 typedef struct LstmParameter {
-  OpParameter op_parameter_;
-  int input_size_;
-  int hidden_size_;  // output_size
-  int seq_len_;
-  int batch_;
-  int input_step_;
-  int output_step_;
-  bool bidirectional_;
+    OpParameter op_parameter_;
+    int input_size_;
+    int hidden_size_; // output_size
+    int seq_len_;
+    int batch_;
+    int input_step_;
+    int output_step_;
+    bool bidirectional_;
 } LstmParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-void Lstm(float *output, const float *input, const float *weight_i, const float *weight_h, const float *bias,
-          float *hidden_state, float *cell_state, float *gate_buffer, LstmParameter *lstm_parm);
+void Lstm(float* output, const float* input, const float* weight_i, const float* weight_h, const float* bias, float* hidden_state,
+          float* cell_state, float* gate_buffer, LstmParameter* lstm_parm);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_FP32_LSTM_H_
+#endif // MINDSPORE_LITE_NNACL_FP32_LSTM_H_

@@ -20,28 +20,28 @@
 #include "nnacl/op_base.h"
 
 typedef struct ReverseSequenceParameter {
-  OpParameter op_parameter_;
-  int ndim_;
-  int input_shape0_[5];
-  int output_shape_[5];
-  int input_stride_[5];
-  int output_stride_[5];
-  int seq_axis_;
-  int batch_axis_;
-  int outer_count_;
-  int outer_stride_;
-  int inner_count_;
-  int inner_stride_;
-  int copy_byte_size_;
-  int total_data_size_;
+    OpParameter op_parameter_;
+    int ndim_;
+    int input_shape0_[5];
+    int output_shape_[5];
+    int input_stride_[5];
+    int output_stride_[5];
+    int seq_axis_;
+    int batch_axis_;
+    int outer_count_;
+    int outer_stride_;
+    int inner_count_;
+    int inner_stride_;
+    int copy_byte_size_;
+    int total_data_size_;
 } ReverseSequenceParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-void ReverseSequence(float *input0, int *input1, float *output, ReverseSequenceParameter *para);
+void ReverseSequence(float* input0, int* input1, float* output, ReverseSequenceParameter* para);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_REVERSE_SEQUENCE_H_
+#endif // MINDSPORE_LITE_NNACL_REVERSE_SEQUENCE_H_

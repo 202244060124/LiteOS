@@ -56,7 +56,7 @@ typedef uint8_t lv_templ_style_t;
  * @param copy pointer to a template object, if not NULL then the new object will be copied from it
  * @return pointer to the created template
  */
-lv_obj_t * lv_templ_create(lv_obj_t * par, const lv_obj_t * copy);
+lv_obj_t* lv_templ_create(lv_obj_t* par, const lv_obj_t* copy);
 
 /*======================
  * Add/remove functions
@@ -72,7 +72,7 @@ lv_obj_t * lv_templ_create(lv_obj_t * par, const lv_obj_t * copy);
  * @param type which style should be set
  * @param style pointer to a style
  */
-void lv_templ_set_style(lv_obj_t * templ, lv_templ_style_t type, const lv_style_t * style);
+void lv_templ_set_style(lv_obj_t* templ, lv_templ_style_t type, const lv_style_t* style);
 
 /*=====================
  * Getter functions
@@ -84,7 +84,7 @@ void lv_templ_set_style(lv_obj_t * templ, lv_templ_style_t type, const lv_style_
  * @param type which style should be get
  * @return style pointer to the style
  */
-lv_style_t * lv_templ_get_style(const lv_obj_t * templ, lv_templ_style_t type);
+lv_style_t* lv_templ_get_style(const lv_obj_t* templ, lv_templ_style_t type);
 
 /*=====================
  * Other functions

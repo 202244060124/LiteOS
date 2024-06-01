@@ -22,11 +22,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void im2col_hwc(const float *in_data, float *data_col, ConvParameter *conv_param);
-void im2row_hwc(const float *in_data, float *data_row, ConvParameter *conv_param);
-void col2im_hwc(const float *data_col, float *data_im, ConvParameter *conv_param);
+void im2col_hwc(const float* in_data, float* data_col, ConvParameter* conv_param);
+void im2row_hwc(const float* in_data, float* data_row, ConvParameter* conv_param);
+void col2im_hwc(const float* data_col, float* data_im, ConvParameter* conv_param);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_PACK_EXT_H
+#endif // MINDSPORE_LITE_NNACL_PACK_EXT_H

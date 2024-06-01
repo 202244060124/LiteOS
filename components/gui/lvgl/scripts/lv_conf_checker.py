@@ -1,8 +1,8 @@
 #!/usr/bin/env python3.6
 
-'''
+"""
 Generates a checker file for lv_conf.h from lv_conf_templ.h define all the not defined values
-'''
+"""
 
 
 import re
@@ -12,7 +12,7 @@ fout = open("../src/lv_conf_internal.h", "w")
 
 
 fout.write(
-'''/**
+    """/**
  * GENERATED FILE, DO NOT EDIT IT!
  * @file lv_conf_internal.h
  * Make sure all the defines of lv_conf.h have a default value
@@ -36,40 +36,37 @@ fout.write(
 #include "../../lv_conf.h"
 #endif
 
-'''
+"""
 )
 
 started = 0
 
 for i in fin.read().splitlines():
-  if not started:
-    if '#define LV_CONF_H' in i:
-      started = 1
-      continue
+    if not started:
+        if "#define LV_CONF_H" in i:
+            started = 1
+            continue
+        else:
+            continue
+
+    if "/*--END OF LV_CONF_H--*/" in i:
+        break
+
+    r = re.search(r"^ *# *define ([^\s]+).*$", i)
+
+    if r:
+        line = re.sub("\(.*?\)", "", r[1], 1)  # remove parentheses from macros
+        fout.write(f"#ifndef {line}\n" f"{i}\n" "#endif\n")
+    elif re.search("^ *typedef .*;.*$", i):
+        continue  # ignore typedefs to avoide redeclaration
     else:
-      continue
-
-  if '/*--END OF LV_CONF_H--*/' in i: break
-
-  r = re.search(r'^ *# *define ([^\s]+).*$', i)
-  
-  if r:
-    line = re.sub('\(.*?\)', '', r[1], 1)    #remove parentheses from macros
-    fout.write(
-      f'#ifndef {line}\n'
-      f'{i}\n'
-      '#endif\n'
-    )
-  elif re.search('^ *typedef .*;.*$', i):
-    continue   #ignore typedefs to avoide redeclaration
-  else:
-    fout.write(f'{i}\n')
+        fout.write(f"{i}\n")
 
 
 fout.write(
-'''
+    """
 #endif  /*LV_CONF_CHECKER_H*/
-'''
+"""
 )
 
 fin.close()

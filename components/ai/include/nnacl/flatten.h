@@ -18,16 +18,16 @@
 #include "nnacl/op_base.h"
 
 typedef struct FlattenParameter {
-  OpParameter op_parameter_;
-  int size;
+    OpParameter op_parameter_;
+    int size;
 } FlattenParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-void Flatten(const void *input, void *output, FlattenParameter *flatten_param);
+void Flatten(const void* input, void* output, FlattenParameter* flatten_param);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_FLATTEN_H_
+#endif // MINDSPORE_LITE_NNACL_FLATTEN_H_

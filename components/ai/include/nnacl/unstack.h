@@ -20,20 +20,20 @@
 #include "nnacl/op_base.h"
 
 typedef struct UnstackParameter {
-  OpParameter op_parameter_;
-  int num_;
-  int axis_;
-  int pre_dims_;
-  int axis_dim_;
-  int after_dims_;
+    OpParameter op_parameter_;
+    int num_;
+    int axis_;
+    int pre_dims_;
+    int axis_dim_;
+    int after_dims_;
 } UnstackParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-void Unistack(float *input, float **output, UnstackParameter *para);
+void Unistack(float* input, float** output, UnstackParameter* para);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_UNSTACK_H_
+#endif // MINDSPORE_LITE_NNACL_UNSTACK_H_

@@ -6,17 +6,18 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_gpu_stm32_dma2d.h"
 #include "../lv_core/lv_refr.h"
+#include "lv_gpu_stm32_dma2d.h"
+
 
 #if LV_USE_GPU_STM32_DMA2D
 
 #if defined(STM32F4)
-    #include "stm32f4xx_hal.h"
+#include "stm32f4xx_hal.h"
 #elif defined(STM32F7)
-    #include "stm32f7xx_hal.h"
+#include "stm32f7xx_hal.h"
 #else
-    #error "Not supported STM32 family to use DMA2D"
+#error "Not supported STM32 family to use DMA2D"
 #endif
 
 /*********************
@@ -24,21 +25,21 @@
  *********************/
 
 #if LV_COLOR_16_SWAP
-    #error "Can't use DMA2D with LV_COLOR_16_SWAP 1"
+#error "Can't use DMA2D with LV_COLOR_16_SWAP 1"
 #endif
 
 #if LV_COLOR_DEPTH == 8
-    #error "Can't use DMA2D with LV_COLOR_DEPTH == 8"
+#error "Can't use DMA2D with LV_COLOR_DEPTH == 8"
 #endif
 
 #if LV_COLOR_DEPTH == 16
-    #define DMA2D_OUTPUT_FORMAT DMA2D_OUTPUT_RGB565
-    #define DMA2D_INPUT_FORMAT DMA2D_INPUT_RGB565
+#define DMA2D_OUTPUT_FORMAT DMA2D_OUTPUT_RGB565
+#define DMA2D_INPUT_FORMAT  DMA2D_INPUT_RGB565
 #elif LV_COLOR_DEPTH == 32
-    #define DMA2D_OUTPUT_FORMAT DMA2D_OUTPUT_ARGB8888
-    #define DMA2D_INPUT_FORMAT DMA2D_INPUT_ARGB8888
+#define DMA2D_OUTPUT_FORMAT DMA2D_OUTPUT_ARGB8888
+#define DMA2D_INPUT_FORMAT  DMA2D_INPUT_ARGB8888
 #else
-    /*Can't use GPU with other formats*/
+/*Can't use GPU with other formats*/
 #endif
 
 /**********************
@@ -73,7 +74,7 @@ static DMA2D_HandleTypeDef hdma2d;
  * @param fill_h height to fill in pixels
  * @note `buf_w - fill_w` is offset to the next line after fill
  */
-void lv_gpu_stm32_dma2d_fill(lv_color_t * buf, lv_coord_t buf_w, lv_color_t color, lv_coord_t fill_w, lv_coord_t fill_h)
+void lv_gpu_stm32_dma2d_fill(lv_color_t* buf, lv_coord_t buf_w, lv_color_t color, lv_coord_t fill_w, lv_coord_t fill_h)
 {
     invalidate_cache();
 
@@ -103,36 +104,36 @@ void lv_gpu_stm32_dma2d_fill(lv_color_t * buf, lv_coord_t buf_w, lv_color_t colo
  * @param fill_h height to fill in pixels
  * @note `buf_w - fill_w` is offset to the next line after fill
  */
-void lv_gpu_stm32_dma2d_fill_mask(lv_color_t * buf, lv_coord_t buf_w, lv_color_t color, const lv_opa_t * mask,
-                                  lv_opa_t opa, lv_coord_t fill_w, lv_coord_t fill_h)
+void lv_gpu_stm32_dma2d_fill_mask(lv_color_t* buf, lv_coord_t buf_w, lv_color_t color, const lv_opa_t* mask, lv_opa_t opa,
+                                  lv_coord_t fill_w, lv_coord_t fill_h)
 {
     invalidate_cache();
 
     /* Configure the DMA2D Mode, Color Mode and line output offset */
-    hdma2d.Init.Mode         = DMA2D_M2M_BLEND;
-    hdma2d.Init.ColorMode    = DMA2D_OUTPUT_FORMAT;
+    hdma2d.Init.Mode = DMA2D_M2M_BLEND;
+    hdma2d.Init.ColorMode = DMA2D_OUTPUT_FORMAT;
     hdma2d.Init.OutputOffset = buf_w - fill_w;
 
     /* Configure the foreground -> The character */
     lv_color32_t c32;
     c32.full = lv_color_to32(color);
     c32.ch.alpha = opa;
-    hdma2d.LayerCfg[1].AlphaMode       = DMA2D_COMBINE_ALPHA;
-    hdma2d.LayerCfg[1].InputAlpha      = c32.full;
-    hdma2d.LayerCfg[1].InputColorMode  = DMA2D_INPUT_A8;
-    hdma2d.LayerCfg[1].InputOffset     = 0;
+    hdma2d.LayerCfg[1].AlphaMode = DMA2D_COMBINE_ALPHA;
+    hdma2d.LayerCfg[1].InputAlpha = c32.full;
+    hdma2d.LayerCfg[1].InputColorMode = DMA2D_INPUT_A8;
+    hdma2d.LayerCfg[1].InputOffset = 0;
 
     /* Configure the background -> Display buffer */
-    hdma2d.LayerCfg[0].AlphaMode       = DMA2D_NO_MODIF_ALPHA;
-    hdma2d.LayerCfg[0].InputAlpha      = 0x00;
-    hdma2d.LayerCfg[0].InputColorMode  = DMA2D_INPUT_FORMAT;
-    hdma2d.LayerCfg[0].InputOffset     = buf_w - fill_w;
+    hdma2d.LayerCfg[0].AlphaMode = DMA2D_NO_MODIF_ALPHA;
+    hdma2d.LayerCfg[0].InputAlpha = 0x00;
+    hdma2d.LayerCfg[0].InputColorMode = DMA2D_INPUT_FORMAT;
+    hdma2d.LayerCfg[0].InputOffset = buf_w - fill_w;
 
     /* DMA2D Initialization */
     HAL_DMA2D_Init(&hdma2d);
     HAL_DMA2D_ConfigLayer(&hdma2d, 0);
     HAL_DMA2D_ConfigLayer(&hdma2d, 1);
-    HAL_DMA2D_BlendingStart(&hdma2d, (uint32_t) mask, (uint32_t) buf, (uint32_t)buf, fill_w, fill_h);
+    HAL_DMA2D_BlendingStart(&hdma2d, (uint32_t)mask, (uint32_t)buf, (uint32_t)buf, fill_w, fill_h);
     dma2d_wait();
 }
 
@@ -146,8 +147,8 @@ void lv_gpu_stm32_dma2d_fill_mask(lv_color_t * buf, lv_coord_t buf_w, lv_color_t
  * @param copy_h height of the area to copy in pixels
  * @note `map_w - fill_w` is offset to the next line after copy
  */
-void lv_gpu_stm32_dma2d_copy(lv_color_t * buf, lv_coord_t buf_w, const lv_color_t * map, lv_coord_t map_w,
-                             lv_coord_t copy_w, lv_coord_t copy_h)
+void lv_gpu_stm32_dma2d_copy(lv_color_t* buf, lv_coord_t buf_w, const lv_color_t* map, lv_coord_t map_w, lv_coord_t copy_w,
+                             lv_coord_t copy_h)
 {
     invalidate_cache();
 
@@ -181,8 +182,8 @@ void lv_gpu_stm32_dma2d_copy(lv_color_t * buf, lv_coord_t buf_w, const lv_color_
  * @param copy_h height of the area to copy in pixels
  * @note `map_w - fill_w` is offset to the next line after copy
  */
-void lv_gpu_stm32_dma2d_blend(lv_color_t * buf, lv_coord_t buf_w, const lv_color_t * map, lv_opa_t opa,
-                              lv_coord_t map_w, lv_coord_t copy_w, lv_coord_t copy_h)
+void lv_gpu_stm32_dma2d_blend(lv_color_t* buf, lv_coord_t buf_w, const lv_color_t* map, lv_opa_t opa, lv_coord_t map_w, lv_coord_t copy_w,
+                              lv_coord_t copy_h)
 {
     invalidate_cache();
 
@@ -217,7 +218,7 @@ void lv_gpu_stm32_dma2d_blend(lv_color_t * buf, lv_coord_t buf_w, const lv_color
 static void invalidate_cache(void)
 {
 #if __DCACHE_PRESENT
-    if(SCB->CCR & (uint32_t)SCB_CCR_DC_Msk) {
+    if (SCB->CCR & (uint32_t)SCB_CCR_DC_Msk) {
         SCB_CleanInvalidateDCache();
     }
 #endif
@@ -225,9 +226,10 @@ static void invalidate_cache(void)
 
 static void dma2d_wait(void)
 {
-    lv_disp_t * disp = _lv_refr_get_disp_refreshing();
-    while(HAL_DMA2D_PollForTransfer(&hdma2d, 0) == HAL_TIMEOUT) {
-        if(disp->driver.wait_cb) disp->driver.wait_cb(&disp->driver);
+    lv_disp_t* disp = _lv_refr_get_disp_refreshing();
+    while (HAL_DMA2D_PollForTransfer(&hdma2d, 0) == HAL_TIMEOUT) {
+        if (disp->driver.wait_cb)
+            disp->driver.wait_cb(&disp->driver);
     }
 }
 

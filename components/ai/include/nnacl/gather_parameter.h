@@ -20,9 +20,9 @@
 #include "nnacl/op_base.h"
 
 typedef struct GatherParameter {
-  OpParameter op_parameter_;
-  int axis_;
-  int batchDims_;
+    OpParameter op_parameter_;
+    int axis_;
+    int batchDims_;
 } GatherParameter;
 
-#endif  // MINDSPORE_LITE_SRC_RUNTIME_KERNEL_ARM_NNACL_GATHER_PARAMETER_H_
+#endif // MINDSPORE_LITE_SRC_RUNTIME_KERNEL_ARM_NNACL_GATHER_PARAMETER_H_

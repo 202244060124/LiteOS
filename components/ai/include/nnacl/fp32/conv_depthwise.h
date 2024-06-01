@@ -20,39 +20,39 @@
 #include "nnacl/conv_parameter.h"
 
 #ifndef ENABLE_ARM64
-void DepthwiseCenter(float *dst, const float *src, const float *weight, const float *bias, int height, int width,
-                     int kernel_h, int kernel_w, int out_h_step, int block_channel, int in_sh_step, int in_sw_step,
-                     int in_kh_step, int in_kw_step, bool is_relu, bool is_relu6);
+void DepthwiseCenter(float* dst, const float* src, const float* weight, const float* bias, int height, int width, int kernel_h,
+                     int kernel_w, int out_h_step, int block_channel, int in_sh_step, int in_sw_step, int in_kh_step, int in_kw_step,
+                     bool is_relu, bool is_relu6);
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void ConvDw(float *output_data, const float *input_data, const float *weight_data, const float *bias_data,
-            const ConvParameter *conv_param, int task_id);
+void ConvDw(float* output_data, const float* input_data, const float* weight_data, const float* bias_data, const ConvParameter* conv_param,
+            int task_id);
 
-void InitSlidingParam(SlidingWindowParam *sliding, const ConvParameter *conv_param, int block);
+void InitSlidingParam(SlidingWindowParam* sliding, const ConvParameter* conv_param, int block);
 
-void InitSlidingParamConv(SlidingWindowParam *sliding, const ConvParameter *conv_param, int block);
+void InitSlidingParamConv(SlidingWindowParam* sliding, const ConvParameter* conv_param, int block);
 
-void AppendSlidingParamConv(SlidingWindowParam *sliding, const ConvParameter *conv_param, int block);
+void AppendSlidingParamConv(SlidingWindowParam* sliding, const ConvParameter* conv_param, int block);
 
-void InitSlidingParamConvDw(SlidingWindowParam *sliding, const ConvParameter *conv_param, int block);
+void InitSlidingParamConvDw(SlidingWindowParam* sliding, const ConvParameter* conv_param, int block);
 
-void AppendSlidingParamConvDw(SlidingWindowParam *sliding, const ConvParameter *conv_param, int block);
+void AppendSlidingParamConvDw(SlidingWindowParam* sliding, const ConvParameter* conv_param, int block);
 
-void DepthwiseBorder(float *dst, const float *src, const float *weight, const float *bias, int top, int bottom,
-                     int left, int right, const ConvParameter *conv_param, const SlidingWindowParam *sliding);
+void DepthwiseBorder(float* dst, const float* src, const float* weight, const float* bias, int top, int bottom, int left, int right,
+                     const ConvParameter* conv_param, const SlidingWindowParam* sliding);
 
-void ConvDwC4Fp32(float *output_data, const float *input_data, const float *weight_data, const float *bias_data,
-                  const ConvParameter *conv_param, const SlidingWindowParam *sliding, int task_id);
+void ConvDwC4Fp32(float* output_data, const float* input_data, const float* weight_data, const float* bias_data,
+                  const ConvParameter* conv_param, const SlidingWindowParam* sliding, int task_id);
 
-void DeconvDwC4Fp32(float *output_data, const float *input_data, const float *weight_data, const float *bias_data,
-                    const ConvParameter *conv_param, const SlidingWindowParam *sliding, int task_id);
+void DeconvDwC4Fp32(float* output_data, const float* input_data, const float* weight_data, const float* bias_data,
+                    const ConvParameter* conv_param, const SlidingWindowParam* sliding, int task_id);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_FP32_CONV_DEPTHWISE_H_
+#endif // MINDSPORE_LITE_NNACL_FP32_CONV_DEPTHWISE_H_

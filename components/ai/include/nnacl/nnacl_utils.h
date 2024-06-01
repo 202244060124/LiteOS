@@ -27,4 +27,4 @@ uint32_t getHwCap(int hwcap_type);
 #ifdef __cplusplus
 }
 #endif
-#endif  // MINDSPORE_LITE_NNACL_NNACL_UTILS_H_
+#endif // MINDSPORE_LITE_NNACL_NNACL_UTILS_H_

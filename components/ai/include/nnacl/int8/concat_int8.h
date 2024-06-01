@@ -17,16 +17,16 @@
 #ifndef MINDSPORE_LITE_NNACL_INT8_CONCAT_INT8_H_
 #define MINDSPORE_LITE_NNACL_INT8_CONCAT_INT8_H_
 
-#include "nnacl/op_base.h"
 #include "nnacl/concat_parameter.h"
+#include "nnacl/op_base.h"
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-void Int8Concat(int8_t **inputs, int8_t *output_ptr, ConcatParameter *para, int axis, int64_t real_dst_count,
-                int task_id);
+void Int8Concat(int8_t** inputs, int8_t* output_ptr, ConcatParameter* para, int axis, int64_t real_dst_count, int task_id);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_INT8_CONCAT_INT8_H_
+#endif // MINDSPORE_LITE_NNACL_INT8_CONCAT_INT8_H_

@@ -20,10 +20,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void gemm(int transpose_a, int transpose_b, int M, int N, int K, float alpha, float *mat_a, int lda, float *mat_b,
-          int ldb, float beta, float *mat_c, int ldc);
+void gemm(int transpose_a, int transpose_b, int M, int N, int K, float alpha, float* mat_a, int lda, float* mat_b, int ldb, float beta,
+          float* mat_c, int ldc);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_FP32_GRAD_GEMM_H_
+#endif // MINDSPORE_LITE_NNACL_FP32_GRAD_GEMM_H_

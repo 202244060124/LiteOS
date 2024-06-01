@@ -20,18 +20,18 @@
 #include "nnacl/op_base.h"
 
 typedef struct EluParameter {
-  OpParameter op_parameter_;
-  float alpha_;
-  int thread_num_;
-  int in_size_;
+    OpParameter op_parameter_;
+    float alpha_;
+    int thread_num_;
+    int in_size_;
 } EluParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-int Elu(float *input_data, float *output_data, EluParameter *parameter, int task_id);
+int Elu(float* input_data, float* output_data, EluParameter* parameter, int task_id);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_FP32_ELU_H_
+#endif // MINDSPORE_LITE_NNACL_FP32_ELU_H_

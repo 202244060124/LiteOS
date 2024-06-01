@@ -21,9 +21,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void ArgMinMax(const void *input, void *output, const int *in_shape, ArgMinMaxParameter *param);
+void ArgMinMax(const void* input, void* output, const int* in_shape, ArgMinMaxParameter* param);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_ARG_MIN_MAX_H_
+#endif // MINDSPORE_LITE_NNACL_ARG_MIN_MAX_H_

@@ -9,18 +9,19 @@
 /*********************
  *      INCLUDES
  *********************/
-#include <stdint.h>
 #include <stddef.h>
-#include "lv_hal.h"
-#include "../lv_misc/lv_mem.h"
-#include "../lv_misc/lv_gc.h"
+#include <stdint.h>
 #include "../lv_core/lv_debug.h"
 #include "../lv_core/lv_obj.h"
 #include "../lv_core/lv_refr.h"
+#include "../lv_misc/lv_gc.h"
+#include "../lv_misc/lv_mem.h"
 #include "../lv_themes/lv_theme.h"
+#include "lv_hal.h"
+
 
 #if defined(LV_GC_INCLUDE)
-    #include LV_GC_INCLUDE
+#include LV_GC_INCLUDE
 #endif /* LV_ENABLE_GC */
 
 /*********************
@@ -38,7 +39,7 @@
 /**********************
  *  STATIC VARIABLES
  **********************/
-static lv_disp_t * disp_def;
+static lv_disp_t* disp_def;
 
 /**********************
  *      MACROS
@@ -54,15 +55,15 @@ static lv_disp_t * disp_def;
  * After it you can set the fields.
  * @param driver pointer to driver variable to initialize
  */
-void lv_disp_drv_init(lv_disp_drv_t * driver)
+void lv_disp_drv_init(lv_disp_drv_t* driver)
 {
     _lv_memset_00(driver, sizeof(lv_disp_drv_t));
 
-    driver->flush_cb         = NULL;
-    driver->hor_res          = LV_HOR_RES_MAX;
-    driver->ver_res          = LV_VER_RES_MAX;
-    driver->buffer           = NULL;
-    driver->rotated          = 0;
+    driver->flush_cb = NULL;
+    driver->hor_res = LV_HOR_RES_MAX;
+    driver->ver_res = LV_VER_RES_MAX;
+    driver->buffer = NULL;
+    driver->rotated = 0;
     driver->color_chroma_key = LV_COLOR_TRANSP;
     driver->dpi = LV_DPI;
 
@@ -76,7 +77,7 @@ void lv_disp_drv_init(lv_disp_drv_t * driver)
 
 #if LV_USE_GPU
     driver->gpu_blend_cb = NULL;
-    driver->gpu_fill_cb  = NULL;
+    driver->gpu_fill_cb = NULL;
 #endif
 
 #if LV_USE_USER_DATA
@@ -101,14 +102,14 @@ void lv_disp_drv_init(lv_disp_drv_t * driver)
  * sent. Set to `NULL` if unused.
  * @param size_in_px_cnt size of the `buf1` and `buf2` in pixel count.
  */
-void lv_disp_buf_init(lv_disp_buf_t * disp_buf, void * buf1, void * buf2, uint32_t size_in_px_cnt)
+void lv_disp_buf_init(lv_disp_buf_t* disp_buf, void* buf1, void* buf2, uint32_t size_in_px_cnt)
 {
     _lv_memset_00(disp_buf, sizeof(lv_disp_buf_t));
 
-    disp_buf->buf1    = buf1;
-    disp_buf->buf2    = buf2;
+    disp_buf->buf1 = buf1;
+    disp_buf->buf2 = buf2;
     disp_buf->buf_act = disp_buf->buf1;
-    disp_buf->size    = size_in_px_cnt;
+    disp_buf->size = size_in_px_cnt;
 }
 
 /**
@@ -117,10 +118,10 @@ void lv_disp_buf_init(lv_disp_buf_t * disp_buf, void * buf1, void * buf2, uint32
  * @param driver pointer to an initialized 'lv_disp_drv_t' variable (can be local variable)
  * @return pointer to the new display or NULL on error
  */
-lv_disp_t * lv_disp_drv_register(lv_disp_drv_t * driver)
+lv_disp_t* lv_disp_drv_register(lv_disp_drv_t* driver)
 {
-    lv_disp_t * disp = _lv_ll_ins_head(&LV_GC_ROOT(_lv_disp_ll));
-    if(!disp) {
+    lv_disp_t* disp = _lv_ll_ins_head(&LV_GC_ROOT(_lv_disp_ll));
+    if (!disp) {
         LV_ASSERT_MEM(disp);
         return NULL;
     }
@@ -131,20 +132,22 @@ lv_disp_t * lv_disp_drv_register(lv_disp_drv_t * driver)
     _lv_ll_init(&disp->scr_ll, sizeof(lv_obj_t));
     disp->last_activity_time = 0;
 
-    if(disp_def == NULL) disp_def = disp;
+    if (disp_def == NULL)
+        disp_def = disp;
 
-    lv_disp_t * disp_def_tmp = disp_def;
-    disp_def                 = disp; /*Temporarily change the default screen to create the default screens on the
-                                        new display*/
+    lv_disp_t* disp_def_tmp = disp_def;
+    disp_def = disp; /*Temporarily change the default screen to create the default screens on the
+                        new display*/
     /*Create a refresh task*/
     disp->refr_task = lv_task_create(_lv_disp_refr_task, LV_DISP_DEF_REFR_PERIOD, LV_REFR_TASK_PRIO, disp);
     LV_ASSERT_MEM(disp->refr_task);
-    if(disp->refr_task == NULL) return NULL;
+    if (disp->refr_task == NULL)
+        return NULL;
 
     disp->inv_p = 0;
     disp->last_activity_time = 0;
 
-    disp->act_scr   = lv_obj_create(NULL, NULL); /*Create a default screen on the display*/
+    disp->act_scr = lv_obj_create(NULL, NULL);   /*Create a default screen on the display*/
     disp->top_layer = lv_obj_create(NULL, NULL); /*Create top layer on the display*/
     disp->sys_layer = lv_obj_create(NULL, NULL); /*Create sys layer on the display*/
     lv_obj_reset_style_list(disp->top_layer, LV_OBJ_PART_MAIN);
@@ -154,7 +157,7 @@ lv_disp_t * lv_disp_drv_register(lv_disp_drv_t * driver)
 
     lv_obj_invalidate(disp->act_scr);
 
-    disp_def = disp_def_tmp; /*Revert the default display*/
+    disp_def = disp_def_tmp;        /*Revert the default display*/
 
     lv_task_ready(disp->refr_task); /*Be sure the screen will be refreshed immediately on start up*/
 
@@ -166,12 +169,13 @@ lv_disp_t * lv_disp_drv_register(lv_disp_drv_t * driver)
  * @param disp pointer to a display. (return value of `lv_disp_drv_register`)
  * @param new_drv pointer to the new driver
  */
-void lv_disp_drv_update(lv_disp_t * disp, lv_disp_drv_t * new_drv)
+void lv_disp_drv_update(lv_disp_t* disp, lv_disp_drv_t* new_drv)
 {
     memcpy(&disp->driver, new_drv, sizeof(lv_disp_drv_t));
 
-    lv_obj_t * scr;
-    _LV_LL_READ(disp->scr_ll, scr) {
+    lv_obj_t* scr;
+    _LV_LL_READ(disp->scr_ll, scr)
+    {
         lv_obj_set_size(scr, lv_disp_get_hor_res(disp), lv_disp_get_ver_res(disp));
     }
 }
@@ -180,16 +184,17 @@ void lv_disp_drv_update(lv_disp_t * disp, lv_disp_drv_t * new_drv)
  * Remove a display
  * @param disp pointer to display
  */
-void lv_disp_remove(lv_disp_t * disp)
+void lv_disp_remove(lv_disp_t* disp)
 {
     bool was_default = false;
-    if(disp == lv_disp_get_default()) was_default = true;
+    if (disp == lv_disp_get_default())
+        was_default = true;
 
     /*Detach the input devices */
-    lv_indev_t * indev;
+    lv_indev_t* indev;
     indev = lv_indev_get_next(NULL);
-    while(indev) {
-        if(indev->driver.disp == disp) {
+    while (indev) {
+        if (indev->driver.disp == disp) {
             indev->driver.disp = NULL;
         }
         indev = lv_indev_get_next(indev);
@@ -198,14 +203,15 @@ void lv_disp_remove(lv_disp_t * disp)
     _lv_ll_remove(&LV_GC_ROOT(_lv_disp_ll), disp);
     lv_mem_free(disp);
 
-    if(was_default) lv_disp_set_default(_lv_ll_get_head(&LV_GC_ROOT(_lv_disp_ll)));
+    if (was_default)
+        lv_disp_set_default(_lv_ll_get_head(&LV_GC_ROOT(_lv_disp_ll)));
 }
 
 /**
  * Set a default screen. The new screens will be created on it by default.
  * @param disp pointer to a display
  */
-void lv_disp_set_default(lv_disp_t * disp)
+void lv_disp_set_default(lv_disp_t* disp)
 {
     disp_def = disp;
 }
@@ -214,7 +220,7 @@ void lv_disp_set_default(lv_disp_t * disp)
  * Get the default display
  * @return pointer to the default display
  */
-lv_disp_t * lv_disp_get_default(void)
+lv_disp_t* lv_disp_get_default(void)
 {
     return disp_def;
 }
@@ -224,11 +230,12 @@ lv_disp_t * lv_disp_get_default(void)
  * @param disp pointer to a display (NULL to use the default display)
  * @return the horizontal resolution of the display
  */
-lv_coord_t lv_disp_get_hor_res(lv_disp_t * disp)
+lv_coord_t lv_disp_get_hor_res(lv_disp_t* disp)
 {
-    if(disp == NULL) disp = lv_disp_get_default();
+    if (disp == NULL)
+        disp = lv_disp_get_default();
 
-    if(disp == NULL)
+    if (disp == NULL)
         return LV_HOR_RES_MAX;
     else
         return disp->driver.rotated == 0 ? disp->driver.hor_res : disp->driver.ver_res;
@@ -239,11 +246,12 @@ lv_coord_t lv_disp_get_hor_res(lv_disp_t * disp)
  * @param disp pointer to a display (NULL to use the default display)
  * @return the vertical resolution of the display
  */
-lv_coord_t lv_disp_get_ver_res(lv_disp_t * disp)
+lv_coord_t lv_disp_get_ver_res(lv_disp_t* disp)
 {
-    if(disp == NULL) disp = lv_disp_get_default();
+    if (disp == NULL)
+        disp = lv_disp_get_default();
 
-    if(disp == NULL)
+    if (disp == NULL)
         return LV_VER_RES_MAX;
     else
         return disp->driver.rotated == 0 ? disp->driver.ver_res : disp->driver.hor_res;
@@ -254,13 +262,15 @@ lv_coord_t lv_disp_get_ver_res(lv_disp_t * disp)
  * @param disp pointer to a display (NULL to use the default display)
  * @return true: anti-aliasing is enabled; false: disabled
  */
-bool lv_disp_get_antialiasing(lv_disp_t * disp)
+bool lv_disp_get_antialiasing(lv_disp_t* disp)
 {
 #if LV_ANTIALIAS == 0
     return false;
 #else
-    if(disp == NULL) disp = lv_disp_get_default();
-    if(disp == NULL) return false;
+    if (disp == NULL)
+        disp = lv_disp_get_default();
+    if (disp == NULL)
+        return false;
 
     return disp->driver.antialiasing ? true : false;
 #endif
@@ -271,10 +281,12 @@ bool lv_disp_get_antialiasing(lv_disp_t * disp)
  * @param disp pointer to a display (NULL to use the default display)
  * @return dpi of the display
  */
-uint32_t lv_disp_get_dpi(lv_disp_t * disp)
+uint32_t lv_disp_get_dpi(lv_disp_t* disp)
 {
-    if(disp == NULL) disp = lv_disp_get_default();
-    if(disp == NULL) return LV_DPI;  /*Do not return 0 because it might be a divider*/
+    if (disp == NULL)
+        disp = lv_disp_get_default();
+    if (disp == NULL)
+        return LV_DPI; /*Do not return 0 because it might be a divider*/
     return disp->driver.dpi;
 }
 
@@ -283,33 +295,40 @@ uint32_t lv_disp_get_dpi(lv_disp_t * disp)
  * @param disp pointer to a display (NULL to use the default display)
  * @return LV_DISP_SIZE_SMALL/MEDIUM/LARGE/EXTRA_LARGE
  */
-lv_disp_size_t lv_disp_get_size_category(lv_disp_t * disp)
+lv_disp_size_t lv_disp_get_size_category(lv_disp_t* disp)
 {
-    if(disp == NULL) disp = lv_disp_get_default();
+    if (disp == NULL)
+        disp = lv_disp_get_default();
 
     uint32_t w;
-    if(disp == NULL) w = LV_HOR_RES_MAX;
-    else w = lv_disp_get_hor_res(disp);
+    if (disp == NULL)
+        w = LV_HOR_RES_MAX;
+    else
+        w = lv_disp_get_hor_res(disp);
 
     uint32_t dpi = lv_disp_get_dpi(disp);
 
     w = w * 10 / dpi;
 
-    if(w < LV_DISP_SMALL_LIMIT) return LV_DISP_SIZE_SMALL;
-    if(w < LV_DISP_MEDIUM_LIMIT) return LV_DISP_SIZE_MEDIUM;
-    if(w < LV_DISP_LARGE_LIMIT) return LV_DISP_SIZE_LARGE;
-    else return LV_DISP_SIZE_EXTRA_LARGE;
+    if (w < LV_DISP_SMALL_LIMIT)
+        return LV_DISP_SIZE_SMALL;
+    if (w < LV_DISP_MEDIUM_LIMIT)
+        return LV_DISP_SIZE_MEDIUM;
+    if (w < LV_DISP_LARGE_LIMIT)
+        return LV_DISP_SIZE_LARGE;
+    else
+        return LV_DISP_SIZE_EXTRA_LARGE;
 }
 
 /**
  * Call in the display driver's `flush_cb` function when the flushing is finished
  * @param disp_drv pointer to display driver in `flush_cb` where this function is called
  */
-LV_ATTRIBUTE_FLUSH_READY void lv_disp_flush_ready(lv_disp_drv_t * disp_drv)
+LV_ATTRIBUTE_FLUSH_READY void lv_disp_flush_ready(lv_disp_drv_t* disp_drv)
 {
     /*If the screen is transparent initialize it when the flushing is ready*/
 #if LV_COLOR_SCREEN_TRANSP
-    if(disp_drv->screen_transp) {
+    if (disp_drv->screen_transp) {
         _lv_memset_00(disp_drv->buffer->buf_act, disp_drv->buffer->size * sizeof(lv_color32_t));
     }
 #endif
@@ -318,14 +337,13 @@ LV_ATTRIBUTE_FLUSH_READY void lv_disp_flush_ready(lv_disp_drv_t * disp_drv)
     disp_drv->buffer->flushing_last = 0;
 }
 
-
 /**
  * Tell if it's the last area of the refreshing process.
  * Can be called from `flush_cb` to execute some special display refreshing if needed when all areas area flushed.
  * @param disp_drv pointer to display driver
  * @return true: it's the last area to flush; false: there are other areas too which will be refreshed soon
  */
-LV_ATTRIBUTE_FLUSH_READY bool lv_disp_flush_is_last(lv_disp_drv_t * disp_drv)
+LV_ATTRIBUTE_FLUSH_READY bool lv_disp_flush_is_last(lv_disp_drv_t* disp_drv)
 {
     return disp_drv->buffer->flushing_last;
 }
@@ -335,9 +353,9 @@ LV_ATTRIBUTE_FLUSH_READY bool lv_disp_flush_is_last(lv_disp_drv_t * disp_drv)
  * @param disp pointer to the current display. NULL to initialize.
  * @return the next display or NULL if no more. Give the first display when the parameter is NULL
  */
-lv_disp_t * lv_disp_get_next(lv_disp_t * disp)
+lv_disp_t* lv_disp_get_next(lv_disp_t* disp)
 {
-    if(disp == NULL)
+    if (disp == NULL)
         return _lv_ll_get_head(&LV_GC_ROOT(_lv_disp_ll));
     else
         return _lv_ll_get_next(&LV_GC_ROOT(_lv_disp_ll), disp);
@@ -348,7 +366,7 @@ lv_disp_t * lv_disp_get_next(lv_disp_t * disp)
  * @param disp pointer to a display
  * @return pointer to the internal buffers
  */
-lv_disp_buf_t * lv_disp_get_buf(lv_disp_t * disp)
+lv_disp_buf_t* lv_disp_get_buf(lv_disp_t* disp)
 {
     return disp->driver.buffer;
 }
@@ -357,7 +375,7 @@ lv_disp_buf_t * lv_disp_get_buf(lv_disp_t * disp)
  * Get the number of areas in the buffer
  * @return number of invalid areas
  */
-uint16_t lv_disp_get_inv_buf_size(lv_disp_t * disp)
+uint16_t lv_disp_get_inv_buf_size(lv_disp_t* disp)
 {
     return disp->inv_p;
 }
@@ -366,10 +384,9 @@ uint16_t lv_disp_get_inv_buf_size(lv_disp_t * disp)
  * Pop (delete) the last 'num' invalidated areas from the buffer
  * @param num number of areas to delete
  */
-void _lv_disp_pop_from_inv_buf(lv_disp_t * disp, uint16_t num)
+void _lv_disp_pop_from_inv_buf(lv_disp_t* disp, uint16_t num)
 {
-
-    if(disp->inv_p < num)
+    if (disp->inv_p < num)
         disp->inv_p = 0;
     else
         disp->inv_p -= num;
@@ -380,9 +397,9 @@ void _lv_disp_pop_from_inv_buf(lv_disp_t * disp, uint16_t num)
  * @param disp pointer to to display to check
  * @return true: double buffered; false: not double buffered
  */
-bool lv_disp_is_double_buf(lv_disp_t * disp)
+bool lv_disp_is_double_buf(lv_disp_t* disp)
 {
-    if(disp->driver.buffer->buf1 && disp->driver.buffer->buf2)
+    if (disp->driver.buffer->buf1 && disp->driver.buffer->buf2)
         return true;
     else
         return false;
@@ -394,14 +411,13 @@ bool lv_disp_is_double_buf(lv_disp_t * disp)
  * @param disp pointer to to display to check
  * @return true: double buffered; false: not double buffered
  */
-bool lv_disp_is_true_double_buf(lv_disp_t * disp)
+bool lv_disp_is_true_double_buf(lv_disp_t* disp)
 {
     uint32_t scr_size = disp->driver.hor_res * disp->driver.ver_res;
 
-    if(lv_disp_is_double_buf(disp) && disp->driver.buffer->size == scr_size) {
+    if (lv_disp_is_double_buf(disp) && disp->driver.buffer->size == scr_size) {
         return true;
-    }
-    else {
+    } else {
         return false;
     }
 }

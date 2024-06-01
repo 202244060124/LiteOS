@@ -21,12 +21,12 @@
 #include "nnacl/quantization/quantize.h"
 
 typedef struct PowerParameter {
-  OpParameter op_parameter_;
-  PowerQuantArg quant_arg_;
-  float power_;
-  float scale_;
-  float shift_;
-  bool broadcast_;
+    OpParameter op_parameter_;
+    PowerQuantArg quant_arg_;
+    float power_;
+    float scale_;
+    float shift_;
+    bool broadcast_;
 } PowerParameter;
 
-#endif  // MINDSPORE_LITE_NNACL_POWER_PARAMETER_H_
+#endif // MINDSPORE_LITE_NNACL_POWER_PARAMETER_H_

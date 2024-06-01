@@ -23,9 +23,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void Power(const float *input, const float *exponent, float *output, int len, float scale, float shift, bool broadcast);
+void Power(const float* input, const float* exponent, float* output, int len, float scale, float shift, bool broadcast);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_POWER_H_
+#endif // MINDSPORE_LITE_NNACL_POWER_H_

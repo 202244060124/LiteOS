@@ -37,91 +37,87 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-#define BM(base, count, val) (((UINT64)(val) & (((UINT64)1UL << (count)) - 1)) << (base))
+#define BM(base, count, val)               (((UINT64)(val) & (((UINT64)1UL << (count)) - 1)) << (base))
 
-#define MMU_SH_NON_SHAREABLE   0
-#define MMU_SH_OUTER_SHAREABLE 2
-#define MMU_SH_INNER_SHAREABLE 3
+#define MMU_SH_NON_SHAREABLE               0
+#define MMU_SH_OUTER_SHAREABLE             2
+#define MMU_SH_INNER_SHAREABLE             3
 
-#define MMU_RGN_NON_CACHEABLE             0
-#define MMU_RGN_WRITE_BACK_ALLOCATE       1
-#define MMU_RGN_WRITE_THROUGH_NO_ALLOCATE 2
-#define MMU_RGN_WRITE_BACK_NO_ALLOCATE    3
+#define MMU_RGN_NON_CACHEABLE              0
+#define MMU_RGN_WRITE_BACK_ALLOCATE        1
+#define MMU_RGN_WRITE_THROUGH_NO_ALLOCATE  2
+#define MMU_RGN_WRITE_BACK_NO_ALLOCATE     3
 
-#define MMU_MAIR_ATTR(index, attr) BM((index) * 8, 8, (attr))
+#define MMU_MAIR_ATTR(index, attr)         BM((index) * 8, 8, (attr))
 
 /* L0/L1/L2/L3 descriptor types */
-#define MMU_PTE_DESCRIPTOR_INVALID BM(0, 2, 0)
+#define MMU_PTE_DESCRIPTOR_INVALID         BM(0, 2, 0)
 
 /* L0/L1/L2 descriptor types */
-#define MMU_PTE_L012_DESCRIPTOR_BLOCK BM(0, 2, 1)
-#define MMU_PTE_L012_DESCRIPTOR_TABLE BM(0, 2, 3)
+#define MMU_PTE_L012_DESCRIPTOR_BLOCK      BM(0, 2, 1)
+#define MMU_PTE_L012_DESCRIPTOR_TABLE      BM(0, 2, 3)
 
 /* L3 descriptor types */
-#define MMU_PTE_L3_DESCRIPTOR_PAGE BM(0, 2, 3)
+#define MMU_PTE_L3_DESCRIPTOR_PAGE         BM(0, 2, 3)
 
 /* Block/Page attrs */
-#define MMU_PTE_ATTR_RES_SOFTWARE BM(55, 4, 0xf)
-#define MMU_PTE_ATTR_UXN          BM(54, 1, 1)
-#define MMU_PTE_ATTR_PXN          BM(53, 1, 1)
-#define MMU_PTE_ATTR_CONTIGUOUS   BM(52, 1, 1)
+#define MMU_PTE_ATTR_RES_SOFTWARE          BM(55, 4, 0xf)
+#define MMU_PTE_ATTR_UXN                   BM(54, 1, 1)
+#define MMU_PTE_ATTR_PXN                   BM(53, 1, 1)
+#define MMU_PTE_ATTR_CONTIGUOUS            BM(52, 1, 1)
 
-#define MMU_PTE_ATTR_NON_GLOBAL BM(11, 1, 1)
-#define MMU_PTE_ATTR_AF         BM(10, 1, 1)
+#define MMU_PTE_ATTR_NON_GLOBAL            BM(11, 1, 1)
+#define MMU_PTE_ATTR_AF                    BM(10, 1, 1)
 
-#define MMU_PTE_ATTR_SH_NON_SHAREABLE   BM(8, 2, 0)
-#define MMU_PTE_ATTR_SH_OUTER_SHAREABLE BM(8, 2, 2)
-#define MMU_PTE_ATTR_SH_INNER_SHAREABLE BM(8, 2, 3)
+#define MMU_PTE_ATTR_SH_NON_SHAREABLE      BM(8, 2, 0)
+#define MMU_PTE_ATTR_SH_OUTER_SHAREABLE    BM(8, 2, 2)
+#define MMU_PTE_ATTR_SH_INNER_SHAREABLE    BM(8, 2, 3)
 
-#define MMU_PTE_ATTR_AP_P_RW_U_NA BM(6, 2, 0)
-#define MMU_PTE_ATTR_AP_P_RW_U_RW BM(6, 2, 1)
-#define MMU_PTE_ATTR_AP_P_RO_U_NA BM(6, 2, 2)
-#define MMU_PTE_ATTR_AP_P_RO_U_RO BM(6, 2, 3)
-#define MMU_PTE_ATTR_AP_MASK      BM(6, 2, 3)
+#define MMU_PTE_ATTR_AP_P_RW_U_NA          BM(6, 2, 0)
+#define MMU_PTE_ATTR_AP_P_RW_U_RW          BM(6, 2, 1)
+#define MMU_PTE_ATTR_AP_P_RO_U_NA          BM(6, 2, 2)
+#define MMU_PTE_ATTR_AP_P_RO_U_RO          BM(6, 2, 3)
+#define MMU_PTE_ATTR_AP_MASK               BM(6, 2, 3)
 
-#define MMU_PTE_ATTR_NON_SECURE BM(5, 1, 1)
+#define MMU_PTE_ATTR_NON_SECURE            BM(5, 1, 1)
 
 #define MMU_PTE_ATTR_ATTR_INDEX(attrindex) BM(2, 3, (attrindex))
 #define MMU_PTE_ATTR_ATTR_INDEX_MASK       MMU_PTE_ATTR_ATTR_INDEX(7)
 
 /* Device-nGnRnE memory */
-#define MMU_PTE_ATTR_STRONGLY_ORDERED MMU_PTE_ATTR_ATTR_INDEX(0)
+#define MMU_PTE_ATTR_STRONGLY_ORDERED      MMU_PTE_ATTR_ATTR_INDEX(0)
 
 /* Device-nGnRE memory */
-#define MMU_PTE_ATTR_DEVICE MMU_PTE_ATTR_ATTR_INDEX(1)
+#define MMU_PTE_ATTR_DEVICE                MMU_PTE_ATTR_ATTR_INDEX(1)
 
 /* Normal Memory, Outer Write-back, Inner Write-back */
-#define MMU_PTE_ATTR_NORMAL_CACHE MMU_PTE_ATTR_ATTR_INDEX(2)
+#define MMU_PTE_ATTR_NORMAL_CACHE          MMU_PTE_ATTR_ATTR_INDEX(2)
 
 /* Normal Memory, Outer Non-cacheable,Inner Non-cacheable */
-#define MMU_PTE_ATTR_NORMAL_NONCACHE MMU_PTE_ATTR_ATTR_INDEX(3)
+#define MMU_PTE_ATTR_NORMAL_NONCACHE       MMU_PTE_ATTR_ATTR_INDEX(3)
 
-#define MMU_PTE_CACHE_RO_FLAGS                                                                                      \
-    (MMU_PTE_ATTR_AF | MMU_PTE_ATTR_SH_INNER_SHAREABLE | MMU_PTE_ATTR_NORMAL_CACHE | MMU_PTE_ATTR_AP_P_RO_U_NA)
+#define MMU_PTE_CACHE_RO_FLAGS             (MMU_PTE_ATTR_AF | MMU_PTE_ATTR_SH_INNER_SHAREABLE | MMU_PTE_ATTR_NORMAL_CACHE | MMU_PTE_ATTR_AP_P_RO_U_NA)
 
-#define MMU_PTE_CACHE_RW_FLAGS                                                                                      \
-    (MMU_PTE_ATTR_AF | MMU_PTE_ATTR_SH_INNER_SHAREABLE | MMU_PTE_ATTR_NORMAL_CACHE | MMU_PTE_ATTR_AP_P_RW_U_NA)
+#define MMU_PTE_CACHE_RW_FLAGS             (MMU_PTE_ATTR_AF | MMU_PTE_ATTR_SH_INNER_SHAREABLE | MMU_PTE_ATTR_NORMAL_CACHE | MMU_PTE_ATTR_AP_P_RW_U_NA)
 
-#define MMU_PTE_CACHE_RW_XN_FLAGS                                                                                   \
-    (MMU_PTE_ATTR_UXN | MMU_PTE_ATTR_PXN | MMU_PTE_ATTR_AF | MMU_PTE_ATTR_SH_INNER_SHAREABLE |                      \
-     MMU_PTE_ATTR_NORMAL_CACHE | MMU_PTE_ATTR_AP_P_RW_U_NA)
+#define MMU_PTE_CACHE_RW_XN_FLAGS                                                                                        \
+    (MMU_PTE_ATTR_UXN | MMU_PTE_ATTR_PXN | MMU_PTE_ATTR_AF | MMU_PTE_ATTR_SH_INNER_SHAREABLE | MMU_PTE_ATTR_NORMAL_CACHE \
+     | MMU_PTE_ATTR_AP_P_RW_U_NA)
 
-#define MMU_PTE_NONCACHE_RO_FLAGS                                                                                   \
+#define MMU_PTE_NONCACHE_RO_FLAGS \
     (MMU_PTE_ATTR_AF | MMU_PTE_ATTR_SH_INNER_SHAREABLE | MMU_PTE_ATTR_NORMAL_NONCACHE | MMU_PTE_ATTR_AP_P_RO_U_NA)
 
-#define MMU_PTE_NONCACHE_RW_FLAGS                                                                                   \
+#define MMU_PTE_NONCACHE_RW_FLAGS \
     (MMU_PTE_ATTR_AF | MMU_PTE_ATTR_SH_INNER_SHAREABLE | MMU_PTE_ATTR_NORMAL_NONCACHE | MMU_PTE_ATTR_AP_P_RW_U_NA)
 
-#define MMU_PTE_NONCACHE_RW_XN_FLAGS                                                                                \
-    (MMU_PTE_ATTR_UXN | MMU_PTE_ATTR_PXN | MMU_PTE_ATTR_AF | MMU_PTE_ATTR_SH_INNER_SHAREABLE |                      \
-     MMU_PTE_ATTR_NORMAL_NONCACHE | MMU_PTE_ATTR_AP_P_RW_U_NA)
+#define MMU_PTE_NONCACHE_RW_XN_FLAGS                                                                                        \
+    (MMU_PTE_ATTR_UXN | MMU_PTE_ATTR_PXN | MMU_PTE_ATTR_AF | MMU_PTE_ATTR_SH_INNER_SHAREABLE | MMU_PTE_ATTR_NORMAL_NONCACHE \
+     | MMU_PTE_ATTR_AP_P_RW_U_NA)
 
-#define MMU_INITIAL_MAP_STRONGLY_ORDERED                                                                            \
-    (MMU_PTE_ATTR_UXN | MMU_PTE_ATTR_PXN | MMU_PTE_ATTR_AF | MMU_PTE_ATTR_STRONGLY_ORDERED |                        \
-     MMU_PTE_ATTR_AP_P_RW_U_NA)
+#define MMU_INITIAL_MAP_STRONGLY_ORDERED \
+    (MMU_PTE_ATTR_UXN | MMU_PTE_ATTR_PXN | MMU_PTE_ATTR_AF | MMU_PTE_ATTR_STRONGLY_ORDERED | MMU_PTE_ATTR_AP_P_RW_U_NA)
 
-#define MMU_INITIAL_MAP_DEVICE                                                                                      \
-    (MMU_PTE_ATTR_UXN | MMU_PTE_ATTR_PXN | MMU_PTE_ATTR_AF | MMU_PTE_ATTR_DEVICE | MMU_PTE_ATTR_AP_P_RW_U_NA)
+#define MMU_INITIAL_MAP_DEVICE (MMU_PTE_ATTR_UXN | MMU_PTE_ATTR_PXN | MMU_PTE_ATTR_AF | MMU_PTE_ATTR_DEVICE | MMU_PTE_ATTR_AP_P_RW_U_NA)
 
 #ifndef PAGE_SIZE
 #define PAGE_SIZE MMU_4K
@@ -176,7 +172,6 @@ typedef struct {
                    stPage will be ignored, and you can set this member as NULL */
 } MMU_PARAM;
 
-
 /**
  * @ingroup mmu
  * @brief Memory Management Unit Second page memory map.
@@ -205,7 +200,7 @@ typedef struct {
  * @see
  * @since Huawei LiteOS V200R005C20
  */
-VOID ArchSecPageEnable(SENCOND_PAGE *page, UINT64 flag);
+VOID ArchSecPageEnable(SENCOND_PAGE* page, UINT64 flag);
 
 /**
  * @ingroup mmu
@@ -232,7 +227,7 @@ VOID ArchSecPageEnable(SENCOND_PAGE *page, UINT64 flag);
  * @see
  * @since Huawei LiteOS V200R005C20
  */
-void ArchMMUParamSet(MMU_PARAM *mPara);
+void ArchMMUParamSet(MMU_PARAM* mPara);
 
 #ifdef __cplusplus
 #if __cplusplus

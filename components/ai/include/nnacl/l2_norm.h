@@ -21,10 +21,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-int L2NormFp32(const float *input_ptr, float *output_ptr,
-               L2NormParameter *param);
+int L2NormFp32(const float* input_ptr, float* output_ptr, L2NormParameter* param);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_L2NORM_H_
+#endif // MINDSPORE_LITE_NNACL_L2NORM_H_

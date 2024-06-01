@@ -26,13 +26,14 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --------------------------------------------------------------------------- */
 
-#include "nb_iot/los_nb_api.h"
 #include "at_frame/at_api.h"
+#include "nb_iot/los_nb_api.h"
+
 #ifdef LOSCFG_COMPONENTS_NET_AT_BC95
 #include "bc95.h"
 #endif
 
-int los_nb_init(const int8_t *host, const int8_t *port, sec_param_s *psk)
+int los_nb_init(const int8_t* host, const int8_t* port, sec_param_s* psk)
 {
     int ret;
     int timecnt = 0;
@@ -47,7 +48,7 @@ int los_nb_init(const int8_t *host, const int8_t *port, sec_param_s *psk)
         .user_buf_len = MAX_AT_USERDATA_LEN,
         .cmd_begin = AT_CMD_BEGIN,
         .line_end = AT_LINE_END,
-        .mux_mode = 1, // support multi connection mode
+        .mux_mode = 1,             // support multi connection mode
         .timeout = AT_CMD_TIMEOUT, // ms
     };
 
@@ -81,11 +82,11 @@ int los_nb_init(const int8_t *host, const int8_t *port, sec_param_s *psk)
     if (ret != AT_FAILED) {
         nb_query_ip();
     }
-    ret = nb_set_cdpserver((char *)host, (char *)port);
+    ret = nb_set_cdpserver((char*)host, (char*)port);
     return ret;
 }
 
-int los_nb_report(const char *buf, int len)
+int los_nb_report(const char* buf, int len)
 {
     if ((buf == NULL) || (len <= 0)) {
         return -1;
@@ -93,7 +94,7 @@ int los_nb_report(const char *buf, int len)
     return nb_send_payload(buf, len);
 }
 
-int los_nb_notify(char *featurestr, int cmdlen, oob_callback callback, oob_cmd_match cmd_match)
+int los_nb_notify(char* featurestr, int cmdlen, oob_callback callback, oob_cmd_match cmd_match)
 {
     if ((featurestr == NULL) || (cmdlen <= 0) || (cmdlen >= OOB_CMD_LEN - 1)) {
         return -1;

@@ -18,29 +18,28 @@
 #define MINDSPORE_LITE_NNACL_FP32_BATCH_NORM_H_
 
 typedef struct bnParameter {
-  int batch;
-  int channels;
-  int spatial;
-  float eps;
+    int batch;
+    int channels;
+    int spatial;
+    float eps;
 } bnParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-void scaleBias(const float *scales, int batch, int n, int size, float *output);
-void normalize(const float *x, const float *mean, const float *variance, float eps, int batch, int filters, int spatial,
-               float *out);
-void backwardScale(const float *x_norm, const float *delta, int batch, int n, int size, float *scale_updates);
-void meanVar(const float *in, int batch, int size, int ch, float *mean, float *var);
-void meanDelta(float *yt, int size, int ch, float eps, float *variance, float *mean_delta);
-void varianceDelta(const float *x, const float *delta, const float *mean, const float *variance, int batch, int ch,
-                   int spatial, float eps, float *variance_delta);
-void meanAdd(const float *x, const float *mean, const float *variance_delta, int batch, int filters, int spatial,
-             float *mean_add, float *mean_delta);
-void NormalizeDelta(const float *x, const float *mean, const float *variance, const float *mean_delta,
-                    const float *variance_delta, int batch, int filters, int spatial, float eps, float *delta);
+void scaleBias(const float* scales, int batch, int n, int size, float* output);
+void normalize(const float* x, const float* mean, const float* variance, float eps, int batch, int filters, int spatial, float* out);
+void backwardScale(const float* x_norm, const float* delta, int batch, int n, int size, float* scale_updates);
+void meanVar(const float* in, int batch, int size, int ch, float* mean, float* var);
+void meanDelta(float* yt, int size, int ch, float eps, float* variance, float* mean_delta);
+void varianceDelta(const float* x, const float* delta, const float* mean, const float* variance, int batch, int ch, int spatial, float eps,
+                   float* variance_delta);
+void meanAdd(const float* x, const float* mean, const float* variance_delta, int batch, int filters, int spatial, float* mean_add,
+             float* mean_delta);
+void NormalizeDelta(const float* x, const float* mean, const float* variance, const float* mean_delta, const float* variance_delta,
+                    int batch, int filters, int spatial, float eps, float* delta);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_FP32_BATCH_NORM_H_
+#endif // MINDSPORE_LITE_NNACL_FP32_BATCH_NORM_H_

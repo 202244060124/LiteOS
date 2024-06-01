@@ -17,27 +17,27 @@
 #ifndef __MQTT_CC3200_
 #define __MQTT_CC3200_
 
-#include "simplelink.h"
-#include "netapp.h"
-#include "socket.h"
 #include "hw_types.h"
+#include "netapp.h"
+#include "simplelink.h"
+#include "socket.h"
 #include "systick.h"
+
 
 typedef struct Timer Timer;
 
 struct Timer {
-	unsigned long systick_period;
-	unsigned long end_time;
+    unsigned long systick_period;
+    unsigned long end_time;
 };
 
 typedef struct Network Network;
 
-struct Network
-{
-	int my_socket;
-	int (*mqttread) (Network*, unsigned char*, int, int);
-	int (*mqttwrite) (Network*, unsigned char*, int, int);
-	void (*disconnect) (Network*);
+struct Network {
+    int my_socket;
+    int (*mqttread)(Network*, unsigned char*, int, int);
+    int (*mqttwrite)(Network*, unsigned char*, int, int);
+    void (*disconnect)(Network*);
 };
 
 char expired(Timer*);

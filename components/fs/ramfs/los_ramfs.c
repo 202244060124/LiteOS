@@ -28,8 +28,9 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
+
 
 #ifdef __GNUC__
 #include <errno.h>
@@ -42,41 +43,41 @@
 
 #include "los_vfs.h"
 
-#define RAMFS_TYPE_DIR VFS_TYPE_DIR
+#define RAMFS_TYPE_DIR  VFS_TYPE_DIR
 #define RAMFS_TYPE_FILE VFS_TYPE_FILE
 
 struct ramfs_element {
     char name[LOS_MAX_FILE_NAME_LEN];
     uint32_t type;
-    struct ramfs_element *sibling;
-    struct ramfs_element *parent;
+    struct ramfs_element* sibling;
+    struct ramfs_element* parent;
     volatile uint32_t refs;
     union {
         struct {
             size_t size;
-            char *content;
+            char* content;
         } f;
         struct {
-            struct ramfs_element *child;
+            struct ramfs_element* child;
         } d;
     };
 };
 
 struct ramfs_mount_point {
     struct ramfs_element root;
-    void *memory;
+    void* memory;
 };
 
-static struct ramfs_element *ramfs_file_find(struct mount_point *mp, const char *path_in_mp, const char **path_unresolved)
+static struct ramfs_element* ramfs_file_find(struct mount_point* mp, const char* path_in_mp, const char** path_unresolved)
 {
-    struct ramfs_element *walk;
+    struct ramfs_element* walk;
 
     /* walk every dir */
-    walk = &((struct ramfs_mount_point *)mp->m_data)->root;
+    walk = &((struct ramfs_mount_point*)mp->m_data)->root;
 
     while (1) {
-        const char *c;
-        struct ramfs_element *t;
+        const char* c;
+        struct ramfs_element* t;
         int l;
 
         if (walk->type != RAMFS_TYPE_DIR) {
@@ -126,10 +127,10 @@ static struct ramfs_element *ramfs_file_find(struct mount_point *mp, const char 
     return walk;
 }
 
-static int ramfs_open(struct file *file, const char *path_in_mp, int flags)
+static int ramfs_open(struct file* file, const char* path_in_mp, int flags)
 {
-    struct ramfs_element *ramfs_file;
-    struct ramfs_element *walk;
+    struct ramfs_element* ramfs_file;
+    struct ramfs_element* walk;
     int ret = -1;
 
     /* openning dir like "/romfs/ not support " */
@@ -168,7 +169,7 @@ static int ramfs_open(struct file *file, const char *path_in_mp, int flags)
 
         ramfs_file->refs++;
 
-        file->f_data = (void *)ramfs_file;
+        file->f_data = (void*)ramfs_file;
 
         return 0;
     }
@@ -201,7 +202,7 @@ static int ramfs_open(struct file *file, const char *path_in_mp, int flags)
     ramfs_file = malloc(sizeof(struct ramfs_element));
     if (ramfs_file == NULL) {
         PRINT_ERR("fail to malloc memory in RAMFS, <malloc.c> is needed,"
-            "make sure it is added\n");
+                  "make sure it is added\n");
         VFS_ERRNO_SET(ENOMEM);
         return -1;
     }
@@ -217,23 +218,23 @@ static int ramfs_open(struct file *file, const char *path_in_mp, int flags)
     ramfs_file->f.size = 0;
     ramfs_file->parent = walk;
 
-    file->f_data = (void *)ramfs_file;
+    file->f_data = (void*)ramfs_file;
 
     return 0;
 }
 
-static int ramfs_close(struct file *file)
+static int ramfs_close(struct file* file)
 {
-    struct ramfs_element *ramfs_file = (struct ramfs_element *)file->f_data;
+    struct ramfs_element* ramfs_file = (struct ramfs_element*)file->f_data;
 
     ramfs_file->refs--;
 
     return 0; /* not file delete, do not free the content */
 }
 
-static ssize_t ramfs_read(struct file *file, char *buff, size_t bytes)
+static ssize_t ramfs_read(struct file* file, char* buff, size_t bytes)
 {
-    struct ramfs_element *ramfs_file = (struct ramfs_element *)file->f_data;
+    struct ramfs_element* ramfs_file = (struct ramfs_element*)file->f_data;
 
     if (file->f_offset < 0) {
         file->f_offset = 0;
@@ -254,20 +255,19 @@ static ssize_t ramfs_read(struct file *file, char *buff, size_t bytes)
     return bytes;
 }
 
-static ssize_t ramfs_write(struct file *file, const char *buff, size_t bytes)
+static ssize_t ramfs_write(struct file* file, const char* buff, size_t bytes)
 {
-    struct mount_point *mp = file->f_mp;
-    struct ramfs_element *ramfs_file = (struct ramfs_element *)file->f_data;
+    struct mount_point* mp = file->f_mp;
+    struct ramfs_element* ramfs_file = (struct ramfs_element*)file->f_data;
 
     if (file->f_offset < 0) {
         file->f_offset = 0;
     }
 
     if (file->f_offset + bytes > ramfs_file->f.size) {
-        char *p;
+        char* p;
 
-        p = LOS_MemRealloc(((struct ramfs_mount_point *)mp->m_data)->memory, ramfs_file->f.content,
-            file->f_offset + bytes);
+        p = LOS_MemRealloc(((struct ramfs_mount_point*)mp->m_data)->memory, ramfs_file->f.content, file->f_offset + bytes);
         if (p != NULL) {
             ramfs_file->f.content = p;
             ramfs_file->f.size = file->f_offset + bytes;
@@ -288,9 +288,9 @@ static ssize_t ramfs_write(struct file *file, const char *buff, size_t bytes)
     return bytes;
 }
 
-static off_t ramfs_lseek(struct file *file, off_t off, int whence)
+static off_t ramfs_lseek(struct file* file, off_t off, int whence)
 {
-    struct ramfs_element *ramfs_file = (struct ramfs_element *)file->f_data;
+    struct ramfs_element* ramfs_file = (struct ramfs_element*)file->f_data;
 
     switch (whence) {
         case SEEK_SET:
@@ -318,10 +318,10 @@ static off_t ramfs_lseek(struct file *file, off_t off, int whence)
     return file->f_offset;
 }
 
-static void ramfs_del(struct ramfs_element *e)
+static void ramfs_del(struct ramfs_element* e)
 {
-    struct ramfs_element *dir;
-    struct ramfs_element *t;
+    struct ramfs_element* dir;
+    struct ramfs_element* t;
 
     if (e->parent == NULL) { /* root element, do not delete */
         return;
@@ -344,9 +344,9 @@ static void ramfs_del(struct ramfs_element *e)
     free(e);
 }
 
-static int ramfs_unlink(struct mount_point *mp, const char *path_in_mp)
+static int ramfs_unlink(struct mount_point* mp, const char* path_in_mp)
 {
-    struct ramfs_element *ramfs_file;
+    struct ramfs_element* ramfs_file;
 
     ramfs_file = ramfs_file_find(mp, path_in_mp, &path_in_mp);
 
@@ -367,7 +367,7 @@ static int ramfs_unlink(struct mount_point *mp, const char *path_in_mp)
         }
     } else {
         if (ramfs_file->f.content != NULL) {
-            LOS_MemFree(((struct ramfs_mount_point *)mp->m_data)->memory, ramfs_file->f.content);
+            LOS_MemFree(((struct ramfs_mount_point*)mp->m_data)->memory, ramfs_file->f.content);
             ramfs_file->f.content = NULL;
         }
     }
@@ -377,10 +377,10 @@ static int ramfs_unlink(struct mount_point *mp, const char *path_in_mp)
     return 0;
 }
 
-static int ramfs_rename(struct mount_point *mp, const char *path_in_mp_old, const char *path_in_mp_new)
+static int ramfs_rename(struct mount_point* mp, const char* path_in_mp_old, const char* path_in_mp_new)
 {
-    struct ramfs_element *ramfs_file_old;
-    struct ramfs_element *ramfs_file_new;
+    struct ramfs_element* ramfs_file_old;
+    struct ramfs_element* ramfs_file_new;
 
     ramfs_file_old = ramfs_file_find(mp, path_in_mp_old, &path_in_mp_old);
 
@@ -394,7 +394,7 @@ static int ramfs_rename(struct mount_point *mp, const char *path_in_mp_old, cons
     /*
      * ramfs_file_new == NULL means at least parent dir not found
      * *path_in_mp_new == '\0' means file already exist
-    */
+     */
     if ((ramfs_file_new == NULL) || (*path_in_mp_new == '\0')) {
         VFS_ERRNO_SET(ENOENT);
         return -1;
@@ -422,10 +422,10 @@ static int ramfs_rename(struct mount_point *mp, const char *path_in_mp_old, cons
     return 0;
 }
 
-static int ramfs_opendir(struct dir *dir, const char *path_in_mp)
+static int ramfs_opendir(struct dir* dir, const char* path_in_mp)
 {
-    struct ramfs_element *ramfs_dir;
-    struct mount_point *mp = dir->d_mp;
+    struct ramfs_element* ramfs_dir;
+    struct mount_point* mp = dir->d_mp;
 
     ramfs_dir = ramfs_file_find(mp, path_in_mp, &path_in_mp);
 
@@ -441,16 +441,16 @@ static int ramfs_opendir(struct dir *dir, const char *path_in_mp)
 
     ramfs_dir->refs++;
 
-    dir->d_data = (void *)ramfs_dir;
+    dir->d_data = (void*)ramfs_dir;
     dir->d_offset = 0;
 
     return 0;
 }
 
-static int ramfs_readdir(struct dir *dir, struct dirent *dent)
+static int ramfs_readdir(struct dir* dir, struct dirent* dent)
 {
-    struct ramfs_element *ramfs_dir = (struct ramfs_element *)dir->d_data;
-    struct ramfs_element *child;
+    struct ramfs_element* ramfs_dir = (struct ramfs_element*)dir->d_data;
+    struct ramfs_element* child;
     off_t i;
 
     for (i = 0, child = ramfs_dir->d.child; i < dir->d_offset && child != NULL; i++, child = child->sibling) {
@@ -478,18 +478,18 @@ static int ramfs_readdir(struct dir *dir, struct dirent *dent)
     return 0;
 }
 
-static int ramfs_closedir(struct dir *dir)
+static int ramfs_closedir(struct dir* dir)
 {
-    struct ramfs_element *ramfs_dir = (struct ramfs_element *)dir->d_data;
+    struct ramfs_element* ramfs_dir = (struct ramfs_element*)dir->d_data;
     ramfs_dir->refs--;
     return 0;
 }
 
-static int ramfs_mkdir(struct mount_point *mp, const char *path_in_mp)
+static int ramfs_mkdir(struct mount_point* mp, const char* path_in_mp)
 {
-    struct ramfs_element *ramfs_parent;
-    struct ramfs_element *ramfs_dir;
-    const char *t;
+    struct ramfs_element* ramfs_parent;
+    struct ramfs_element* ramfs_dir;
+    const char* t;
     int len;
 
     ramfs_parent = ramfs_file_find(mp, path_in_mp, &path_in_mp);
@@ -517,11 +517,11 @@ static int ramfs_mkdir(struct mount_point *mp, const char *path_in_mp)
         return -1;
     }
 
-    ramfs_dir = (struct ramfs_element *)malloc(sizeof(struct ramfs_element));
+    ramfs_dir = (struct ramfs_element*)malloc(sizeof(struct ramfs_element));
 
     if (ramfs_dir == NULL) {
         PRINT_ERR("fail to malloc memory in RAMFS, <malloc.c> is needed,"
-            "make sure it is added\n");
+                  "make sure it is added\n");
         return -1;
     }
 
@@ -536,37 +536,25 @@ static int ramfs_mkdir(struct mount_point *mp, const char *path_in_mp)
     return 0;
 }
 
-static struct file_ops ramfs_ops = {
-    ramfs_open,
-    ramfs_close,
-    ramfs_read,
-    ramfs_write,
-    ramfs_lseek,
-    NULL,           /* stat not supported */
-    ramfs_unlink,
-    ramfs_rename,
-    NULL,           /* ioctl not supported */
-    NULL,           /* sync not supported */
-    ramfs_opendir,
-    ramfs_readdir,
-    ramfs_closedir,
-    ramfs_mkdir
-};
+static struct file_ops ramfs_ops = {ramfs_open,    ramfs_close,   ramfs_read,     ramfs_write, ramfs_lseek, NULL, /* stat not supported */
+                                    ramfs_unlink,  ramfs_rename,  NULL,                                           /* ioctl not supported */
+                                    NULL,                                                                         /* sync not supported */
+                                    ramfs_opendir, ramfs_readdir, ramfs_closedir, ramfs_mkdir};
 
 static struct file_system ramfs_fs = {"ramfs", &ramfs_ops, NULL, 0};
 
-int ramfs_mount(const char *path, size_t block_size)
+int ramfs_mount(const char* path, size_t block_size)
 {
-    struct ramfs_mount_point *rmp;
+    struct ramfs_mount_point* rmp;
 
     if (strlen(path) >= LOS_MAX_FILE_NAME_LEN) {
         return LOS_NOK;
     }
 
-    rmp = (struct ramfs_mount_point *)malloc(sizeof(struct ramfs_mount_point));
+    rmp = (struct ramfs_mount_point*)malloc(sizeof(struct ramfs_mount_point));
     if (rmp == NULL) {
         PRINT_ERR("fail to malloc memory in RAMFS, <malloc.c> is needed,"
-            "make sure it is added\n");
+                  "make sure it is added\n");
         return LOS_NOK;
     }
 
@@ -577,7 +565,7 @@ int ramfs_mount(const char *path, size_t block_size)
 
     if (rmp->memory == NULL) {
         PRINT_ERR("fail to malloc memory in RAMFS, <malloc.c> is needed,"
-            "make sure it is added\n");
+                  "make sure it is added\n");
         PRINT_ERR("failed to allocate memory\n");
         return LOS_NOK;
     }
@@ -627,9 +615,9 @@ int ramfs_init(void)
 }
 
 #ifdef DEBUG
-void ramfs_ls(struct ramfs_element *dir, int level)
+void ramfs_ls(struct ramfs_element* dir, int level)
 {
-    struct ramfs_element *itr;
+    struct ramfs_element* itr;
     int i;
 
     if (dir->type != RAMFS_TYPE_DIR) {
@@ -648,18 +636,18 @@ void ramfs_ls(struct ramfs_element *dir, int level)
     }
 }
 
-extern struct mount_point *los_mp_find(const char *, const char **);
+extern struct mount_point* los_mp_find(const char*, const char**);
 
-void ramfs_tree(const char *mount_path)
+void ramfs_tree(const char* mount_path)
 {
-    struct ramfs_element *walk;
-    struct mount_point *mp = los_mp_find(mount_path, NULL);
+    struct ramfs_element* walk;
+    struct mount_point* mp = los_mp_find(mount_path, NULL);
     if (mp == NULL) {
         PRINT_ERR("can not find mount point info for %s\n", mount_path);
         return;
     }
 
-    walk = (struct ramfs_element *)mp->m_data;
+    walk = (struct ramfs_element*)mp->m_data;
     ramfs_ls(walk, 0);
 }
 #endif

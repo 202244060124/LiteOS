@@ -20,10 +20,10 @@
 #include "nnacl/op_base.h"
 
 typedef struct LeakyReluParameter {
-  OpParameter op_parameter_;
-  float *slope_;
-  size_t slope_num_;
-  int input_num_;
+    OpParameter op_parameter_;
+    float* slope_;
+    size_t slope_num_;
+    int input_num_;
 } LeakyReluParameter;
 
-#endif  // MINDSPORE_LITE_NNACL_LEAKY_RELU_PARAMETER_H_
+#endif // MINDSPORE_LITE_NNACL_LEAKY_RELU_PARAMETER_H_

@@ -6,8 +6,9 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_theme.h"
 #include "../lv_core/lv_obj.h"
+#include "lv_theme.h"
+
 
 /*********************
  *      DEFINES
@@ -24,7 +25,7 @@
 /**********************
  *  STATIC VARIABLES
  **********************/
-static lv_theme_t * act_theme;
+static lv_theme_t* act_theme;
 
 /**********************
  *      MACROS
@@ -39,7 +40,7 @@ static lv_theme_t * act_theme;
  * From now, all the created objects will use styles from this theme by default
  * @param th pointer to theme (return value of: 'lv_theme_init_xxx()')
  */
-void lv_theme_set_act(lv_theme_t * th)
+void lv_theme_set_act(lv_theme_t* th)
 {
     act_theme = th;
 }
@@ -48,7 +49,7 @@ void lv_theme_set_act(lv_theme_t * th)
  * Get the current system theme.
  * @return pointer to the current system theme. NULL if not set.
  */
-lv_theme_t * lv_theme_get_act(void)
+lv_theme_t* lv_theme_get_act(void)
 {
     return act_theme;
 }
@@ -57,7 +58,7 @@ lv_theme_t * lv_theme_get_act(void)
  * Get the small font of the theme
  * @return pointer to the font
  */
-const lv_font_t * lv_theme_get_font_small(void)
+const lv_font_t* lv_theme_get_font_small(void)
 {
     return act_theme->font_small;
 }
@@ -66,7 +67,7 @@ const lv_font_t * lv_theme_get_font_small(void)
  * Get the normal font of the theme
  * @return pointer to the font
  */
-const lv_font_t * lv_theme_get_font_normal(void)
+const lv_font_t* lv_theme_get_font_normal(void)
 {
     return act_theme->font_normal;
 }
@@ -75,7 +76,7 @@ const lv_font_t * lv_theme_get_font_normal(void)
  * Get the subtitle font of the theme
  * @return pointer to the font
  */
-const lv_font_t * lv_theme_get_font_subtitle(void)
+const lv_font_t* lv_theme_get_font_subtitle(void)
 {
     return act_theme->font_subtitle;
 }
@@ -84,7 +85,7 @@ const lv_font_t * lv_theme_get_font_subtitle(void)
  * Get the title font of the theme
  * @return pointer to the font
  */
-const lv_font_t * lv_theme_get_font_title(void)
+const lv_font_t* lv_theme_get_font_title(void)
 {
     return act_theme->font_title;
 }
@@ -107,11 +108,10 @@ uint32_t lv_theme_get_flags(void)
     return act_theme->flags;
 }
 
-void lv_theme_apply(lv_obj_t * obj, lv_theme_style_t name)
+void lv_theme_apply(lv_obj_t* obj, lv_theme_style_t name)
 {
     act_theme->apply_xcb(obj, name);
 }
-
 
 /**********************
  *   STATIC FUNCTIONS

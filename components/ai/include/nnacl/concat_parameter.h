@@ -21,15 +21,15 @@
 #include "nnacl/quantization/quantize.h"
 
 typedef struct ConcatParameter {
-  OpParameter op_parameter_;
-  ConcatQuantArg quant_arg_;
-  int axis_;
-  int thread_count_;
-  int input_num_;
-  const int **input_shapes_;
-  const int *output_shapes_;
-  int64_t after_axis_size;
-  int64_t count_unit_;
+    OpParameter op_parameter_;
+    ConcatQuantArg quant_arg_;
+    int axis_;
+    int thread_count_;
+    int input_num_;
+    const int** input_shapes_;
+    const int* output_shapes_;
+    int64_t after_axis_size;
+    int64_t count_unit_;
 } ConcatParameter;
 
-#endif  // MINDSPORE_LITE_NNACL_CONCAT_PARAMETER_H_
+#endif // MINDSPORE_LITE_NNACL_CONCAT_PARAMETER_H_

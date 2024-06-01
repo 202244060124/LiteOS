@@ -20,46 +20,44 @@
 #include <arm_neon.h>
 #endif
 #include <string.h>
-#include "nnacl/op_base.h"
 #include "nnacl/arithmetic_common.h"
+#include "nnacl/op_base.h"
+
 
 typedef struct ArithmeticParameter {
-  OpParameter op_parameter_;
-  bool broadcasting_;
-  size_t ndim_;
-  int activation_type_;
-  int in_shape0_[5];
-  int in_elements_num0_;
-  int in_shape1_[5];
-  int in_elements_num1_;
+    OpParameter op_parameter_;
+    bool broadcasting_;
+    size_t ndim_;
+    int activation_type_;
+    int in_shape0_[5];
+    int in_elements_num0_;
+    int in_shape1_[5];
+    int in_elements_num1_;
 
-  int out_shape_[5];
-  int out_elements_num_;
+    int out_shape_[5];
+    int out_elements_num_;
 
-  int in_strides0_[5];
-  int in_strides1_[5];
-  int out_strides_[5];
+    int in_strides0_[5];
+    int in_strides1_[5];
+    int out_strides_[5];
 
-  int multiples0_[5];
-  int multiples1_[5];
+    int multiples0_[5];
+    int multiples1_[5];
 } ArithmeticParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-void TileOneDimension(float *inData, float *outData, int dim, size_t ndim, int *inShape, int *inStrides,
-                      int *outStrides, int *multiple);
-void ComputeStrides(int *shape, int *strides, int ndim);
+void TileOneDimension(float* inData, float* outData, int dim, size_t ndim, int* inShape, int* inStrides, int* outStrides, int* multiple);
+void ComputeStrides(int* shape, int* strides, int ndim);
 
-void CalcMultiplesAndStrides(ArithmeticParameter *param);
+void CalcMultiplesAndStrides(ArithmeticParameter* param);
 
-void TileDimensions(float *data0, float *data1, float *tile_data0, float *tile_data1, ArithmeticParameter *param);
-void TileDimensionsUint8(uint8_t *data0, uint8_t *data1, uint8_t *tile_data0, uint8_t *tile_data1,
-                         ArithmeticParameter *param);
-void TileDimensionsInt8(int8_t *data0, int8_t *data1, int8_t *tile_data0, int8_t *tile_data1,
-                        ArithmeticParameter *param);
+void TileDimensions(float* data0, float* data1, float* tile_data0, float* tile_data1, ArithmeticParameter* param);
+void TileDimensionsUint8(uint8_t* data0, uint8_t* data1, uint8_t* tile_data0, uint8_t* tile_data1, ArithmeticParameter* param);
+void TileDimensionsInt8(int8_t* data0, int8_t* data1, int8_t* tile_data0, int8_t* tile_data1, ArithmeticParameter* param);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_ARITHMETIC_COMMON_H_
+#endif // MINDSPORE_LITE_NNACL_ARITHMETIC_COMMON_H_

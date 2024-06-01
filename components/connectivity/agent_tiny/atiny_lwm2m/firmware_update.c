@@ -26,15 +26,16 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --------------------------------------------------------------------------- */
 
-#include "internals.h"
 #include "atiny_lwm2m/agenttiny.h"
+#include "firmware_update.h"
+#include "internals.h"
 #include "log/atiny_log.h"
 #include "ota/package.h"
-#include "firmware_update.h"
 
-#define FW_BLOCK_SIZE (512)
 
-#define COAP_PROTO_PREFIX "coap://"
+#define FW_BLOCK_SIZE      (512)
+
+#define COAP_PROTO_PREFIX  "coap://"
 #define COAPS_PROTO_PREFIX "coaps://"
 
 typedef struct fw_update_record {
@@ -44,21 +45,21 @@ typedef struct fw_update_record {
     uint32_t block_num;
     uint32_t block_offset;
     uint32_t uri_len;
-    char *uri;
+    char* uri;
 } fw_update_record_t;
 
-static char *g_ota_uri = NULL;
-static pack_storage_device_api_s *g_fota_storage_device = NULL;
+static char* g_ota_uri = NULL;
+static pack_storage_device_api_s* g_fota_storage_device = NULL;
 static fw_update_record_t g_fw_update_record = {0};
 
 static firmware_update_notify g_firmware_update_notify = NULL;
-static void *g_firmware_update_notify_param = NULL;
+static void* g_firmware_update_notify_param = NULL;
 
-static void firmware_download_reply(lwm2m_transaction_t *transacP, void *message)
+static void firmware_download_reply(lwm2m_transaction_t* transacP, void* message)
 {
-    coap_packet_t *packet = (coap_packet_t *)message;
-    lwm2m_context_t *contextP = (lwm2m_context_t *)(transacP->userData);
-    lwm2m_transaction_t *transaction;
+    coap_packet_t* packet = (coap_packet_t*)message;
+    lwm2m_context_t* contextP = (lwm2m_context_t*)(transacP->userData);
+    lwm2m_transaction_t* transaction;
     uint32_t len = 0;
     uint32_t block_num = 0;
     uint8_t block2_more = 0;
@@ -75,8 +76,8 @@ static void firmware_download_reply(lwm2m_transaction_t *transacP, void *message
         ATINY_LOG(LOG_ERR, "coap_get_header_block2 failed");
         goto failed_exit;
     }
-    ATINY_LOG(LOG_ERR, "block_num : %lu, block2_more : %lu, block_offset : %lu, payload_len is %u",
-              block_num, (uint32_t)block2_more, block_offset, packet->payload_len);
+    ATINY_LOG(LOG_ERR, "block_num : %lu, block2_more : %lu, block_offset : %lu, payload_len is %u", block_num, (uint32_t)block2_more,
+              block_offset, packet->payload_len);
 
     if (block_num == 0) {
         g_fw_update_record.in_use = 1;
@@ -90,7 +91,7 @@ static void firmware_download_reply(lwm2m_transaction_t *transacP, void *message
     len = (uint32_t)(packet->payload_len);
     if (g_fota_storage_device && g_fota_storage_device->write_software) {
         ret = g_fota_storage_device->write_software(g_fota_storage_device, block_offset, packet->payload, len);
-        if (ret != 0){
+        if (ret != 0) {
             goto failed_exit;
         }
     } else if (g_fota_storage_device == NULL) {
@@ -121,8 +122,8 @@ static void firmware_download_reply(lwm2m_transaction_t *transacP, void *message
         ATINY_LOG(LOG_DEBUG, "get next : %lu", block_num + 1);
 
         transaction->callback = firmware_download_reply;
-        transaction->userData = (void *)contextP;
-        contextP->transactionList = (lwm2m_transaction_t *)LWM2M_LIST_ADD(contextP->transactionList, transaction);
+        transaction->userData = (void*)contextP;
+        contextP->transactionList = (lwm2m_transaction_t*)LWM2M_LIST_ADD(contextP->transactionList, transaction);
 
         if (transaction_send(contextP, transaction) != 0) {
             ATINY_LOG(LOG_ERR, "transaction_send failed");
@@ -139,7 +140,8 @@ static void firmware_download_reply(lwm2m_transaction_t *transacP, void *message
         }
         ATINY_LOG(LOG_ERR, "g_firmware_update_notify FIRMWARE_UPDATE_RST_SUCCESS, write end ret %d", ret);
         if (g_firmware_update_notify) {
-            g_firmware_update_notify((ret == ATINY_OK) ?  FIRMWARE_UPDATE_RST_SUCCESS : FIRMWARE_UPDATE_RST_FAILED, g_firmware_update_notify_param);
+            g_firmware_update_notify((ret == ATINY_OK) ? FIRMWARE_UPDATE_RST_SUCCESS : FIRMWARE_UPDATE_RST_FAILED,
+                                     g_firmware_update_notify_param);
         }
         ATINY_LOG(LOG_ERR, "download success, total size : %lu, write end ret %d", len, ret);
     }
@@ -158,13 +160,13 @@ failed_exit:
     return;
 }
 
-static int record_fw_uri(char *uri, int uri_len)
+static int record_fw_uri(char* uri, int uri_len)
 {
     if (!uri || (*uri == '\0') || (uri_len <= 0)) {
         return -1;
     }
 
-    g_fw_update_record.uri = (char *)lwm2m_malloc(uri_len + 1);
+    g_fw_update_record.uri = (char*)lwm2m_malloc(uri_len + 1);
     if (g_fw_update_record.uri == NULL) {
         ATINY_LOG(LOG_ERR, "lwm2m_malloc failed");
         return -1;
@@ -176,7 +178,7 @@ static int record_fw_uri(char *uri, int uri_len)
     return 0;
 }
 
-static int update_uri_info(char *uri, int uri_len, unsigned char *update_flag)
+static int update_uri_info(char* uri, int uri_len, unsigned char* update_flag)
 {
     int ret = -1;
 
@@ -203,7 +205,7 @@ static int update_uri_info(char *uri, int uri_len, unsigned char *update_flag)
     }
 }
 
-void set_firmware_update_notify(firmware_update_notify notify_cb, void *param)
+void set_firmware_update_notify(firmware_update_notify notify_cb, void* param)
 {
     g_firmware_update_notify = notify_cb;
     g_firmware_update_notify_param = param;
@@ -211,7 +213,7 @@ void set_firmware_update_notify(firmware_update_notify notify_cb, void *param)
     return;
 }
 
-int parse_firmware_uri(char *uri, int uri_len)
+int parse_firmware_uri(char* uri, int uri_len)
 {
     char *char_p, *path;
     int path_len, proto_len;
@@ -238,7 +240,7 @@ int parse_firmware_uri(char *uri, int uri_len)
     }
     path_len = uri_len - (path - uri);
 
-    g_ota_uri = (char *)lwm2m_malloc(path_len + 1);
+    g_ota_uri = (char*)lwm2m_malloc(path_len + 1);
     if (!g_ota_uri) {
         ATINY_LOG(LOG_ERR, "lwm2m_malloc failed");
         return -1;
@@ -249,14 +251,13 @@ int parse_firmware_uri(char *uri, int uri_len)
     return 0;
 }
 
-int start_firmware_download(lwm2m_context_t *contextP, char *uri,
-                            pack_storage_device_api_s *storage_device_p)
+int start_firmware_download(lwm2m_context_t* contextP, char* uri, pack_storage_device_api_s* storage_device_p)
 {
-    lwm2m_transaction_t *transaction;
+    lwm2m_transaction_t* transaction;
     unsigned char update_flag = 0;
     int ret = -1;
     int uri_len;
-    lwm2m_server_t *server;
+    lwm2m_server_t* server;
 
     if (!contextP || !uri || (*uri == '\0') || (!storage_device_p)) {
         ATINY_LOG(LOG_ERR, "invalid params");
@@ -273,7 +274,7 @@ int start_firmware_download(lwm2m_context_t *contextP, char *uri,
 
     ret = update_uri_info(uri, uri_len, &update_flag);
     if (ret != 0) {
-        ;  // continue to although update_uri_info failed
+        ; // continue to although update_uri_info failed
     }
 
     ATINY_LOG(LOG_DEBUG, "update_flag = %u", update_flag);
@@ -312,9 +313,9 @@ int start_firmware_download(lwm2m_context_t *contextP, char *uri,
     }
 
     transaction->callback = firmware_download_reply;
-    transaction->userData = (void *)contextP;
+    transaction->userData = (void*)contextP;
 
-    contextP->transactionList = (lwm2m_transaction_t *)LWM2M_LIST_ADD(contextP->transactionList, transaction);
+    contextP->transactionList = (lwm2m_transaction_t*)LWM2M_LIST_ADD(contextP->transactionList, transaction);
 
     if (transaction_send(contextP, transaction) != 0) {
         ATINY_LOG(LOG_ERR, "transaction_send failed");

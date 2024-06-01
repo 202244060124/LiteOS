@@ -41,9 +41,9 @@ extern "C" {
 #endif /* __cplusplus */
 
 #ifdef LOSCFG_KERNEL_SMP
-#define CORE_NUM                LOSCFG_KERNEL_SMP_CORE_NUM
+#define CORE_NUM LOSCFG_KERNEL_SMP_CORE_NUM
 #else
-#define CORE_NUM                1
+#define CORE_NUM 1
 #endif
 
 /* Initial bit64 stack value. */
@@ -53,14 +53,14 @@ extern "C" {
 
 #define OS_EXC_START_STACK_SIZE 0x1000
 #ifdef LOSCFG_ARCH_INTERRUPT_PREEMPTION
-#define OS_EXC_IRQ_STACK_SIZE   0x6000
-#else /* !LOSCFG_ARCH_INTERRUPT_PREEMPTION */
-#define OS_EXC_IRQ_STACK_SIZE   0x1000
+#define OS_EXC_IRQ_STACK_SIZE 0x6000
+#else  /* !LOSCFG_ARCH_INTERRUPT_PREEMPTION */
+#define OS_EXC_IRQ_STACK_SIZE 0x1000
 #endif /* LOSCFG_ARCH_INTERRUPT_PREEMPTION */
 
 #ifndef __ASSEMBLER__
 
-#define EXC_GEN_REGS_NUM     30
+#define EXC_GEN_REGS_NUM 30
 typedef struct {
     UINT64 X[EXC_GEN_REGS_NUM]; /**< Register X0-X29 */
     UINT64 LR;                  /**< Program returning address. X30 */
@@ -74,16 +74,17 @@ typedef struct {
     UINT16 type;         /**< Exception type */
     UINT16 nestCnt;      /**< Count of nested exception */
     UINT16 reserved;     /**< Reserved for alignment */
-    ExcContext *context; /**< Hardware context when an exception occurs */
+    ExcContext* context; /**< Hardware context when an exception occurs */
 } ExcInfo;
 
-#define ArchGetFp() ({ \
-    UINTPTR _regFp; \
-    __asm__ __volatile__("mov %0, X29" : "=r"(_regFp)); \
-    _regFp; \
-})
+#define ArchGetFp()                                         \
+    ({                                                      \
+        UINTPTR _regFp;                                     \
+        __asm__ __volatile__("mov %0, X29" : "=r"(_regFp)); \
+        _regFp;                                             \
+    })
 
-typedef VOID (*EXC_PROC_FUNC)(UINT32, ExcContext *);
+typedef VOID (*EXC_PROC_FUNC)(UINT32, ExcContext*);
 
 UINT32 ArchSetExcHook(EXC_PROC_FUNC excHook);
 #define LOS_ExcRegHook ArchSetExcHook
@@ -93,9 +94,9 @@ STATIC INLINE VOID ArchHaltCpu(VOID)
     __asm__ __volatile__("svc #0");
 }
 
-VOID ArchBackTraceWithSp(const VOID *stackPointer);
+VOID ArchBackTraceWithSp(const VOID* stackPointer);
 VOID ArchBackTrace(VOID);
-UINT32 ArchBackTraceGet(UINTPTR fp, UINTPTR *callChain, UINT32 maxDepth);
+UINT32 ArchBackTraceGet(UINTPTR fp, UINTPTR* callChain, UINT32 maxDepth);
 VOID ArchExcInit(VOID);
 
 /* Stack pointers for different modes. */

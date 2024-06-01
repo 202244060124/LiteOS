@@ -28,53 +28,55 @@
 #define OPTIMIZE_SHARED_LIBRARY_PATH "liboptimize.so"
 
 class OptimizeModule {
- public:
-  OptimizeModule() {
-    bool support_optimize_ops = false;
-    bool support_fp16 = false;
+public:
+    OptimizeModule()
+    {
+        bool support_optimize_ops = false;
+        bool support_fp16 = false;
 #ifdef __ANDROID__
-    int hwcap_type = 16;
-    uint32_t hwcap = getHwCap(hwcap_type);
+        int hwcap_type = 16;
+        uint32_t hwcap = getHwCap(hwcap_type);
 #ifdef ENABLE_ARM64
-    if (hwcap & HWCAP_FPHP) {
+        if (hwcap & HWCAP_FPHP) {
 #elif defined(__arm__)
-    if (hwcap & HWCAP_HALF) {
+        if (hwcap & HWCAP_HALF) {
 #endif
-      MS_LOG(INFO) << "Hw cap support FP16, hwcap: 0x" << hwcap;
-      support_fp16 = true;
+            MS_LOG(INFO) << "Hw cap support FP16, hwcap: 0x" << hwcap;
+            support_fp16 = true;
 #ifdef ENABLE_ARM64
-    }
+        }
 #elif defined(__arm__)
-    }
+        }
 #endif
 
 #ifdef ENABLE_ARM64
-    if (hwcap & HWCAP_ASIMDDP) {
-      MS_LOG(INFO) << "Hw cap support SMID Dot Product, hwcap: 0x" << hwcap;
-      support_optimize_ops = true;
-    } else {
-      MS_LOG(INFO) << "Hw cap NOT support SIMD Dot Product, hwcap: 0x" << hwcap;
-    }
+        if (hwcap & HWCAP_ASIMDDP) {
+            MS_LOG(INFO) << "Hw cap support SMID Dot Product, hwcap: 0x" << hwcap;
+            support_optimize_ops = true;
+        } else {
+            MS_LOG(INFO) << "Hw cap NOT support SIMD Dot Product, hwcap: 0x" << hwcap;
+        }
 #endif
 #endif
-    if ((!support_optimize_ops) && (!support_fp16)) {
-      return;
-    }
+        if ((!support_optimize_ops) && (!support_fp16)) {
+            return;
+        }
 #ifndef _WIN32
-    optimized_op_handler_ = dlopen(OPTIMIZE_SHARED_LIBRARY_PATH, RTLD_LAZY);
-    if (optimized_op_handler_ == nullptr) {
-      MS_LOG(INFO) << "Open optimize shared library failed: " << dlerror();
-    }
+        optimized_op_handler_ = dlopen(OPTIMIZE_SHARED_LIBRARY_PATH, RTLD_LAZY);
+        if (optimized_op_handler_ == nullptr) {
+            MS_LOG(INFO) << "Open optimize shared library failed: " << dlerror();
+        }
 #endif
-  }
+    }
 
-  ~OptimizeModule() = default;
+    ~OptimizeModule() = default;
 
-  static OptimizeModule *GetInstance() {
-    static OptimizeModule opt_module;
-    return &opt_module;
-  }
-  void *optimized_op_handler_ = nullptr;
+    static OptimizeModule* GetInstance()
+    {
+        static OptimizeModule opt_module;
+        return &opt_module;
+    }
+    void* optimized_op_handler_ = nullptr;
 };
 
-#endif  // MINDSPORE_LITE_NNACL_OPTIMIZED_KERNEL_H_
+#endif // MINDSPORE_LITE_NNACL_OPTIMIZED_KERNEL_H_

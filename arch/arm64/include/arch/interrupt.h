@@ -29,8 +29,9 @@
 #ifndef _ARCH_INTERRUPT_H
 #define _ARCH_INTERRUPT_H
 
-#include "los_typedef.h"
 #include "arch/regs.h"
+#include "los_typedef.h"
+
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -42,24 +43,22 @@ extern "C" {
 STATIC INLINE UINT32 ArchIntLock(VOID)
 {
     UINT32 intSave;
-    __asm__ __volatile__(
-        "mrs %0, daif \n"
-        "msr daifset, #0xf"
-        : "=r" (intSave)
-        :
-        : "memory");
+    __asm__ __volatile__("mrs %0, daif \n"
+                         "msr daifset, #0xf"
+                         : "=r"(intSave)
+                         :
+                         : "memory");
     return intSave;
 }
 
 STATIC INLINE UINT32 ArchIntUnlock(VOID)
 {
     UINT32 intSave;
-    __asm__ __volatile__(
-        "mrs %0, daif \n"
-        "msr daifclr, #3"
-        : "=r"(intSave)
-        :
-        : "memory");
+    __asm__ __volatile__("mrs %0, daif \n"
+                         "msr daifclr, #3"
+                         : "=r"(intSave)
+                         :
+                         : "memory");
     return intSave;
 }
 
@@ -68,13 +67,13 @@ STATIC INLINE VOID ArchIntRestore(UINT32 intSave)
     __asm__ __volatile__("msr daif, %0 " : : "r"(intSave) : "memory");
 }
 
-#define PSR_I_BIT   0x00000080U
+#define PSR_I_BIT 0x00000080U
 
 STATIC INLINE UINT32 ArchIntLocked(VOID)
 {
     UINT32 intSave;
 
-    __asm__ __volatile__("mrs %0, daif" : "=r" (intSave) : : "memory");
+    __asm__ __volatile__("mrs %0, daif" : "=r"(intSave) : : "memory");
 
     return intSave & PSR_I_BIT;
 }

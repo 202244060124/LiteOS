@@ -35,22 +35,22 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-#define SEV()       __asm__ volatile("sev" : : : "memory")
-#define WFE()       __asm__ volatile("wfe" : : : "memory");
-#define WFI()       __asm__ volatile("wfi" : : : "memory");
+#define SEV()     __asm__ volatile("sev" : : : "memory")
+#define WFE()     __asm__ volatile("wfe" : : : "memory");
+#define WFI()     __asm__ volatile("wfi" : : : "memory");
 
-#define DSB()       __asm__ volatile("dsb" : : : "memory")
-#define DMB()       __asm__ volatile("dmb" : : : "memory")
-#define ISB()       __asm__ volatile("isb" : : : "memory")
-#define BARRIER()   __asm__ volatile("":::"memory")
+#define DSB()     __asm__ volatile("dsb" : : : "memory")
+#define DMB()     __asm__ volatile("dmb" : : : "memory")
+#define ISB()     __asm__ volatile("isb" : : : "memory")
+#define BARRIER() __asm__ volatile("" ::: "memory")
 
 /* Old Style APIs */
-#define sev SEV
-#define wfe WFE
-#define wfi WFI
-#define dsb DSB
-#define dmb DMB
-#define isb ISB
+#define sev       SEV
+#define wfe       WFE
+#define wfi       WFI
+#define dsb       DSB
+#define dmb       DMB
+#define isb       ISB
 
 #ifdef __cplusplus
 #if __cplusplus

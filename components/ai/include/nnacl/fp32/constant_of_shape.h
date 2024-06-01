@@ -19,22 +19,23 @@
 #ifdef ENABLE_NEON
 #include <arm_neon.h>
 #endif
-#include "nnacl/op_base.h"
 #include "nnacl/errorcode.h"
+#include "nnacl/op_base.h"
+
 
 typedef struct ConstantOfShapeParameter {
-  OpParameter op_parameter_;
-  float value_;
-  int unit_;
-  int element_sz_;
+    OpParameter op_parameter_;
+    float value_;
+    int unit_;
+    int element_sz_;
 } ConstantOfShapeParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-int ConstantOfShape(float *output, int tid, ConstantOfShapeParameter *param);
+int ConstantOfShape(float* output, int tid, ConstantOfShapeParameter* param);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_CONSTANT_OF_SHAPE_H_
+#endif // MINDSPORE_LITE_NNACL_CONSTANT_OF_SHAPE_H_

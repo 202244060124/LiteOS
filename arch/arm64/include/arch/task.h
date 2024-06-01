@@ -29,9 +29,10 @@
 #ifndef _ARCH_TASK_H
 #define _ARCH_TASK_H
 
-#include "los_typedef.h"
 #include "arch/cpu.h"
 #include "arch/regs.h"
+#include "los_typedef.h"
+
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -40,8 +41,8 @@ extern "C" {
 #endif /* __cplusplus */
 
 #define LOSCFG_STACK_POINT_ALIGN_SIZE (sizeof(UINTPTR) * 2)
-#define FP_REGS_NUM  32
-#define GEN_REGS_NUM 30
+#define FP_REGS_NUM                   32
+#define GEN_REGS_NUM                  30
 
 /* The size of this structure must be smaller than or equal to the size specified by OS_TSK_STACK_ALIGN (16 bytes). */
 typedef struct {
@@ -57,19 +58,19 @@ typedef struct {
     UINT64 NZCV;
 } TaskContext;
 
-STATIC INLINE VOID *ArchCurrTaskGet(VOID)
+STATIC INLINE VOID* ArchCurrTaskGet(VOID)
 {
-    return (VOID *)(UINTPTR)AARCH64_SYSREG_READ(TPIDR_ELx);
+    return (VOID*)(UINTPTR)AARCH64_SYSREG_READ(TPIDR_ELx);
 }
 
-STATIC INLINE VOID ArchCurrTaskSet(VOID *val)
+STATIC INLINE VOID ArchCurrTaskSet(VOID* val)
 {
     AARCH64_SYSREG_WRITE(TPIDR_ELx, (UINT64)(UINTPTR)val);
 }
 
-STATIC INLINE UINTPTR ArchGetTaskFp(const VOID *stackPointer)
+STATIC INLINE UINTPTR ArchGetTaskFp(const VOID* stackPointer)
 {
-    return ((TaskContext *)(stackPointer))->X[29]; /* x29: FP */
+    return ((TaskContext*)(stackPointer))->X[29]; /* x29: FP */
 }
 
 /*
@@ -79,7 +80,7 @@ STATIC INLINE UINTPTR ArchGetTaskFp(const VOID *stackPointer)
  *               topStack  -- stack top of task (low address)
  * Return      : pointer to the task context
  */
-extern VOID *OsTaskStackInit(UINT32 taskId, UINT32 stackSize, VOID *topStack);
+extern VOID* OsTaskStackInit(UINT32 taskId, UINT32 stackSize, VOID* topStack);
 
 #ifdef __cplusplus
 #if __cplusplus

@@ -25,10 +25,11 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --------------------------------------------------------------------------- */
-#include "los_config.h"
-#include "hisoc/mmu_config.h"
-#include "los_hwi.h"
 #include "asm/dma.h"
+#include "hisoc/mmu_config.h"
+#include "los_config.h"
+#include "los_hwi.h"
+
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -46,7 +47,7 @@ SENCOND_PAGE g_mmuDlPage = {0};
 #ifdef LOSCFG_NULL_ADDRESS_PROTECT
 __attribute__((aligned(MMU_1K))) UINT32 g_excSecondPageTable[MMU_1K];
 SENCOND_PAGE g_excPage = {0};
-#define EXC_VECTOR_ADDR 0xFFFF0000
+#define EXC_VECTOR_ADDR  0xFFFF0000
 /* EXC_VECTOR_ALIGN equal the value that EXC_VECTOR_ADDR aligned by 1M */
 #define EXC_VECTOR_ALIGN 0xFFF00000
 #endif
@@ -55,7 +56,7 @@ SENCOND_PAGE g_excPage = {0};
 #define BYTES_PER_ITEM 4
 #define ITEM_TYPE_MASK 0x3
 
-STATIC VOID MmuSetMemPage(MMU_PARAM *para)
+STATIC VOID MmuSetMemPage(MMU_PARAM* para)
 {
     UINT32 pageBase;
     UINT32 pageStartIndex, pageEndIndex;
@@ -109,7 +110,7 @@ STATIC VOID MmuSetMemPage(MMU_PARAM *para)
 #endif
 }
 
-STATIC UINT32 MmuSetFirstSection(const MMU_PARAM *para, UINT32 itemStart, UINT32 itemEnd)
+STATIC UINT32 MmuSetFirstSection(const MMU_PARAM* para, UINT32 itemStart, UINT32 itemEnd)
 {
     UINT32 intSave;
     UINT32 itemTemp = itemStart;
@@ -123,9 +124,9 @@ STATIC UINT32 MmuSetFirstSection(const MMU_PARAM *para, UINT32 itemStart, UINT32
     bitsBuf = MMU_BUFFER_STATE(para->uwFlag);
 
     while (itemTemp <= itemEnd) {
-        if (((*(UINTPTR *)(UINTPTR)itemTemp) & ITEM_TYPE_MASK) != MMU_FIRST_LEVEL_SECTION_ID) {
+        if (((*(UINTPTR*)(UINTPTR)itemTemp) & ITEM_TYPE_MASK) != MMU_FIRST_LEVEL_SECTION_ID) {
             PRINT_ERR("not all mem belongs to first section(1M every item), mmu table ID:%u\n",
-                      ((*(UINT32 *)(UINTPTR)itemTemp) & ITEM_TYPE_MASK));
+                      ((*(UINT32*)(UINTPTR)itemTemp) & ITEM_TYPE_MASK));
             return LOS_NOK;
         }
         itemTemp += sizeof(UINTPTR);
@@ -148,7 +149,7 @@ STATIC UINT32 MmuSetFirstSection(const MMU_PARAM *para, UINT32 itemStart, UINT32
     return LOS_OK;
 }
 
-STATIC UINT32 MmuSetSecondPage(MMU_PARAM *para, UINT32 itemStart, UINT32 itemEnd)
+STATIC UINT32 MmuSetSecondPage(MMU_PARAM* para, UINT32 itemStart, UINT32 itemEnd)
 {
     UINT32 intSave;
     UINT32 itemTemp = itemStart;
@@ -157,19 +158,18 @@ STATIC UINT32 MmuSetSecondPage(MMU_PARAM *para, UINT32 itemStart, UINT32 itemEnd
     if (para->stPage == NULL) {
         return LOS_NOK;
     }
-    if ((para->startAddr < para->stPage->page_addr) ||
-        (para->endAddr > (para->stPage->page_length + para->stPage->page_addr))) {
+    if ((para->startAddr < para->stPage->page_addr) || (para->endAddr > (para->stPage->page_length + para->stPage->page_addr))) {
         PRINT_ERR("addr input not belongs to this second page \n"
                   "para->startAddr:0x%x, para->stPage->page_addr:0x%x\n",
                   para->startAddr, para->stPage->page_addr);
-        PRINT_ERR("para->endAddr:0x%x, (para->stPage->page_length + para->stPage->page_addr):0x%x\n",
-                  para->endAddr, para->stPage->page_length + para->stPage->page_addr);
+        PRINT_ERR("para->endAddr:0x%x, (para->stPage->page_length + para->stPage->page_addr):0x%x\n", para->endAddr,
+                  para->stPage->page_length + para->stPage->page_addr);
         return LOS_NOK;
     }
     while (itemTemp <= itemEnd) {
-        if (((*(UINTPTR *)(UINTPTR)itemTemp) & ITEM_TYPE_MASK) != MMU_FIRST_LEVEL_PAGE_TABLE_ID) {
+        if (((*(UINTPTR*)(UINTPTR)itemTemp) & ITEM_TYPE_MASK) != MMU_FIRST_LEVEL_PAGE_TABLE_ID) {
             PRINT_ERR("not all mem belongs to second page(4K or 64K every item), mmu table ID:%u \n",
-                      ((*(UINT32 *)(UINTPTR)itemTemp) & ITEM_TYPE_MASK));
+                      ((*(UINT32*)(UINTPTR)itemTemp) & ITEM_TYPE_MASK));
             return LOS_NOK;
         }
         itemTemp += sizeof(UINTPTR);
@@ -187,7 +187,7 @@ STATIC UINT32 MmuSetSecondPage(MMU_PARAM *para, UINT32 itemStart, UINT32 itemEnd
     return LOS_OK;
 }
 
-VOID ArchSecPageEnable(SENCOND_PAGE *page, UINT32 flag)
+VOID ArchSecPageEnable(SENCOND_PAGE* page, UINT32 flag)
 {
     UINT32 pageStart, pageEnd;
     UINT32 secStart, secEnd;
@@ -210,8 +210,7 @@ VOID ArchSecPageEnable(SENCOND_PAGE *page, UINT32 flag)
     MmuSetMemPage(&para);
     dma_cache_clean(pageStart, pageEnd);
 
-    X_MMU_ONE_LEVEL_PAGE(pageStart >> SHIFT_1K, page->page_addr >> SHIFT_1M,
-                         page->page_length >> SHIFT_1M, D_CLIENT);
+    X_MMU_ONE_LEVEL_PAGE(pageStart >> SHIFT_1K, page->page_addr >> SHIFT_1M, page->page_length >> SHIFT_1M, D_CLIENT);
 
     secStart = ttbBase + ((para.startAddr >> SHIFT_1M) * BYTES_PER_ITEM);
     secEnd = ttbBase + ((para.endAddr >> SHIFT_1M) * BYTES_PER_ITEM);
@@ -220,7 +219,7 @@ VOID ArchSecPageEnable(SENCOND_PAGE *page, UINT32 flag)
     EnableAPCheck();
 }
 
-VOID ArchMMUParamSet(MMU_PARAM *para)
+VOID ArchMMUParamSet(MMU_PARAM* para)
 {
     UINT32 ret;
     UINT32 itemStart, itemEnd;
@@ -267,7 +266,7 @@ VOID ArchRemapCached(UINTPTR physAddr, size_t size)
 #elif defined(LOSCFG_ARCH_CORTEX_A7) || defined(LOSCFG_ARCH_CORTEX_A17) || defined(LOSCFG_ARCH_CORTEX_A53_AARCH32)
     para.uwFlag = BUFFER_ENABLE | CACHE_ENABLE | EXEC_DISABLE | ACCESS_PERM_RW_RW;
 #endif
-    para.stPage = (SENCOND_PAGE *)&g_mmuAppPage;
+    para.stPage = (SENCOND_PAGE*)&g_mmuAppPage;
     ArchMMUParamSet(&para);
 }
 
@@ -285,7 +284,7 @@ VOID ArchRemapNoCached(UINTPTR physAddr, size_t size)
 #elif defined(LOSCFG_ARCH_CORTEX_A7) || defined(LOSCFG_ARCH_CORTEX_A17) || defined(LOSCFG_ARCH_CORTEX_A53_AARCH32)
     para.uwFlag = BUFFER_DISABLE | CACHE_DISABLE | EXEC_DISABLE | ACCESS_PERM_RW_RW;
 #endif
-    para.stPage = (SENCOND_PAGE *)&g_mmuAppPage;
+    para.stPage = (SENCOND_PAGE*)&g_mmuAppPage;
     ArchMMUParamSet(&para);
 }
 
@@ -319,8 +318,7 @@ INT32 ArchMemNoAccessSet(UINTPTR startaddr, size_t length)
         return -1;
     }
     if (((startaddr & (MMU_1M - 1)) != 0) || ((length & (MMU_1M - 1)) != 0)) {
-        PRINT_ERR("The start address or the length is not aligned as 1M, startaddr:0x%x, length:0x%x\n", startaddr,
-                  length);
+        PRINT_ERR("The start address or the length is not aligned as 1M, startaddr:0x%x, length:0x%x\n", startaddr, length);
         return -1;
     }
 
@@ -331,15 +329,14 @@ INT32 ArchMemNoAccessSet(UINTPTR startaddr, size_t length)
 #elif defined(LOSCFG_ARCH_CORTEX_A7) || defined(LOSCFG_ARCH_CORTEX_A17) || defined(LOSCFG_ARCH_CORTEX_A53_AARCH32)
     X_MMU_SECTION(base, base, length >> SHIFT_1M, 0, 0, 0, 0, D_NA);
 #endif
-    dma_cache_clean(ttbBase + ((startaddr >> SHIFT_1M) * BYTES_PER_ITEM),
-                    ttbBase + ((endAddr >> SHIFT_1M) * BYTES_PER_ITEM));
+    dma_cache_clean(ttbBase + ((startaddr >> SHIFT_1M) * BYTES_PER_ITEM), ttbBase + ((endAddr >> SHIFT_1M) * BYTES_PER_ITEM));
 
     CleanTLB();
     EnableAPCheck();
     return 0;
 }
 
-VOID ArchPrintPageItem(const MMU_PARAM *para)
+VOID ArchPrintPageItem(const MMU_PARAM* para)
 {
     UINT32 tmp;
     UINT32 startAddr;
@@ -350,8 +347,7 @@ VOID ArchPrintPageItem(const MMU_PARAM *para)
     }
 
     if (MMU_GET_AREA(para->uwFlag) == SECOND_PAGE) {
-        startAddr = para->stPage->page_descriptor_addr +
-                    (((para->startAddr - para->stPage->page_addr) >> SHIFT_4K) * BYTES_PER_ITEM);
+        startAddr = para->stPage->page_descriptor_addr + (((para->startAddr - para->stPage->page_addr) >> SHIFT_4K) * BYTES_PER_ITEM);
         pageLen = ((para->endAddr - para->startAddr) >> SHIFT_4K) * BYTES_PER_ITEM;
         if ((para->endAddr & (MMU_4K - 1)) != 0) {
             pageLen += sizeof(UINT32);
@@ -368,14 +364,13 @@ VOID ArchPrintPageItem(const MMU_PARAM *para)
         return;
     }
 
-    PRINTK("para->endAddr = 0x%x para->startAddr = 0x%x page_len = %u * 4\n",
-           para->endAddr, para->startAddr, pageLen / BYTES_PER_ITEM);
+    PRINTK("para->endAddr = 0x%x para->startAddr = 0x%x page_len = %u * 4\n", para->endAddr, para->startAddr, pageLen / BYTES_PER_ITEM);
 
     for (tmp = 0; tmp < pageLen; tmp += sizeof(UINT32)) {
         if (tmp % ITEM_PRINT_LEN == 0) {
             PRINTK("\n");
         }
-        PRINTK ("0x%0+8x  ", *(UINTPTR *)(startAddr + tmp));
+        PRINTK("0x%0+8x  ", *(UINTPTR*)(startAddr + tmp));
     }
     PRINTK("\n");
 }
@@ -385,4 +380,3 @@ VOID ArchPrintPageItem(const MMU_PARAM *para)
 }
 #endif /* __cplusplus */
 #endif /* __cplusplus */
-

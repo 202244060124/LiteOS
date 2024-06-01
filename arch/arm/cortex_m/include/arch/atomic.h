@@ -64,7 +64,7 @@ typedef volatile INT64 Atomic64;
  * @see
  * @since Huawei LiteOS V200R003C00
  */
-STATIC INLINE INT32 ArchAtomicRead(const Atomic *v)
+STATIC INLINE INT32 ArchAtomicRead(const Atomic* v)
 {
     return *v;
 }
@@ -89,7 +89,7 @@ STATIC INLINE INT32 ArchAtomicRead(const Atomic *v)
  * @see
  * @since Huawei LiteOS V200R003C00
  */
-STATIC INLINE VOID ArchAtomicSet(Atomic *v, INT32 setVal)
+STATIC INLINE VOID ArchAtomicSet(Atomic* v, INT32 setVal)
 {
     *v = setVal;
 }
@@ -122,7 +122,7 @@ STATIC INLINE VOID ArchAtomicSet(Atomic *v, INT32 setVal)
  * @see
  * @since Huawei LiteOS V200R003C00
  */
-STATIC INLINE INT32 ArchAtomicAdd(Atomic *v, INT32 addVal)
+STATIC INLINE INT32 ArchAtomicAdd(Atomic* v, INT32 addVal)
 {
     INT32 val;
     UINT32 status;
@@ -161,7 +161,7 @@ STATIC INLINE INT32 ArchAtomicAdd(Atomic *v, INT32 addVal)
  * @see
  * @since Huawei LiteOS V200R003C00
  */
-STATIC INLINE INT32 ArchAtomicSub(Atomic *v, INT32 subVal)
+STATIC INLINE INT32 ArchAtomicSub(Atomic* v, INT32 subVal)
 {
     INT32 val;
     UINT32 status;
@@ -198,7 +198,7 @@ STATIC INLINE INT32 ArchAtomicSub(Atomic *v, INT32 subVal)
  * @see
  * @since Huawei LiteOS V200R003C00
  */
-STATIC INLINE VOID ArchAtomicInc(Atomic *v)
+STATIC INLINE VOID ArchAtomicInc(Atomic* v)
 {
     INT32 val;
     UINT32 status;
@@ -233,7 +233,7 @@ STATIC INLINE VOID ArchAtomicInc(Atomic *v)
  * @see
  * @since Huawei LiteOS V200R003C00
  */
-STATIC INLINE INT32 ArchAtomicIncRet(Atomic *v)
+STATIC INLINE INT32 ArchAtomicIncRet(Atomic* v)
 {
     INT32 val;
     UINT32 status;
@@ -270,7 +270,7 @@ STATIC INLINE INT32 ArchAtomicIncRet(Atomic *v)
  * @see
  * @since Huawei LiteOS V200R003C00
  */
-STATIC INLINE VOID ArchAtomicDec(Atomic *v)
+STATIC INLINE VOID ArchAtomicDec(Atomic* v)
 {
     INT32 val;
     UINT32 status;
@@ -305,7 +305,7 @@ STATIC INLINE VOID ArchAtomicDec(Atomic *v)
  * @see
  * @since Huawei LiteOS V200R003C00
  */
-STATIC INLINE INT32 ArchAtomicDecRet(Atomic *v)
+STATIC INLINE INT32 ArchAtomicDecRet(Atomic* v)
 {
     INT32 val;
     UINT32 status;
@@ -341,7 +341,7 @@ STATIC INLINE INT32 ArchAtomicDecRet(Atomic *v)
  * @see
  * @since Huawei LiteOS V100R001C00
  */
-STATIC INLINE INT32 ArchAtomicXchg32bits(Atomic *v, INT32 val)
+STATIC INLINE INT32 ArchAtomicXchg32bits(Atomic* v, INT32 val)
 {
     INT32 prevVal;
     UINT32 status;
@@ -377,7 +377,7 @@ STATIC INLINE INT32 ArchAtomicXchg32bits(Atomic *v, INT32 val)
  * @see
  * @since Huawei LiteOS V200R003C00
  */
-STATIC INLINE BOOL ArchAtomicCmpXchg32bits(Atomic *v, INT32 val, INT32 oldVal)
+STATIC INLINE BOOL ArchAtomicCmpXchg32bits(Atomic* v, INT32 val, INT32 oldVal)
 {
     INT32 prevVal;
     UINT32 status;
@@ -397,8 +397,8 @@ STATIC INLINE BOOL ArchAtomicCmpXchg32bits(Atomic *v, INT32 val, INT32 oldVal)
     return prevVal != oldVal;
 }
 
-#else /* __ARM_ARCH < 7 */
-STATIC INLINE INT32 ArchAtomicAdd(Atomic *v, INT32 addVal)
+#else  /* __ARM_ARCH < 7 */
+STATIC INLINE INT32 ArchAtomicAdd(Atomic* v, INT32 addVal)
 {
     INT32 val;
     UINT32 intSave;
@@ -411,7 +411,7 @@ STATIC INLINE INT32 ArchAtomicAdd(Atomic *v, INT32 addVal)
     return val;
 }
 
-STATIC INLINE INT32 ArchAtomicSub(Atomic *v, INT32 subVal)
+STATIC INLINE INT32 ArchAtomicSub(Atomic* v, INT32 subVal)
 {
     INT32 val;
     UINT32 intSave;
@@ -424,27 +424,29 @@ STATIC INLINE INT32 ArchAtomicSub(Atomic *v, INT32 subVal)
     return val;
 }
 
-STATIC INLINE VOID ArchAtomicInc(Atomic *v)
+STATIC INLINE VOID ArchAtomicInc(Atomic* v)
 {
-    (VOID)ArchAtomicAdd(v, 1);
+    (VOID) ArchAtomicAdd(v, 1);
 }
 
-STATIC INLINE VOID ArchAtomicDec(Atomic *v)
+STATIC INLINE VOID ArchAtomicDec(Atomic* v)
 {
-    (VOID)ArchAtomicSub(v, 1);
+    (VOID) ArchAtomicSub(v, 1);
 }
 
-STATIC INLINE INT32 ArchAtomicIncRet(Atomic *v)
+STATIC INLINE INT32 ArchAtomicIncRet(Atomic* v)
 {
-    return ArchAtomicAdd(v, 1);;
+    return ArchAtomicAdd(v, 1);
+    ;
 }
 
-STATIC INLINE INT32 ArchAtomicDecRet(Atomic *v)
+STATIC INLINE INT32 ArchAtomicDecRet(Atomic* v)
 {
-    return ArchAtomicSub(v, 1);;
+    return ArchAtomicSub(v, 1);
+    ;
 }
 
-STATIC INLINE INT32 ArchAtomicXchg32bits(Atomic *v, INT32 val)
+STATIC INLINE INT32 ArchAtomicXchg32bits(Atomic* v, INT32 val)
 {
     INT32 prevVal;
     UINT32 intSave;
@@ -457,7 +459,7 @@ STATIC INLINE INT32 ArchAtomicXchg32bits(Atomic *v, INT32 val)
     return prevVal;
 }
 
-STATIC INLINE BOOL ArchAtomicCmpXchg32bits(Atomic *v, INT32 val, INT32 oldVal)
+STATIC INLINE BOOL ArchAtomicCmpXchg32bits(Atomic* v, INT32 val, INT32 oldVal)
 {
     INT32 prevVal;
     UINT32 intSave;
@@ -474,7 +476,7 @@ STATIC INLINE BOOL ArchAtomicCmpXchg32bits(Atomic *v, INT32 val, INT32 oldVal)
 
 #endif /* __ARM_ARCH */
 
-STATIC INLINE INT64 ArchAtomic64Read(const Atomic64 *v)
+STATIC INLINE INT64 ArchAtomic64Read(const Atomic64* v)
 {
     INT64 val;
     UINT32 intSave;
@@ -486,7 +488,7 @@ STATIC INLINE INT64 ArchAtomic64Read(const Atomic64 *v)
     return val;
 }
 
-STATIC INLINE VOID ArchAtomic64Set(Atomic64 *v, INT64 setVal)
+STATIC INLINE VOID ArchAtomic64Set(Atomic64* v, INT64 setVal)
 {
     UINT32 intSave;
 
@@ -495,7 +497,7 @@ STATIC INLINE VOID ArchAtomic64Set(Atomic64 *v, INT64 setVal)
     LOS_IntRestore(intSave);
 }
 
-STATIC INLINE INT64 ArchAtomic64Add(Atomic64 *v, INT64 addVal)
+STATIC INLINE INT64 ArchAtomic64Add(Atomic64* v, INT64 addVal)
 {
     INT64 val;
     UINT32 intSave;
@@ -508,7 +510,7 @@ STATIC INLINE INT64 ArchAtomic64Add(Atomic64 *v, INT64 addVal)
     return val;
 }
 
-STATIC INLINE INT64 ArchAtomic64Sub(Atomic64 *v, INT64 subVal)
+STATIC INLINE INT64 ArchAtomic64Sub(Atomic64* v, INT64 subVal)
 {
     INT64 val;
     UINT32 intSave;
@@ -521,27 +523,27 @@ STATIC INLINE INT64 ArchAtomic64Sub(Atomic64 *v, INT64 subVal)
     return val;
 }
 
-STATIC INLINE VOID ArchAtomic64Inc(Atomic64 *v)
+STATIC INLINE VOID ArchAtomic64Inc(Atomic64* v)
 {
-    (VOID)ArchAtomic64Add(v, 1);
+    (VOID) ArchAtomic64Add(v, 1);
 }
 
-STATIC INLINE INT64 ArchAtomic64IncRet(Atomic64 *v)
+STATIC INLINE INT64 ArchAtomic64IncRet(Atomic64* v)
 {
     return ArchAtomic64Add(v, 1);
 }
 
-STATIC INLINE VOID ArchAtomic64Dec(Atomic64 *v)
+STATIC INLINE VOID ArchAtomic64Dec(Atomic64* v)
 {
-    (VOID)ArchAtomic64Sub(v, 1);
+    (VOID) ArchAtomic64Sub(v, 1);
 }
 
-STATIC INLINE INT64 ArchAtomic64DecRet(Atomic64 *v)
+STATIC INLINE INT64 ArchAtomic64DecRet(Atomic64* v)
 {
     return ArchAtomic64Sub(v, 1);
 }
 
-STATIC INLINE INT64 ArchAtomicXchg64bits(Atomic64 *v, INT64 val)
+STATIC INLINE INT64 ArchAtomicXchg64bits(Atomic64* v, INT64 val)
 {
     INT64 prevVal;
     UINT32 intSave;
@@ -554,7 +556,7 @@ STATIC INLINE INT64 ArchAtomicXchg64bits(Atomic64 *v, INT64 val)
     return prevVal;
 }
 
-STATIC INLINE BOOL ArchAtomicCmpXchg64bits(Atomic64 *v, INT64 val, INT64 oldVal)
+STATIC INLINE BOOL ArchAtomicCmpXchg64bits(Atomic64* v, INT64 val, INT64 oldVal)
 {
     INT64 prevVal;
     UINT32 intSave;

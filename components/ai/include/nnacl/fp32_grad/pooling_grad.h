@@ -22,10 +22,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void AvgPoolingGrad(const float *input_ptr, float *output_ptr, PoolingParameter *pooling_param);
-void MaxPoolingGrad(const float *dy, const int *indices_ptr, float *output_ptr, PoolingParameter *pooling_param);
+void AvgPoolingGrad(const float* input_ptr, float* output_ptr, PoolingParameter* pooling_param);
+void MaxPoolingGrad(const float* dy, const int* indices_ptr, float* output_ptr, PoolingParameter* pooling_param);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_FP32_GRAD_POOLING_GRAD_H_
+#endif // MINDSPORE_LITE_NNACL_FP32_GRAD_POOLING_GRAD_H_

@@ -37,9 +37,9 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-extern VOID ArchSpinLock(size_t *lock);
-extern VOID ArchSpinUnlock(size_t *lock);
-extern INT32 ArchSpinTrylock(size_t *lock);
+extern VOID ArchSpinLock(size_t* lock);
+extern VOID ArchSpinUnlock(size_t* lock);
+extern INT32 ArchSpinTrylock(size_t* lock);
 
 #ifdef __cplusplus
 #if __cplusplus

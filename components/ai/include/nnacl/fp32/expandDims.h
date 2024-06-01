@@ -20,16 +20,16 @@
 #include "nnacl/op_base.h"
 
 typedef struct ExpandDimsParameter {
-  OpParameter op_parameter_;
-  int dim_;
+    OpParameter op_parameter_;
+    int dim_;
 } ExpandDimsParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-int ExpandDims(float *input_ptr, float *output_ptr, size_t data_size);
+int ExpandDims(float* input_ptr, float* output_ptr, size_t data_size);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_EXPANDDIMS_H_
+#endif // MINDSPORE_LITE_NNACL_EXPANDDIMS_H_

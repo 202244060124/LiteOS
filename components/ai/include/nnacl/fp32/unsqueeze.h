@@ -22,17 +22,17 @@
 #define UNSQUEEZE_DIMS_MAX_SIZE 4
 
 typedef struct UnsqueezeParameter {
-  OpParameter op_parameter_;
-  int dims_[UNSQUEEZE_DIMS_MAX_SIZE];
-  int num_dim_;
+    OpParameter op_parameter_;
+    int dims_[UNSQUEEZE_DIMS_MAX_SIZE];
+    int num_dim_;
 } UnsqueezeParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-int Unsqueeze(const int8_t *input_ptr, int8_t *output_ptr, size_t data_size);
+int Unsqueeze(const int8_t* input_ptr, int8_t* output_ptr, size_t data_size);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_UNSQUEEZE_H_
+#endif // MINDSPORE_LITE_NNACL_UNSQUEEZE_H_

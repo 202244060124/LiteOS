@@ -22,8 +22,7 @@
 /**********************
  *  STATIC PROTOTYPES
  **********************/
-static void theme_apply(lv_obj_t * obj, lv_theme_style_t name);
-
+static void theme_apply(lv_obj_t* obj, lv_theme_style_t name);
 
 /**********************
  *  STATIC VARIABLES
@@ -54,9 +53,8 @@ static lv_style_t opa_cover;
  * @param font_title pointer to a extra large font
  * @return a pointer to reference this theme later
  */
-lv_theme_t * lv_theme_empty_init(lv_color_t color_primary, lv_color_t color_secondary, uint32_t flags,
-                                 const lv_font_t * font_small, const lv_font_t * font_normal, const lv_font_t * font_subtitle,
-                                 const lv_font_t * font_title)
+lv_theme_t* lv_theme_empty_init(lv_color_t color_primary, lv_color_t color_secondary, uint32_t flags, const lv_font_t* font_small,
+                                const lv_font_t* font_normal, const lv_font_t* font_subtitle, const lv_font_t* font_title)
 {
     lv_style_init(&opa_cover);
     lv_style_set_bg_opa(&opa_cover, LV_STATE_DEFAULT, LV_OPA_COVER);
@@ -65,10 +63,9 @@ lv_theme_t * lv_theme_empty_init(lv_color_t color_primary, lv_color_t color_seco
     return &theme;
 }
 
-
-void theme_apply(lv_obj_t * obj, lv_theme_style_t name)
+void theme_apply(lv_obj_t* obj, lv_theme_style_t name)
 {
-    if(name == LV_THEME_SCR) {
+    if (name == LV_THEME_SCR) {
         lv_obj_clean_style_list(obj, LV_OBJ_PART_MAIN);
         lv_obj_add_style(obj, LV_OBJ_PART_MAIN, &opa_cover);
     }
@@ -77,6 +74,5 @@ void theme_apply(lv_obj_t * obj, lv_theme_style_t name)
 /**********************
  *   STATIC FUNCTIONS
  **********************/
-
 
 #endif

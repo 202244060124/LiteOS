@@ -48,35 +48,32 @@
 #include "osdepends/atiny_osdep.h"
 
 #ifndef LWM2M_MEMORY_TRACE
-void *lwm2m_malloc(size_t s)
+void* lwm2m_malloc(size_t s)
 {
-    void *mem = NULL;
+    void* mem = NULL;
     mem = atiny_malloc(s);
     return mem;
 }
 
-void lwm2m_free(void *p)
+void lwm2m_free(void* p)
 {
     if (p != NULL) {
         atiny_free(p);
     }
 }
 
-char *lwm2m_strdup(const char *str)
+char* lwm2m_strdup(const char* str)
 {
     int len = strlen(str) + 1;
-    void *new = lwm2m_malloc(len);
+    void* new = lwm2m_malloc(len);
     if (new == NULL) {
         return NULL;
     }
-    return (char *)memcpy(new, str, len);
-
+    return (char*)memcpy(new, str, len);
 }
 #endif
 
-int lwm2m_strncmp(const char *s1,
-                  const char *s2,
-                  size_t n)
+int lwm2m_strncmp(const char* s1, const char* s2, size_t n)
 {
     return strncmp(s1, s2, n);
 }
@@ -86,7 +83,7 @@ time_t lwm2m_gettime(void)
     return (uint32_t)(atiny_gettime_ms() / 1000);
 }
 
-int lwm2m_rand(void *output, size_t len)
+int lwm2m_rand(void* output, size_t len)
 {
     return atiny_random(output, len);
 }
@@ -95,4 +92,3 @@ void lwm2m_delay(uint32_t second)
 {
     atiny_delay(second);
 }
-

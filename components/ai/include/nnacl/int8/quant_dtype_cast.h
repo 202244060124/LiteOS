@@ -20,18 +20,18 @@
 #include "nnacl/op_base.h"
 
 typedef struct QuantDTypeCastParameter {
-  OpParameter op_parameter_;
-  int32_t srcT;
-  int32_t dstT;
+    OpParameter op_parameter_;
+    int32_t srcT;
+    int32_t dstT;
 } QuantDTypeCastParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-int DoDequantizeInt8(int8_t *quant_values, float *real_values, float scale, int32_t zp, int size);
-int DoQuantizeToInt8(float *real_values, int8_t *quant_values, float scale, int32_t zp, int size);
+int DoDequantizeInt8(int8_t* quant_values, float* real_values, float scale, int32_t zp, int size);
+int DoQuantizeToInt8(float* real_values, int8_t* quant_values, float scale, int32_t zp, int size);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_INT8_QUANTDTYPECAST_H_
+#endif // MINDSPORE_LITE_NNACL_INT8_QUANTDTYPECAST_H_

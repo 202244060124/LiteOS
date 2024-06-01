@@ -22,11 +22,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void PRelu(float *input, float *output, PReluParameter *prelu_param_, int task_id);
+void PRelu(float* input, float* output, PReluParameter* prelu_param_, int task_id);
 
-void PReluShareChannel(float *input, float *output, PReluParameter *prelu_param_, int task_id);
+void PReluShareChannel(float* input, float* output, PReluParameter* prelu_param_, int task_id);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_FP32_PRELU_H_
+#endif // MINDSPORE_LITE_NNACL_FP32_PRELU_H_

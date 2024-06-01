@@ -47,12 +47,12 @@ extern "C" {
 #define DMB_ISHST() __asm__ volatile("dmb ishst" : : : "memory")
 
 /* Old Style APIs */
-#define sev SEV
-#define wfe WFE
-#define wfi WFI
-#define dsb DSB
-#define dmb DMB_ISHST
-#define isb ISB
+#define sev         SEV
+#define wfe         WFE
+#define wfi         WFI
+#define dsb         DSB
+#define dmb         DMB_ISHST
+#define isb         ISB
 
 #ifdef __cplusplus
 #if __cplusplus

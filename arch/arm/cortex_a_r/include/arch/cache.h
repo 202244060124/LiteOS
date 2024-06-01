@@ -47,7 +47,7 @@ STATIC INLINE VOID flush_icache(VOID)
      * Use ICIALLUIS instead of ICIALLU. ICIALLUIS operates on all processors in the Inner
      * shareable domain of the processor that performs the operation.
      */
-    __asm__ __volatile__ ("mcr p15, 0, %0, c7, c1, 0" : : "r" (0) : "memory");
+    __asm__ __volatile__("mcr p15, 0, %0, c7, c1, 0" : : "r"(0) : "memory");
 }
 
 STATIC INLINE VOID flush_dcache(UINTPTR start, UINTPTR end)

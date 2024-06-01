@@ -27,14 +27,16 @@
  * --------------------------------------------------------------------------- */
 
 #include "hmac.h"
-#include "mbedtls/ssl.h"
-#include "mbedtls/entropy.h"
 #include "mbedtls/ctr_drbg.h"
+#include "mbedtls/entropy.h"
 #include "mbedtls/platform.h"
+#include "mbedtls/ssl.h"
 
+
+#include "dtls_interface.h"
 #include "mbedtls/md_internal.h"
 #include "osdepends/atiny_osdep.h"
-#include "dtls_interface.h"
+
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -42,16 +44,15 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-int mbedtls_hmac_calc(mbedtls_hmac_t *hmac_info)
+int mbedtls_hmac_calc(mbedtls_hmac_t* hmac_info)
 {
     int ret;
 
     mbedtls_md_context_t mbedtls_md_ctx;
-    const mbedtls_md_info_t *md_info;
+    const mbedtls_md_info_t* md_info;
 
-    if ((hmac_info == NULL) || (hmac_info->secret == NULL) || (hmac_info->input == NULL)
-        || (hmac_info->secret_len <= 0) || (hmac_info->input_len <= 0)
-        || (hmac_info->digest_len <= 0)) {
+    if ((hmac_info == NULL) || (hmac_info->secret == NULL) || (hmac_info->input == NULL) || (hmac_info->secret_len <= 0)
+        || (hmac_info->input_len <= 0) || (hmac_info->digest_len <= 0)) {
         return MBEDTLS_ERR_MD_BAD_INPUT_DATA;
     }
 

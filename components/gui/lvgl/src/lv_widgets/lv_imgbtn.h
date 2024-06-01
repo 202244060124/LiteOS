@@ -23,8 +23,9 @@ extern "C" {
 #endif
 
 #include "../lv_core/lv_obj.h"
-#include "lv_btn.h"
 #include "../lv_draw/lv_draw_img.h"
+#include "lv_btn.h"
+
 
 /*********************
  *      DEFINES
@@ -37,13 +38,13 @@ extern "C" {
 typedef struct {
     lv_btn_ext_t btn; /*Ext. of ancestor*/
     /*New data for this type */
-    const void * img_src_mid[_LV_BTN_STATE_LAST];   /*Store center images to each state*/
+    const void* img_src_mid[_LV_BTN_STATE_LAST];   /*Store center images to each state*/
 #if LV_IMGBTN_TILED
-    const void * img_src_left[_LV_BTN_STATE_LAST];  /*Store left side images to each state*/
-    const void * img_src_right[_LV_BTN_STATE_LAST]; /*Store right side images to each state*/
+    const void* img_src_left[_LV_BTN_STATE_LAST];  /*Store left side images to each state*/
+    const void* img_src_right[_LV_BTN_STATE_LAST]; /*Store right side images to each state*/
 #endif
-    lv_img_cf_t act_cf; /*Color format of the currently active image*/
-    uint8_t tiled   : 1; /*1: the middle src will be repeated to fill the user defined width*/
+    lv_img_cf_t act_cf;                            /*Color format of the currently active image*/
+    uint8_t tiled : 1;                             /*1: the middle src will be repeated to fill the user defined width*/
 } lv_imgbtn_ext_t;
 
 /*Parts of the image button*/
@@ -63,7 +64,7 @@ typedef uint8_t lv_imgbtn_part_t;
  * it
  * @return pointer to the created image button
  */
-lv_obj_t * lv_imgbtn_create(lv_obj_t * par, const lv_obj_t * copy);
+lv_obj_t* lv_imgbtn_create(lv_obj_t* par, const lv_obj_t* copy);
 
 /*======================
  * Add/remove functions
@@ -79,7 +80,7 @@ lv_obj_t * lv_imgbtn_create(lv_obj_t * par, const lv_obj_t * copy);
  * @param state for which state set the new image (from `lv_btn_state_t`) `
  * @param src pointer to an image source (a C array or path to a file)
  */
-void lv_imgbtn_set_src(lv_obj_t * imgbtn, lv_btn_state_t state, const void * src);
+void lv_imgbtn_set_src(lv_obj_t* imgbtn, lv_btn_state_t state, const void* src);
 
 #if LV_IMGBTN_TILED
 /**
@@ -93,8 +94,7 @@ void lv_imgbtn_set_src(lv_obj_t * imgbtn, lv_btn_state_t state, const void * src
  * @param src_right pointer to an image source for the right side of the button (a C array or path
  * to a file)
  */
-void lv_imgbtn_set_src_tiled(lv_obj_t * imgbtn, lv_btn_state_t state, const void * src_left, const void * src_mid,
-                             const void * src_right);
+void lv_imgbtn_set_src_tiled(lv_obj_t* imgbtn, lv_btn_state_t state, const void* src_left, const void* src_mid, const void* src_right);
 
 #endif
 
@@ -103,7 +103,7 @@ void lv_imgbtn_set_src_tiled(lv_obj_t * imgbtn, lv_btn_state_t state, const void
  * @param imgbtn pointer to an image button object
  * @param tgl true: enable toggled states, false: disable
  */
-static inline void lv_imgbtn_set_checkable(lv_obj_t * imgbtn, bool tgl)
+static inline void lv_imgbtn_set_checkable(lv_obj_t* imgbtn, bool tgl)
 {
     lv_btn_set_checkable(imgbtn, tgl);
 }
@@ -113,7 +113,7 @@ static inline void lv_imgbtn_set_checkable(lv_obj_t * imgbtn, bool tgl)
  * @param imgbtn pointer to an image button object
  * @param state the new state of the button (from lv_btn_state_t enum)
  */
-static inline void lv_imgbtn_set_state(lv_obj_t * imgbtn, lv_btn_state_t state)
+static inline void lv_imgbtn_set_state(lv_obj_t* imgbtn, lv_btn_state_t state)
 {
     lv_btn_set_state(imgbtn, state);
 }
@@ -122,7 +122,7 @@ static inline void lv_imgbtn_set_state(lv_obj_t * imgbtn, lv_btn_state_t state)
  * Toggle the state of the image button (ON->OFF, OFF->ON)
  * @param imgbtn pointer to a image button object
  */
-static inline void lv_imgbtn_toggle(lv_obj_t * imgbtn)
+static inline void lv_imgbtn_toggle(lv_obj_t* imgbtn)
 {
     lv_btn_toggle(imgbtn);
 }
@@ -138,7 +138,7 @@ static inline void lv_imgbtn_toggle(lv_obj_t * imgbtn)
  * @param state the state where to get the image (from `lv_btn_state_t`) `
  * @return pointer to an image source (a C array or path to a file)
  */
-const void * lv_imgbtn_get_src(lv_obj_t * imgbtn, lv_btn_state_t state);
+const void* lv_imgbtn_get_src(lv_obj_t* imgbtn, lv_btn_state_t state);
 
 #else
 
@@ -148,7 +148,7 @@ const void * lv_imgbtn_get_src(lv_obj_t * imgbtn, lv_btn_state_t state);
  * @param state the state where to get the image (from `lv_btn_state_t`) `
  * @return pointer to the left image source (a C array or path to a file)
  */
-const void * lv_imgbtn_get_src_left(lv_obj_t * imgbtn, lv_btn_state_t state);
+const void* lv_imgbtn_get_src_left(lv_obj_t* imgbtn, lv_btn_state_t state);
 
 /**
  * Get the middle image in a given state
@@ -156,7 +156,7 @@ const void * lv_imgbtn_get_src_left(lv_obj_t * imgbtn, lv_btn_state_t state);
  * @param state the state where to get the image (from `lv_btn_state_t`) `
  * @return pointer to the middle image source (a C array or path to a file)
  */
-const void * lv_imgbtn_get_src_middle(lv_obj_t * imgbtn, lv_btn_state_t state);
+const void* lv_imgbtn_get_src_middle(lv_obj_t* imgbtn, lv_btn_state_t state);
 
 /**
  * Get the right image in a given state
@@ -164,7 +164,7 @@ const void * lv_imgbtn_get_src_middle(lv_obj_t * imgbtn, lv_btn_state_t state);
  * @param state the state where to get the image (from `lv_btn_state_t`) `
  * @return pointer to the left image source (a C array or path to a file)
  */
-const void * lv_imgbtn_get_src_right(lv_obj_t * imgbtn, lv_btn_state_t state);
+const void* lv_imgbtn_get_src_right(lv_obj_t* imgbtn, lv_btn_state_t state);
 
 #endif
 /**
@@ -172,7 +172,7 @@ const void * lv_imgbtn_get_src_right(lv_obj_t * imgbtn, lv_btn_state_t state);
  * @param imgbtn pointer to a image button object
  * @return the state of the button (from lv_btn_state_t enum)
  */
-static inline lv_btn_state_t lv_imgbtn_get_state(const lv_obj_t * imgbtn)
+static inline lv_btn_state_t lv_imgbtn_get_state(const lv_obj_t* imgbtn)
 {
     return lv_btn_get_state(imgbtn);
 }
@@ -182,7 +182,7 @@ static inline lv_btn_state_t lv_imgbtn_get_state(const lv_obj_t * imgbtn)
  * @param imgbtn pointer to a image button object
  * @return ture: toggle enabled, false: disabled
  */
-static inline bool lv_imgbtn_get_checkable(const lv_obj_t * imgbtn)
+static inline bool lv_imgbtn_get_checkable(const lv_obj_t* imgbtn)
 {
     return lv_btn_get_checkable(imgbtn);
 }

@@ -21,14 +21,14 @@
 #include "nnacl/quantization/quantize.h"
 
 typedef struct SplitParameter {
-  OpParameter op_parameter_;
-  SplitQuantArg quant_arg_;
-  int num_split_;
-  int split_sizes_[20];
-  int strides_[20];
-  int split_dim_;
-  int n_dims_;
-  int split_count_;
+    OpParameter op_parameter_;
+    SplitQuantArg quant_arg_;
+    int num_split_;
+    int split_sizes_[20];
+    int strides_[20];
+    int split_dim_;
+    int n_dims_;
+    int split_count_;
 } SplitParameter;
 
-#endif  // MINDSPORE_LITE_NNACL_SPLIT_PARAMETER_H_
+#endif // MINDSPORE_LITE_NNACL_SPLIT_PARAMETER_H_

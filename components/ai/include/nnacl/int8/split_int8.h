@@ -22,10 +22,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-int Int8DoSplit(int8_t *in_data, int8_t **out_data, const int *input_shape, int offset, int num_unit,
-                SplitParameter *split_param);
+int Int8DoSplit(int8_t* in_data, int8_t** out_data, const int* input_shape, int offset, int num_unit, SplitParameter* split_param);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_INT8_SPLIT_INT8_H_
+#endif // MINDSPORE_LITE_NNACL_INT8_SPLIT_INT8_H_

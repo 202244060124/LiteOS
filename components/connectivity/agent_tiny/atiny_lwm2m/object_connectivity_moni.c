@@ -64,8 +64,9 @@
  *
  */
 
-#include "internals.h"
 #include "atiny_lwm2m/agenttiny.h"
+#include "internals.h"
+
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -74,174 +75,167 @@ extern "C" {
 #endif /* __cplusplus */
 
 // Resource Id's:
-#define RES_M_NETWORK_BEARER            0
-#define RES_M_AVL_NETWORK_BEARER        1
-#define RES_M_RADIO_SIGNAL_STRENGTH     2
-#define RES_O_LINK_QUALITY              3
-#define RES_M_IP_ADDRESSES              4
-#define RES_O_ROUTER_IP_ADDRESS         5
-#define RES_O_LINK_UTILIZATION          6
-#define RES_O_APN                       7
-#define RES_O_CELL_ID                   8
-#define RES_O_SMNC                      9
-#define RES_O_SMCC                      10
+#define RES_M_NETWORK_BEARER        0
+#define RES_M_AVL_NETWORK_BEARER    1
+#define RES_M_RADIO_SIGNAL_STRENGTH 2
+#define RES_O_LINK_QUALITY          3
+#define RES_M_IP_ADDRESSES          4
+#define RES_O_ROUTER_IP_ADDRESS     5
+#define RES_O_LINK_UTILIZATION      6
+#define RES_O_APN                   7
+#define RES_O_CELL_ID               8
+#define RES_O_SMNC                  9
+#define RES_O_SMCC                  10
 
-#define VALUE_NETWORK_BEARER_GSM        0 // GSM see
-#define VALUE_AVL_NETWORK_BEARER_1      0 // GSM
-#define VALUE_AVL_NETWORK_BEARER_2      21 // WLAN
-#define VALUE_AVL_NETWORK_BEARER_3      41 // Ethernet
-#define VALUE_AVL_NETWORK_BEARER_4      42 // DSL
-#define VALUE_AVL_NETWORK_BEARER_5      43 // PLC
-#define VALUE_IP_ADDRESS_1              "192.168.178.101"
-#define VALUE_IP_ADDRESS_2              "192.168.178.102"
-#define VALUE_ROUTER_IP_ADDRESS_1       "192.168.178.001"
-#define VALUE_ROUTER_IP_ADDRESS_2       "192.168.178.002"
-#define VALUE_APN_1                     "web.vodafone.de"
-#define VALUE_APN_2                     "cda.vodafone.de"
-#define VALUE_CELL_ID                   69696969
-#define VALUE_RADIO_SIGNAL_STRENGTH     80 // dBm
-#define VALUE_LINK_QUALITY              98
-#define VALUE_LINK_UTILIZATION          666
-#define VALUE_SMNC                      33
-#define VALUE_SMCC                      44
-#define IP4ADDR_STRLEN_MAX              16
-#define IPADDRT_LIMIT                   2
+#define VALUE_NETWORK_BEARER_GSM    0  // GSM see
+#define VALUE_AVL_NETWORK_BEARER_1  0  // GSM
+#define VALUE_AVL_NETWORK_BEARER_2  21 // WLAN
+#define VALUE_AVL_NETWORK_BEARER_3  41 // Ethernet
+#define VALUE_AVL_NETWORK_BEARER_4  42 // DSL
+#define VALUE_AVL_NETWORK_BEARER_5  43 // PLC
+#define VALUE_IP_ADDRESS_1          "192.168.178.101"
+#define VALUE_IP_ADDRESS_2          "192.168.178.102"
+#define VALUE_ROUTER_IP_ADDRESS_1   "192.168.178.001"
+#define VALUE_ROUTER_IP_ADDRESS_2   "192.168.178.002"
+#define VALUE_APN_1                 "web.vodafone.de"
+#define VALUE_APN_2                 "cda.vodafone.de"
+#define VALUE_CELL_ID               69696969
+#define VALUE_RADIO_SIGNAL_STRENGTH 80 // dBm
+#define VALUE_LINK_QUALITY          98
+#define VALUE_LINK_UTILIZATION      666
+#define VALUE_SMNC                  33
+#define VALUE_SMCC                  44
+#define IP4ADDR_STRLEN_MAX          16
+#define IPADDRT_LIMIT               2
 typedef struct {
-    char ipAddresses[IPADDRT_LIMIT][IP4ADDR_STRLEN_MAX];        // limited to 2!
-    char routerIpAddresses[IPADDRT_LIMIT][IP4ADDR_STRLEN_MAX];  // limited to 2!
+    char ipAddresses[IPADDRT_LIMIT][IP4ADDR_STRLEN_MAX];       // limited to 2!
+    char routerIpAddresses[IPADDRT_LIMIT][IP4ADDR_STRLEN_MAX]; // limited to 2!
     long cellId;
     int signalStrength;
     int linkQuality;
     int linkUtilization;
 } conn_m_data_t;
 
-static uint8_t prv_set_value(lwm2m_data_t *dataP,
-                             conn_m_data_t *connDataP)
+static uint8_t prv_set_value(lwm2m_data_t* dataP, conn_m_data_t* connDataP)
 {
     switch (dataP->id) {
-    case RES_M_NETWORK_BEARER: {
-        lwm2m_data_encode_int(VALUE_NETWORK_BEARER_GSM, dataP);
-        return COAP_205_CONTENT;
-    }
-    case RES_M_AVL_NETWORK_BEARER: {
-        int riCnt = 1;   // reduced to 1 instance to fit in one block size
-        lwm2m_data_t *subTlvP;
-        int networkbearer = 0;
+        case RES_M_NETWORK_BEARER: {
+            lwm2m_data_encode_int(VALUE_NETWORK_BEARER_GSM, dataP);
+            return COAP_205_CONTENT;
+        }
+        case RES_M_AVL_NETWORK_BEARER: {
+            int riCnt = 1; // reduced to 1 instance to fit in one block size
+            lwm2m_data_t* subTlvP;
+            int networkbearer = 0;
 
-        subTlvP = lwm2m_data_new(riCnt);
-        if (subTlvP == NULL) {
-            return COAP_500_INTERNAL_SERVER_ERROR;
+            subTlvP = lwm2m_data_new(riCnt);
+            if (subTlvP == NULL) {
+                return COAP_500_INTERNAL_SERVER_ERROR;
+            }
+            subTlvP[0].id = 0;
+            (void)atiny_cmd_ioctl(ATINY_GET_NETWORK_BEARER, (char*)&networkbearer, sizeof(int));
+            lwm2m_data_encode_int(networkbearer, subTlvP);
+            lwm2m_data_encode_instances(subTlvP, riCnt, dataP);
+            return COAP_205_CONTENT;
         }
-        subTlvP[0].id    = 0;
-        (void)atiny_cmd_ioctl(ATINY_GET_NETWORK_BEARER, (char *)&networkbearer, sizeof(int));
-        lwm2m_data_encode_int(networkbearer, subTlvP);
-        lwm2m_data_encode_instances(subTlvP, riCnt, dataP);
-        return COAP_205_CONTENT ;
-    }
-    case RES_M_RADIO_SIGNAL_STRENGTH: { // s-int 
-        int signalstrength = 0;
-        (void)atiny_cmd_ioctl(ATINY_GET_SIGNAL_STRENGTH, (char *)&signalstrength, sizeof(int));
-        lwm2m_data_encode_int(connDataP->signalStrength, dataP);
-        return COAP_205_CONTENT;
-    }
-    case RES_O_LINK_QUALITY: { // s-int 
-        int linkQuality;
-        (void)atiny_cmd_ioctl(ATINY_GET_LINK_QUALITY, (char *)&linkQuality, sizeof(int));
-        lwm2m_data_encode_int(linkQuality, dataP);
-        return COAP_205_CONTENT ;
-    }
-    case RES_M_IP_ADDRESSES: {
-        int ri, riCnt = 1;   // reduced to 1 instance to fit in one block size
-        lwm2m_data_t *subTlvP = lwm2m_data_new(riCnt);
-        if (subTlvP == NULL) {
-            return COAP_500_INTERNAL_SERVER_ERROR;
+        case RES_M_RADIO_SIGNAL_STRENGTH: { // s-int
+            int signalstrength = 0;
+            (void)atiny_cmd_ioctl(ATINY_GET_SIGNAL_STRENGTH, (char*)&signalstrength, sizeof(int));
+            lwm2m_data_encode_int(connDataP->signalStrength, dataP);
+            return COAP_205_CONTENT;
         }
-        for (ri = 0; ri < riCnt; ri++) {
-            subTlvP[ri].id = ri;
-            lwm2m_data_encode_string(connDataP->ipAddresses[ri], subTlvP + ri);
+        case RES_O_LINK_QUALITY: { // s-int
+            int linkQuality;
+            (void)atiny_cmd_ioctl(ATINY_GET_LINK_QUALITY, (char*)&linkQuality, sizeof(int));
+            lwm2m_data_encode_int(linkQuality, dataP);
+            return COAP_205_CONTENT;
         }
-        lwm2m_data_encode_instances(subTlvP, riCnt, dataP);
-        return COAP_205_CONTENT ;
-    }
-    case RES_O_ROUTER_IP_ADDRESS: {
-        int ri, riCnt = 1;   // reduced to 1 instance to fit in one block size
-        lwm2m_data_t *subTlvP = lwm2m_data_new(riCnt);
-        if (subTlvP == NULL) {
-            return COAP_500_INTERNAL_SERVER_ERROR;
+        case RES_M_IP_ADDRESSES: {
+            int ri, riCnt = 1; // reduced to 1 instance to fit in one block size
+            lwm2m_data_t* subTlvP = lwm2m_data_new(riCnt);
+            if (subTlvP == NULL) {
+                return COAP_500_INTERNAL_SERVER_ERROR;
+            }
+            for (ri = 0; ri < riCnt; ri++) {
+                subTlvP[ri].id = ri;
+                lwm2m_data_encode_string(connDataP->ipAddresses[ri], subTlvP + ri);
+            }
+            lwm2m_data_encode_instances(subTlvP, riCnt, dataP);
+            return COAP_205_CONTENT;
         }
-        for (ri = 0; ri < riCnt; ri++) {
-            subTlvP[ri].id = ri;
-            lwm2m_data_encode_string(connDataP->routerIpAddresses[ri], subTlvP + ri);
+        case RES_O_ROUTER_IP_ADDRESS: {
+            int ri, riCnt = 1; // reduced to 1 instance to fit in one block size
+            lwm2m_data_t* subTlvP = lwm2m_data_new(riCnt);
+            if (subTlvP == NULL) {
+                return COAP_500_INTERNAL_SERVER_ERROR;
+            }
+            for (ri = 0; ri < riCnt; ri++) {
+                subTlvP[ri].id = ri;
+                lwm2m_data_encode_string(connDataP->routerIpAddresses[ri], subTlvP + ri);
+            }
+            lwm2m_data_encode_instances(subTlvP, riCnt, dataP);
+            return COAP_205_CONTENT;
         }
-        lwm2m_data_encode_instances(subTlvP, riCnt, dataP);
-        return COAP_205_CONTENT ;
-    }
-    case RES_O_LINK_UTILIZATION: {
-        int linkUtilization;
-        (void)atiny_cmd_ioctl(ATINY_GET_LINK_UTILIZATION, (char *)&linkUtilization, sizeof(int));
-        lwm2m_data_encode_int(connDataP->linkUtilization, dataP);
-        return COAP_205_CONTENT;
-    }
-    case RES_O_APN: {
-        int riCnt = 1;   // reduced to 1 instance to fit in one block size
-        lwm2m_data_t *subTlvP;
-        subTlvP = lwm2m_data_new(riCnt);
-        if (subTlvP == NULL) {
-            return COAP_500_INTERNAL_SERVER_ERROR;
+        case RES_O_LINK_UTILIZATION: {
+            int linkUtilization;
+            (void)atiny_cmd_ioctl(ATINY_GET_LINK_UTILIZATION, (char*)&linkUtilization, sizeof(int));
+            lwm2m_data_encode_int(connDataP->linkUtilization, dataP);
+            return COAP_205_CONTENT;
         }
-        subTlvP[0].id     = 0;
-        lwm2m_data_encode_string(VALUE_APN_1, subTlvP);
-        lwm2m_data_encode_instances(subTlvP, riCnt, dataP);
-        return COAP_205_CONTENT;
-    }
-    case RES_O_CELL_ID: {
-        int cellId = 0;
-        (void)atiny_cmd_ioctl(ATINY_GET_CELL_ID, (char *)&cellId, sizeof(int));
-        lwm2m_data_encode_int(cellId, dataP);
-        return COAP_205_CONTENT ;
-    }
-    case RES_O_SMNC: {
-        lwm2m_data_encode_int(VALUE_SMNC, dataP);
-        return COAP_205_CONTENT ;
-    }
-    case RES_O_SMCC: {
-        lwm2m_data_encode_int(VALUE_SMCC, dataP);
-        return COAP_205_CONTENT ;
-    }
-    default:
-        return COAP_404_NOT_FOUND ;
+        case RES_O_APN: {
+            int riCnt = 1; // reduced to 1 instance to fit in one block size
+            lwm2m_data_t* subTlvP;
+            subTlvP = lwm2m_data_new(riCnt);
+            if (subTlvP == NULL) {
+                return COAP_500_INTERNAL_SERVER_ERROR;
+            }
+            subTlvP[0].id = 0;
+            lwm2m_data_encode_string(VALUE_APN_1, subTlvP);
+            lwm2m_data_encode_instances(subTlvP, riCnt, dataP);
+            return COAP_205_CONTENT;
+        }
+        case RES_O_CELL_ID: {
+            int cellId = 0;
+            (void)atiny_cmd_ioctl(ATINY_GET_CELL_ID, (char*)&cellId, sizeof(int));
+            lwm2m_data_encode_int(cellId, dataP);
+            return COAP_205_CONTENT;
+        }
+        case RES_O_SMNC: {
+            lwm2m_data_encode_int(VALUE_SMNC, dataP);
+            return COAP_205_CONTENT;
+        }
+        case RES_O_SMCC: {
+            lwm2m_data_encode_int(VALUE_SMCC, dataP);
+            return COAP_205_CONTENT;
+        }
+        default:
+            return COAP_404_NOT_FOUND;
     }
 }
 
-static uint8_t prv_read(uint16_t instanceId,
-                        int *numDataP,
-                        lwm2m_data_t **dataArrayP,
-                        lwm2m_data_cfg_t *dataCfg,
-                        lwm2m_object_t *objectP)
+static uint8_t prv_read(uint16_t instanceId, int* numDataP, lwm2m_data_t** dataArrayP, lwm2m_data_cfg_t* dataCfg, lwm2m_object_t* objectP)
 {
     uint8_t result;
     int i;
 
     // this is a single instance object
     if (instanceId != 0) {
-        return COAP_404_NOT_FOUND ;
+        return COAP_404_NOT_FOUND;
     }
 
     // is the server asking for the full object ?
-    if (*numDataP == 0)  {
-        uint16_t resList[] = {
-            RES_M_NETWORK_BEARER,
-            RES_M_AVL_NETWORK_BEARER,
-            RES_M_RADIO_SIGNAL_STRENGTH,
-            RES_O_LINK_QUALITY,
-            RES_M_IP_ADDRESSES,
-            RES_O_ROUTER_IP_ADDRESS,
-            RES_O_LINK_UTILIZATION,
-            RES_O_APN,
-            RES_O_CELL_ID,
-            RES_O_SMNC,
-            RES_O_SMCC
-        };
+    if (*numDataP == 0) {
+        uint16_t resList[] = {RES_M_NETWORK_BEARER,
+                              RES_M_AVL_NETWORK_BEARER,
+                              RES_M_RADIO_SIGNAL_STRENGTH,
+                              RES_O_LINK_QUALITY,
+                              RES_M_IP_ADDRESSES,
+                              RES_O_ROUTER_IP_ADDRESS,
+                              RES_O_LINK_UTILIZATION,
+                              RES_O_APN,
+                              RES_O_CELL_ID,
+                              RES_O_SMNC,
+                              RES_O_SMCC};
         int nbRes = sizeof(resList) / sizeof(uint16_t);
 
         *dataArrayP = lwm2m_data_new(nbRes);
@@ -256,22 +250,21 @@ static uint8_t prv_read(uint16_t instanceId,
 
     i = 0;
     do {
-        result = prv_set_value((*dataArrayP) + i, (conn_m_data_t *) (objectP->userData));
+        result = prv_set_value((*dataArrayP) + i, (conn_m_data_t*)(objectP->userData));
         i++;
-    }
-    while ((i < *numDataP) && (result == COAP_205_CONTENT));
+    } while ((i < *numDataP) && (result == COAP_205_CONTENT));
 
     return result;
 }
 
-lwm2m_object_t *get_object_conn_m(atiny_param_t *atiny_params)
+lwm2m_object_t* get_object_conn_m(atiny_param_t* atiny_params)
 {
     /*
      * The get_object_conn_m() function create the object itself and return a pointer to the structure that represent it.
      */
-    lwm2m_object_t *connObj;
+    lwm2m_object_t* connObj;
 
-    connObj = (lwm2m_object_t *)lwm2m_malloc(sizeof(lwm2m_object_t));
+    connObj = (lwm2m_object_t*)lwm2m_malloc(sizeof(lwm2m_object_t));
     if (connObj != NULL) {
         memset(connObj, 0, sizeof(lwm2m_object_t));
 
@@ -284,7 +277,7 @@ lwm2m_object_t *get_object_conn_m(atiny_param_t *atiny_params)
          * and its unique instance
          *
          */
-        connObj->instanceList = (lwm2m_list_t *)lwm2m_malloc(sizeof(lwm2m_list_t));
+        connObj->instanceList = (lwm2m_list_t*)lwm2m_malloc(sizeof(lwm2m_list_t));
         if (connObj->instanceList != NULL) {
             memset(connObj->instanceList, 0, sizeof(lwm2m_list_t));
         } else {
@@ -305,11 +298,11 @@ lwm2m_object_t *get_object_conn_m(atiny_param_t *atiny_params)
          * Also some user data can be stored in the object with a private structure containing the needed variables
          */
         if (connObj->userData != NULL) {
-            conn_m_data_t *myData = (conn_m_data_t *) connObj->userData;
-            memset((void *)myData, 0, sizeof(conn_m_data_t));
-            myData->cellId          = VALUE_CELL_ID;
-            myData->signalStrength  = VALUE_RADIO_SIGNAL_STRENGTH;
-            myData->linkQuality     = VALUE_LINK_QUALITY;
+            conn_m_data_t* myData = (conn_m_data_t*)connObj->userData;
+            memset((void*)myData, 0, sizeof(conn_m_data_t));
+            myData->cellId = VALUE_CELL_ID;
+            myData->signalStrength = VALUE_RADIO_SIGNAL_STRENGTH;
+            myData->linkQuality = VALUE_LINK_QUALITY;
             myData->linkUtilization = VALUE_LINK_UTILIZATION;
             strncpy(myData->ipAddresses[0], VALUE_IP_ADDRESS_1, IP4ADDR_STRLEN_MAX - 1);
             strncpy(myData->ipAddresses[1], VALUE_IP_ADDRESS_2, IP4ADDR_STRLEN_MAX - 1);
@@ -324,74 +317,73 @@ lwm2m_object_t *get_object_conn_m(atiny_param_t *atiny_params)
     return connObj;
 }
 
-void free_object_conn_m(lwm2m_object_t *objectP)
+void free_object_conn_m(lwm2m_object_t* objectP)
 {
     lwm2m_free(objectP->userData);
     lwm2m_list_free(objectP->instanceList);
     lwm2m_free(objectP);
 }
 
-uint8_t connectivity_moni_change(lwm2m_data_t *dataArray,
-                                 lwm2m_object_t *objectP)
+uint8_t connectivity_moni_change(lwm2m_data_t* dataArray, lwm2m_object_t* objectP)
 {
     int64_t value;
     uint8_t result;
-    conn_m_data_t *data;
+    conn_m_data_t* data;
 
-    data = (conn_m_data_t *)(objectP->userData);
+    data = (conn_m_data_t*)(objectP->userData);
 
     switch (dataArray->id) {
-    case RES_M_RADIO_SIGNAL_STRENGTH: {
-        if (lwm2m_data_decode_int(dataArray, &value) == 1) {
-            data->signalStrength = value;
-            result = COAP_204_CHANGED;
-        } else {
-            result = COAP_400_BAD_REQUEST;
+        case RES_M_RADIO_SIGNAL_STRENGTH: {
+            if (lwm2m_data_decode_int(dataArray, &value) == 1) {
+                data->signalStrength = value;
+                result = COAP_204_CHANGED;
+            } else {
+                result = COAP_400_BAD_REQUEST;
+            }
+            break;
         }
-        break;
-    }
-    case RES_O_LINK_QUALITY: {
-        if (lwm2m_data_decode_int(dataArray, &value) == 1) {
-            data->linkQuality = value;
-            result = COAP_204_CHANGED;
-        } else {
-            result = COAP_400_BAD_REQUEST;
+        case RES_O_LINK_QUALITY: {
+            if (lwm2m_data_decode_int(dataArray, &value) == 1) {
+                data->linkQuality = value;
+                result = COAP_204_CHANGED;
+            } else {
+                result = COAP_400_BAD_REQUEST;
+            }
+            break;
         }
-        break;
-    }
-    case RES_M_IP_ADDRESSES: {
-        if (sizeof(data->ipAddresses[0]) <= dataArray->value.asBuffer.length) {
-            result = COAP_400_BAD_REQUEST;
-        } else {
-            memset(data->ipAddresses[0], 0, sizeof(data->ipAddresses[0]));
-            memcpy(data->ipAddresses[0], dataArray->value.asBuffer.buffer, dataArray->value.asBuffer.length);
-            data->ipAddresses[0][dataArray->value.asBuffer.length] = 0;
-            result = COAP_204_CHANGED;
+        case RES_M_IP_ADDRESSES: {
+            if (sizeof(data->ipAddresses[0]) <= dataArray->value.asBuffer.length) {
+                result = COAP_400_BAD_REQUEST;
+            } else {
+                memset(data->ipAddresses[0], 0, sizeof(data->ipAddresses[0]));
+                memcpy(data->ipAddresses[0], dataArray->value.asBuffer.buffer, dataArray->value.asBuffer.length);
+                data->ipAddresses[0][dataArray->value.asBuffer.length] = 0;
+                result = COAP_204_CHANGED;
+            }
+            break;
         }
-        break;
-    }
-    case RES_O_ROUTER_IP_ADDRESS: {
-        if (sizeof(data->routerIpAddresses[0]) <= dataArray->value.asBuffer.length) {
-            result = COAP_400_BAD_REQUEST;
-        } else {
-            memset(data->routerIpAddresses[0], 0, sizeof(data->routerIpAddresses[0]));
-            memcpy(data->routerIpAddresses[0], dataArray->value.asBuffer.buffer, dataArray->value.asBuffer.length);
-            data->routerIpAddresses[0][dataArray->value.asBuffer.length] = 0;
-            result = COAP_204_CHANGED;
+        case RES_O_ROUTER_IP_ADDRESS: {
+            if (sizeof(data->routerIpAddresses[0]) <= dataArray->value.asBuffer.length) {
+                result = COAP_400_BAD_REQUEST;
+            } else {
+                memset(data->routerIpAddresses[0], 0, sizeof(data->routerIpAddresses[0]));
+                memcpy(data->routerIpAddresses[0], dataArray->value.asBuffer.buffer, dataArray->value.asBuffer.length);
+                data->routerIpAddresses[0][dataArray->value.asBuffer.length] = 0;
+                result = COAP_204_CHANGED;
+            }
+            break;
         }
-        break;
-    }
-    case RES_O_CELL_ID: {
-        if (lwm2m_data_decode_int(dataArray, &value) == 1) {
-            data->cellId = value;
-            result = COAP_204_CHANGED;
-        } else {
-            result = COAP_400_BAD_REQUEST;
+        case RES_O_CELL_ID: {
+            if (lwm2m_data_decode_int(dataArray, &value) == 1) {
+                data->cellId = value;
+                result = COAP_204_CHANGED;
+            } else {
+                result = COAP_400_BAD_REQUEST;
+            }
+            break;
         }
-        break;
-    }
-    default:
-        result = COAP_405_METHOD_NOT_ALLOWED;
+        default:
+            result = COAP_405_METHOD_NOT_ALLOWED;
     }
 
     return result;

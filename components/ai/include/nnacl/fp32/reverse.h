@@ -25,17 +25,17 @@
 
 // For reverse.
 typedef struct ReverseParameter {
-  OpParameter op_parameter_;
-  int axis_[REVERSE_SHAPE_MAX_SIZE];
-  int num_axis_;
+    OpParameter op_parameter_;
+    int axis_[REVERSE_SHAPE_MAX_SIZE];
+    int num_axis_;
 } ReverseParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-int Reverse(const float *input, float *output, size_t elem_size, int *index);
+int Reverse(const float* input, float* output, size_t elem_size, int* index);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_REVERSE_H_
+#endif // MINDSPORE_LITE_NNACL_REVERSE_H_

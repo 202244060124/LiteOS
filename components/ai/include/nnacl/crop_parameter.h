@@ -23,16 +23,16 @@
 #define CROP_OFFSET_MAX_SIZE 4
 
 typedef struct CropParameter {
-  OpParameter op_parameter_;
-  CropQuantArg quant_arg;
-  int thread_count_;
-  int offset_size_;
-  int64_t offset_[CROP_OFFSET_MAX_SIZE];
-  int64_t in_offset_[CROP_OFFSET_MAX_SIZE];
-  int64_t axis_;
-  const int *in_shape_;
-  const int *out_shape_;
-  int input_dim_;
+    OpParameter op_parameter_;
+    CropQuantArg quant_arg;
+    int thread_count_;
+    int offset_size_;
+    int64_t offset_[CROP_OFFSET_MAX_SIZE];
+    int64_t in_offset_[CROP_OFFSET_MAX_SIZE];
+    int64_t axis_;
+    const int* in_shape_;
+    const int* out_shape_;
+    int input_dim_;
 } CropParameter;
 
-#endif  // MINDSPORE_LITE_NNACL_CROP_PARAMETER_H_
+#endif // MINDSPORE_LITE_NNACL_CROP_PARAMETER_H_

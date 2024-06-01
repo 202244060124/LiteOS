@@ -22,11 +22,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void PadSliceParameterTo4D(SliceParameter *param);
-void DoSlice(const float *input, float *output, SliceParameter *param, int thread_id);
-void DoSliceNoParallel(const float *input, float *output, SliceParameter *param);
+void PadSliceParameterTo4D(SliceParameter* param);
+void DoSlice(const float* input, float* output, SliceParameter* param, int thread_id);
+void DoSliceNoParallel(const float* input, float* output, SliceParameter* param);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_FP32_SLICE_H_
+#endif // MINDSPORE_LITE_NNACL_FP32_SLICE_H_

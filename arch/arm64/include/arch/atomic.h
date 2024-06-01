@@ -37,17 +37,17 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-STATIC INLINE INT32 ArchAtomicRead(const Atomic *v)
+STATIC INLINE INT32 ArchAtomicRead(const Atomic* v)
 {
-    return *(volatile INT32 *)v;
+    return *(volatile INT32*)v;
 }
 
-STATIC INLINE VOID ArchAtomicSet(Atomic *v, INT32 setVal)
+STATIC INLINE VOID ArchAtomicSet(Atomic* v, INT32 setVal)
 {
-    *(volatile INT32 *)v = setVal;
+    *(volatile INT32*)v = setVal;
 }
 
-STATIC INLINE INT32 ArchAtomicAdd(Atomic *v, INT32 addVal)
+STATIC INLINE INT32 ArchAtomicAdd(Atomic* v, INT32 addVal)
 {
     INT32 val;
     UINT32 status;
@@ -64,7 +64,7 @@ STATIC INLINE INT32 ArchAtomicAdd(Atomic *v, INT32 addVal)
     return val;
 }
 
-STATIC INLINE INT32 ArchAtomicSub(Atomic *v, INT32 subVal)
+STATIC INLINE INT32 ArchAtomicSub(Atomic* v, INT32 subVal)
 {
     INT32 val;
     UINT32 status;
@@ -81,7 +81,7 @@ STATIC INLINE INT32 ArchAtomicSub(Atomic *v, INT32 subVal)
     return val;
 }
 
-STATIC INLINE VOID ArchAtomicInc(Atomic *v)
+STATIC INLINE VOID ArchAtomicInc(Atomic* v)
 {
     INT32 val;
     UINT32 status;
@@ -94,7 +94,7 @@ STATIC INLINE VOID ArchAtomicInc(Atomic *v)
     } while (__builtin_expect(status != 0, 0));
 }
 
-STATIC INLINE INT32 ArchAtomicIncRet(Atomic *v)
+STATIC INLINE INT32 ArchAtomicIncRet(Atomic* v)
 {
     INT32 val;
     UINT32 status;
@@ -109,7 +109,7 @@ STATIC INLINE INT32 ArchAtomicIncRet(Atomic *v)
     return val;
 }
 
-STATIC INLINE VOID ArchAtomicDec(Atomic *v)
+STATIC INLINE VOID ArchAtomicDec(Atomic* v)
 {
     INT32 val;
     UINT32 status;
@@ -122,7 +122,7 @@ STATIC INLINE VOID ArchAtomicDec(Atomic *v)
     } while (__builtin_expect(status != 0, 0));
 }
 
-STATIC INLINE INT32 ArchAtomicDecRet(Atomic *v)
+STATIC INLINE INT32 ArchAtomicDecRet(Atomic* v)
 {
     INT32 val;
     UINT32 status;
@@ -137,17 +137,17 @@ STATIC INLINE INT32 ArchAtomicDecRet(Atomic *v)
     return val;
 }
 
-STATIC INLINE INT64 ArchAtomic64Read(const Atomic64 *v)
+STATIC INLINE INT64 ArchAtomic64Read(const Atomic64* v)
 {
-    return *(volatile INT64 *)v;
+    return *(volatile INT64*)v;
 }
 
-STATIC INLINE VOID ArchAtomic64Set(Atomic64 *v, INT64 setVal)
+STATIC INLINE VOID ArchAtomic64Set(Atomic64* v, INT64 setVal)
 {
-    *(volatile INT64 *)v = setVal;
+    *(volatile INT64*)v = setVal;
 }
 
-STATIC INLINE INT64 ArchAtomic64Add(Atomic64 *v, INT64 addVal)
+STATIC INLINE INT64 ArchAtomic64Add(Atomic64* v, INT64 addVal)
 {
     INT64 val;
     UINT32 status;
@@ -164,7 +164,7 @@ STATIC INLINE INT64 ArchAtomic64Add(Atomic64 *v, INT64 addVal)
     return val;
 }
 
-STATIC INLINE INT64 ArchAtomic64Sub(Atomic64 *v, INT64 subVal)
+STATIC INLINE INT64 ArchAtomic64Sub(Atomic64* v, INT64 subVal)
 {
     INT64 val;
     UINT32 status;
@@ -181,7 +181,7 @@ STATIC INLINE INT64 ArchAtomic64Sub(Atomic64 *v, INT64 subVal)
     return val;
 }
 
-STATIC INLINE VOID ArchAtomic64Inc(Atomic64 *v)
+STATIC INLINE VOID ArchAtomic64Inc(Atomic64* v)
 {
     INT64 val;
     UINT32 status;
@@ -194,7 +194,7 @@ STATIC INLINE VOID ArchAtomic64Inc(Atomic64 *v)
     } while (__builtin_expect(status != 0, 0));
 }
 
-STATIC INLINE INT64 ArchAtomic64IncRet(Atomic64 *v)
+STATIC INLINE INT64 ArchAtomic64IncRet(Atomic64* v)
 {
     INT64 val;
     UINT32 status;
@@ -209,7 +209,7 @@ STATIC INLINE INT64 ArchAtomic64IncRet(Atomic64 *v)
     return val;
 }
 
-STATIC INLINE VOID ArchAtomic64Dec(Atomic64 *v)
+STATIC INLINE VOID ArchAtomic64Dec(Atomic64* v)
 {
     INT64 val;
     UINT32 status;
@@ -222,7 +222,7 @@ STATIC INLINE VOID ArchAtomic64Dec(Atomic64 *v)
     } while (__builtin_expect(status != 0, 0));
 }
 
-STATIC INLINE INT64 ArchAtomic64DecRet(Atomic64 *v)
+STATIC INLINE INT64 ArchAtomic64DecRet(Atomic64* v)
 {
     INT64 val;
     UINT32 status;
@@ -237,7 +237,7 @@ STATIC INLINE INT64 ArchAtomic64DecRet(Atomic64 *v)
     return val;
 }
 
-STATIC INLINE INT32 ArchAtomicXchg32bits(Atomic *v, INT32 val)
+STATIC INLINE INT32 ArchAtomicXchg32bits(Atomic* v, INT32 val)
 {
     INT32 prevVal;
     UINT32 status;
@@ -253,7 +253,7 @@ STATIC INLINE INT32 ArchAtomicXchg32bits(Atomic *v, INT32 val)
     return prevVal;
 }
 
-STATIC INLINE INT64 ArchAtomicXchg64bits(Atomic64 *v, INT64 val)
+STATIC INLINE INT64 ArchAtomicXchg64bits(Atomic64* v, INT64 val)
 {
     INT64 prevVal;
     UINT32 status;
@@ -269,7 +269,7 @@ STATIC INLINE INT64 ArchAtomicXchg64bits(Atomic64 *v, INT64 val)
     return prevVal;
 }
 
-STATIC INLINE BOOL ArchAtomicCmpXchg32bits(Atomic *v, INT32 val, INT32 oldVal)
+STATIC INLINE BOOL ArchAtomicCmpXchg32bits(Atomic* v, INT32 val, INT32 oldVal)
 {
     INT32 prevVal;
     UINT32 status;
@@ -289,7 +289,7 @@ STATIC INLINE BOOL ArchAtomicCmpXchg32bits(Atomic *v, INT32 val, INT32 oldVal)
     return prevVal != oldVal;
 }
 
-STATIC INLINE BOOL ArchAtomicCmpXchg64bits(Atomic64 *v, INT64 val, INT64 oldVal)
+STATIC INLINE BOOL ArchAtomicCmpXchg64bits(Atomic64* v, INT64 val, INT64 oldVal)
 {
     INT64 prevVal;
     UINT32 status;

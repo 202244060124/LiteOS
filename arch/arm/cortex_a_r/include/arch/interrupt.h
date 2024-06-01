@@ -29,8 +29,9 @@
 #ifndef _ARCH_INTERRUPT_H
 #define _ARCH_INTERRUPT_H
 
-#include "los_typedef.h"
 #include "arch/regs.h"
+#include "los_typedef.h"
+
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -38,7 +39,7 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-#define LOSCFG_ARM_ARCH  __ARM_ARCH
+#define LOSCFG_ARM_ARCH __ARM_ARCH
 
 /* CPU interrupt mask handle implementation */
 #if LOSCFG_ARM_ARCH >= 6
@@ -46,24 +47,22 @@ extern "C" {
 STATIC INLINE UINT32 ArchIntLock(VOID)
 {
     UINT32 intSave;
-    __asm__ __volatile__(
-        "mrs    %0, cpsr \n"
-        "cpsid  if"
-        : "=r"(intSave)
-        :
-        : "memory");
+    __asm__ __volatile__("mrs    %0, cpsr \n"
+                         "cpsid  if"
+                         : "=r"(intSave)
+                         :
+                         : "memory");
     return intSave;
 }
 
 STATIC INLINE UINT32 ArchIntUnlock(VOID)
 {
     UINT32 intSave;
-    __asm__ __volatile__(
-        "mrs    %0, cpsr \n"
-        "cpsie  if"
-        : "=r"(intSave)
-        :
-        : "memory");
+    __asm__ __volatile__("mrs    %0, cpsr \n"
+                         "cpsie  if"
+                         : "=r"(intSave)
+                         :
+                         : "memory");
     return intSave;
 }
 
@@ -72,26 +71,24 @@ STATIC INLINE UINT32 ArchIntUnlock(VOID)
 STATIC INLINE UINT32 ArchIntLock(VOID)
 {
     UINT32 intSave, temp;
-    __asm__ __volatile__(
-        "mrs    %0, cpsr \n"
-        "orr    %1, %0, #0xc0 \n"
-        "msr    cpsr_c, %1"
-        : "=r"(intSave),  "=r"(temp)
-        :
-        : "memory");
+    __asm__ __volatile__("mrs    %0, cpsr \n"
+                         "orr    %1, %0, #0xc0 \n"
+                         "msr    cpsr_c, %1"
+                         : "=r"(intSave), "=r"(temp)
+                         :
+                         : "memory");
     return intSave;
 }
 
 STATIC INLINE UINT32 ArchIntUnlock(VOID)
 {
     UINT32 intSave;
-    __asm__ __volatile__(
-        "mrs    %0, cpsr \n"
-        "bic    %0, %0, #0xc0 \n"
-        "msr    cpsr_c, %0"
-        : "=r"(intSave)
-        :
-        : "memory");
+    __asm__ __volatile__("mrs    %0, cpsr \n"
+                         "bic    %0, %0, #0xc0 \n"
+                         "msr    cpsr_c, %0"
+                         : "=r"(intSave)
+                         :
+                         : "memory");
     return intSave;
 }
 
@@ -99,14 +96,14 @@ STATIC INLINE UINT32 ArchIntUnlock(VOID)
 
 STATIC INLINE VOID ArchIntRestore(UINT32 intSave)
 {
-    __asm__ __volatile__("msr cpsr_c, %0" : :"r"(intSave) :"memory");
+    __asm__ __volatile__("msr cpsr_c, %0" : : "r"(intSave) : "memory");
 }
 
 STATIC INLINE UINT32 ArchIntLocked(VOID)
 {
     UINT32 intSave;
 
-    __asm__ __volatile__("mrs %0, cpsr" :"=r" (intSave) : :"memory", "cc");
+    __asm__ __volatile__("mrs %0, cpsr" : "=r"(intSave) : : "memory", "cc");
 
     return intSave & PSR_I_BIT;
 }

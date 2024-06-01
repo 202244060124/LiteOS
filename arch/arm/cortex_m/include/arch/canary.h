@@ -37,7 +37,6 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-
 #ifdef __GNUC__
 extern UINTPTR __stack_chk_guard;
 

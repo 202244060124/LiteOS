@@ -18,23 +18,22 @@
 #include "nnacl/op_base.h"
 
 #define SPACE_TO_BATCH_BLOCK_SIZES_SIZE 2
-#define SPACE_TO_BATCH_PADDINGS_SIZE 4
+#define SPACE_TO_BATCH_PADDINGS_SIZE    4
 
 typedef struct SpaceToBatchParameter {
-  OpParameter op_parameter_;
-  bool need_paddings_;
-  int block_sizes_[4];
-  int paddings_[4];
+    OpParameter op_parameter_;
+    bool need_paddings_;
+    int block_sizes_[4];
+    int paddings_[4];
 } SpaceToBatchParameter;
 #ifdef __cplusplus
 extern "C" {
 #endif
-void DoSpaceToBatchNHWC(const float *input, float *output, SpaceToBatchParameter *param, int *in_shape,
-                        int *out_shape);
-void DoSpaceToBatchPaddingNHWC(const float *input, float *output, int *in_shape, int *padding, int *out_shape,
-                               const float *pedding_h_data, const float *pedding_w_data);
+void DoSpaceToBatchNHWC(const float* input, float* output, SpaceToBatchParameter* param, int* in_shape, int* out_shape);
+void DoSpaceToBatchPaddingNHWC(const float* input, float* output, int* in_shape, int* padding, int* out_shape, const float* pedding_h_data,
+                               const float* pedding_w_data);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_SRC_BACKEND_ARM_NNACL_FP32_SPACE_TO_BATCH_H_
+#endif // MINDSPORE_LITE_SRC_BACKEND_ARM_NNACL_FP32_SPACE_TO_BATCH_H_

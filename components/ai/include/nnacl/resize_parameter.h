@@ -18,11 +18,11 @@
 
 #include "nnacl/op_base.h"
 typedef struct ResizeParameter {
-  OpParameter op_parameter_;
-  int method_;
-  int64_t new_height_;
-  int64_t new_width_;
-  bool align_corners_;
-  bool preserve_aspect_ratio_;
+    OpParameter op_parameter_;
+    int method_;
+    int64_t new_height_;
+    int64_t new_width_;
+    bool align_corners_;
+    bool preserve_aspect_ratio_;
 } ResizeParameter;
-#endif  // MINDSPORE_LITE_NNACL_RESIZE_PARAMETER_H_
+#endif // MINDSPORE_LITE_NNACL_RESIZE_PARAMETER_H_

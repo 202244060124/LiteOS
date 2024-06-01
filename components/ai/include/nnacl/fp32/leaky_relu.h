@@ -16,15 +16,16 @@
 #ifndef MINDSPORE_LITE_NNACL_PRELU_H_
 #define MINDSPORE_LITE_NNACL_PRELU_H_
 
-#include "nnacl/op_base.h"
 #include "nnacl/leaky_relu_parameter.h"
+#include "nnacl/op_base.h"
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-void DoLeakyRelu(float *input, float *output, LeakyReluParameter *prelu_param_, int task_id);
+void DoLeakyRelu(float* input, float* output, LeakyReluParameter* prelu_param_, int task_id);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_PRELU_H_
+#endif // MINDSPORE_LITE_NNACL_PRELU_H_

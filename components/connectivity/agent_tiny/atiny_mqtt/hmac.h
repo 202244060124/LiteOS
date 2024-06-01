@@ -37,16 +37,16 @@ extern "C" {
 #endif /* __cplusplus */
 
 typedef struct _mbedtls_hmac_t {
-    const unsigned char *secret;
-    const unsigned char *input;
-    unsigned char *digest;
+    const unsigned char* secret;
+    const unsigned char* input;
+    unsigned char* digest;
     size_t secret_len;
     size_t input_len;
     size_t digest_len;
     mbedtls_md_type_t hmac_type;
 } mbedtls_hmac_t;
 
-int mbedtls_hmac_calc(mbedtls_hmac_t *hmac_info);
+int mbedtls_hmac_calc(mbedtls_hmac_t* hmac_info);
 
 #ifdef __cplusplus
 #if __cplusplus

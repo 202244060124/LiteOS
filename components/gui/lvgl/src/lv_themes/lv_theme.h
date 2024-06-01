@@ -14,8 +14,9 @@ extern "C" {
  *    INCLUDES
  *********************/
 #include "../lv_conf_internal.h"
-#include "../lv_core/lv_style.h"
 #include "../lv_core/lv_obj.h"
+#include "../lv_core/lv_style.h"
+
 
 /*********************
  *    DEFINES
@@ -98,7 +99,7 @@ typedef enum {
 #endif
 #if LV_USE_MSGBOX
     LV_THEME_MSGBOX,
-    LV_THEME_MSGBOX_BTNS,   /*The button matrix of the buttons are initialized separately*/
+    LV_THEME_MSGBOX_BTNS, /*The button matrix of the buttons are initialized separately*/
 #endif
 #if LV_USE_OBJMASK
     LV_THEME_OBJMASK,
@@ -114,7 +115,7 @@ typedef enum {
 #endif
 #if LV_USE_SPINBOX
     LV_THEME_SPINBOX,
-    LV_THEME_SPINBOX_BTN,   /*Button extra for spinbox*/
+    LV_THEME_SPINBOX_BTN, /*Button extra for spinbox*/
 #endif
 #if LV_USE_SPINNER
     LV_THEME_SPINNER,
@@ -127,7 +128,7 @@ typedef enum {
 #endif
 #if LV_USE_TABVIEW
     LV_THEME_TABVIEW,
-    LV_THEME_TABVIEW_PAGE,  /*The tab pages are initialized separately*/
+    LV_THEME_TABVIEW_PAGE, /*The tab pages are initialized separately*/
 #endif
 #if LV_USE_TEXTAREA
     LV_THEME_TEXTAREA,
@@ -137,7 +138,7 @@ typedef enum {
 #endif
 #if LV_USE_WIN
     LV_THEME_WIN,
-    LV_THEME_WIN_BTN,   /*The buttons are initialized separately*/
+    LV_THEME_WIN_BTN, /*The buttons are initialized separately*/
 #endif
 
     _LV_THEME_BUILTIN_LAST,
@@ -147,13 +148,13 @@ typedef enum {
 } lv_theme_style_t;
 
 typedef struct {
-    void (*apply_xcb)(lv_obj_t *, lv_theme_style_t);
+    void (*apply_xcb)(lv_obj_t*, lv_theme_style_t);
     lv_color_t color_primary;
     lv_color_t color_secondary;
-    const lv_font_t * font_small;
-    const lv_font_t * font_normal;
-    const lv_font_t * font_subtitle;
-    const lv_font_t * font_title;
+    const lv_font_t* font_small;
+    const lv_font_t* font_normal;
+    const lv_font_t* font_subtitle;
+    const lv_font_t* font_title;
     uint32_t flags;
 } lv_theme_t;
 
@@ -166,41 +167,39 @@ typedef struct {
  * From now, all the created objects will use styles from this theme by default
  * @param th pointer to theme (return value of: 'lv_theme_init_xxx()')
  */
-void lv_theme_set_act(lv_theme_t * th);
+void lv_theme_set_act(lv_theme_t* th);
 
 /**
  * Get the current system theme.
  * @return pointer to the current system theme. NULL if not set.
  */
-lv_theme_t * lv_theme_get_act(void);
+lv_theme_t* lv_theme_get_act(void);
 
-
-void lv_theme_apply(lv_obj_t * obj, lv_theme_style_t name);
-
+void lv_theme_apply(lv_obj_t* obj, lv_theme_style_t name);
 
 /**
  * Get the small font of the theme
  * @return pointer to the font
  */
-const lv_font_t * lv_theme_get_font_small(void);
+const lv_font_t* lv_theme_get_font_small(void);
 
 /**
  * Get the normal font of the theme
  * @return pointer to the font
  */
-const lv_font_t * lv_theme_get_font_normal(void);
+const lv_font_t* lv_theme_get_font_normal(void);
 
 /**
  * Get the subtitle font of the theme
  * @return pointer to the font
  */
-const lv_font_t * lv_theme_get_font_subtitle(void);
+const lv_font_t* lv_theme_get_font_subtitle(void);
 
 /**
  * Get the title font of the theme
  * @return pointer to the font
  */
-const lv_font_t * lv_theme_get_font_title(void);
+const lv_font_t* lv_theme_get_font_title(void);
 
 /**
  * Get the primary color of the theme
@@ -214,7 +213,6 @@ lv_color_t lv_theme_get_color_primary(void);
  */
 uint32_t lv_theme_get_flags(void);
 
-
 /**********************
  *    MACROS
  **********************/
@@ -223,9 +221,10 @@ uint32_t lv_theme_get_flags(void);
  *     POST INCLUDE
  *********************/
 #include "lv_theme_empty.h"
-#include "lv_theme_template.h"
 #include "lv_theme_material.h"
 #include "lv_theme_mono.h"
+#include "lv_theme_template.h"
+
 
 #ifdef __cplusplus
 } /* extern "C" */

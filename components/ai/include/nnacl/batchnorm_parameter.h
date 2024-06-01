@@ -20,12 +20,12 @@
 #include "nnacl/op_base.h"
 
 typedef struct BatchNormParameter {
-  OpParameter op_parameter_;
-  float epsilon_;
-  int unit_;
-  int units_;
-  int channel_;
-  bool fused_;
+    OpParameter op_parameter_;
+    float epsilon_;
+    int unit_;
+    int units_;
+    int channel_;
+    bool fused_;
 } BatchNormParameter;
 
-#endif  // MINDSPORE_LITE_NNACL_BATCHNORM_PARAMETER_H_
+#endif // MINDSPORE_LITE_NNACL_BATCHNORM_PARAMETER_H_

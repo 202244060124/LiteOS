@@ -33,10 +33,11 @@
 #include <string.h>
 #include "errno.h"
 #include "fcntl.h"
-#include "sys/stat.h"
-#include "fs/los_vfs.h"
 #include "fs/los_fatfs.h"
+#include "fs/los_vfs.h"
 #include "los_printf.h"
+#include "sys/stat.h"
+
 
 /* Defines ------------------------------------------------------------------ */
 /* Typedefs ----------------------------------------------------------------- */
@@ -47,8 +48,9 @@
 #endif
 
 #ifndef POINTER_ASSERT
-#define POINTER_ASSERT(p) if (p == NULL) {    \
-        return -EINVAL;    \
+#define POINTER_ASSERT(p) \
+    if (p == NULL) {      \
+        return -EINVAL;   \
     }
 #endif
 /* Local variables ---------------------------------------------------------- */
@@ -149,7 +151,7 @@ static int ret_to_errno(FRESULT result)
             else the parameter must be equal to 0
   * @retval Returns -1 in case of failure, otherwise return the drive (0 to volumes).
   */
-static int fatfs_link_driver(const struct diskio_drv *drv, uint8_t lun)
+static int fatfs_link_driver(const struct diskio_drv* drv, uint8_t lun)
 {
     int ret = -1;
     int i;
@@ -196,7 +198,7 @@ static int fatfs_unlink_driver(uint8_t drive, uint8_t lun)
     return ret;
 }
 
-int fatfs_register(const struct diskio_drv *drv)
+int fatfs_register(const struct diskio_drv* drv)
 {
     return fatfs_link_driver(drv, 0);
 }
@@ -243,16 +245,16 @@ static int fatfs_flags_get(int oflags)
     return flags;
 }
 
-static int fatfs_op_open(struct file *file, const char *path_in_mp, int flags)
+static int fatfs_op_open(struct file* file, const char* path_in_mp, int flags)
 {
     FRESULT res;
-    FIL *fp;
+    FIL* fp;
     FILINFO info = {0};
 
-    fp = (FIL *)malloc(sizeof(FIL));
+    fp = (FIL*)malloc(sizeof(FIL));
     if (fp == NULL) {
         PRINT_ERR("fail to malloc memory in FATFS, <malloc.c> is needed,"
-            "make sure it is added\n");
+                  "make sure it is added\n");
         return -EINVAL;
     }
 
@@ -266,7 +268,7 @@ static int fatfs_op_open(struct file *file, const char *path_in_mp, int flags)
 
     res = f_open(fp, path_in_mp, fatfs_flags_get(flags));
     if (res == FR_OK) {
-        file->f_data = (void *)fp;
+        file->f_data = (void*)fp;
     } else {
         free(fp);
     }
@@ -280,10 +282,10 @@ static int fatfs_op_open(struct file *file, const char *path_in_mp, int flags)
     }
 }
 
-static int fatfs_op_close(struct file *file)
+static int fatfs_op_close(struct file* file)
 {
     FRESULT res;
-    FIL *fp = (FIL *)file->f_data;
+    FIL* fp = (FIL*)file->f_data;
 
     POINTER_ASSERT(fp);
 
@@ -296,18 +298,18 @@ static int fatfs_op_close(struct file *file)
     return ret_to_errno(res);
 }
 
-static ssize_t fatfs_op_read(struct file *file, char *buff, size_t bytes)
+static ssize_t fatfs_op_read(struct file* file, char* buff, size_t bytes)
 {
     ssize_t size = 0;
     FRESULT res;
-    FIL *fp = (FIL *)file->f_data;
+    FIL* fp = (FIL*)file->f_data;
 
     if ((buff == NULL) || (bytes == 0)) {
         return -EINVAL;
     }
 
     POINTER_ASSERT(fp);
-    res = f_read(fp, buff, bytes, (UINT *)&size);
+    res = f_read(fp, buff, bytes, (UINT*)&size);
     if (res != FR_OK) {
         PRINT_ERR("failed to read, res=%d\n", res);
         return ret_to_errno(res);
@@ -315,18 +317,18 @@ static ssize_t fatfs_op_read(struct file *file, char *buff, size_t bytes)
     return size;
 }
 
-static ssize_t fatfs_op_write(struct file *file, const char *buff, size_t bytes)
+static ssize_t fatfs_op_write(struct file* file, const char* buff, size_t bytes)
 {
     ssize_t size = 0;
     FRESULT res;
-    FIL *fp = (FIL *)file->f_data;
+    FIL* fp = (FIL*)file->f_data;
 
     if ((buff == NULL) || (bytes == 0)) {
         return -EINVAL;
     }
 
     POINTER_ASSERT(fp);
-    res = f_write(fp, buff, bytes, (UINT *)&size);
+    res = f_write(fp, buff, bytes, (UINT*)&size);
     if ((res != FR_OK) || (size == 0)) {
         PRINT_ERR("failed to write, res=%d\n", res);
         return ret_to_errno(res);
@@ -334,9 +336,9 @@ static ssize_t fatfs_op_write(struct file *file, const char *buff, size_t bytes)
     return size;
 }
 
-static off_t fatfs_op_lseek(struct file *file, off_t off, int whence)
+static off_t fatfs_op_lseek(struct file* file, off_t off, int whence)
 {
-    FIL *fp = (FIL *)file->f_data;
+    FIL* fp = (FIL*)file->f_data;
 
     POINTER_ASSERT(fp);
     switch (whence) {
@@ -364,7 +366,7 @@ static off_t fatfs_op_lseek(struct file *file, off_t off, int whence)
         return ret_to_errno(res);
 }
 
-int fatfs_op_stat(struct mount_point *mp, const char *path_in_mp, struct stat *stat)
+int fatfs_op_stat(struct mount_point* mp, const char* path_in_mp, struct stat* stat)
 {
     FRESULT res;
     FILINFO info = {0};
@@ -383,7 +385,7 @@ int fatfs_op_stat(struct mount_point *mp, const char *path_in_mp, struct stat *s
     return ret_to_errno(res);
 }
 
-static int fatfs_op_unlink(struct mount_point *mp, const char *path_in_mp)
+static int fatfs_op_unlink(struct mount_point* mp, const char* path_in_mp)
 {
     FRESULT res = f_unlink(path_in_mp);
     if (res == FR_NO_PATH) {
@@ -396,15 +398,15 @@ static int fatfs_op_unlink(struct mount_point *mp, const char *path_in_mp)
     }
 }
 
-static int fatfs_op_rename(struct mount_point *mp, const char *path_in_mp_old, const char *path_in_mp_new)
+static int fatfs_op_rename(struct mount_point* mp, const char* path_in_mp_old, const char* path_in_mp_new)
 {
     FRESULT res = f_rename(path_in_mp_old, path_in_mp_new);
     return ret_to_errno(res);
 }
 
-static int fatfs_op_sync(struct file *file)
+static int fatfs_op_sync(struct file* file)
 {
-    FIL *fp = (FIL *)file->f_data;
+    FIL* fp = (FIL*)file->f_data;
     FRESULT res;
 
     POINTER_ASSERT(fp);
@@ -413,15 +415,15 @@ static int fatfs_op_sync(struct file *file)
     return ret_to_errno(res);
 }
 
-static int fatfs_op_opendir(struct dir *dir, const char *path)
+static int fatfs_op_opendir(struct dir* dir, const char* path)
 {
     FRESULT res;
-    DIR *dp;
+    DIR* dp;
 
-    dp = (DIR *)malloc(sizeof(DIR));
+    dp = (DIR*)malloc(sizeof(DIR));
     if (dp == NULL) {
         PRINT_ERR("fail to malloc memory in SPIFFS, <malloc.c> is needed,"
-            "make sure it is added\n");
+                  "make sure it is added\n");
         return -ENOMEM;
     }
 
@@ -437,10 +439,10 @@ static int fatfs_op_opendir(struct dir *dir, const char *path)
     return FR_OK;
 }
 
-static int fatfs_op_readdir(struct dir *dir, struct dirent *dent)
+static int fatfs_op_readdir(struct dir* dir, struct dirent* dent)
 {
     FRESULT res;
-    DIR *dp = (DIR *)dir->d_data;
+    DIR* dp = (DIR*)dir->d_data;
     FILINFO e;
     int len;
 
@@ -452,7 +454,7 @@ static int fatfs_op_readdir(struct dir *dir, struct dirent *dent)
     }
 
     len = MIN(sizeof(e.fname), LOS_MAX_DIR_NAME_LEN + 1) - 1;
-    strncpy((char *)dent->name, (const char *)e.fname, len);
+    strncpy((char*)dent->name, (const char*)e.fname, len);
     dent->name[len] = '\0';
     dent->size = e.fsize;
 
@@ -465,10 +467,10 @@ static int fatfs_op_readdir(struct dir *dir, struct dirent *dent)
     return FR_OK;
 }
 
-static int fatfs_op_closedir(struct dir *dir)
+static int fatfs_op_closedir(struct dir* dir)
 {
     FRESULT res;
-    DIR *dp = (DIR *)dir->d_data;
+    DIR* dp = (DIR*)dir->d_data;
 
     POINTER_ASSERT(dp);
 
@@ -481,7 +483,7 @@ static int fatfs_op_closedir(struct dir *dir)
     return ret_to_errno(res);
 }
 
-static int fatfs_op_mkdir(struct mount_point *mp, const char *path)
+static int fatfs_op_mkdir(struct mount_point* mp, const char* path)
 {
     FRESULT res = f_mkdir(path);
     if (res == FR_NO_PATH) {
@@ -494,22 +496,11 @@ static int fatfs_op_mkdir(struct mount_point *mp, const char *path)
     }
 }
 
-static struct file_ops fatfs_ops = {
-    fatfs_op_open,
-    fatfs_op_close,
-    fatfs_op_read,
-    fatfs_op_write,
-    fatfs_op_lseek,
-    fatfs_op_stat,
-    fatfs_op_unlink,
-    fatfs_op_rename,
-    NULL,             /* ioctl not supported for now */
-    fatfs_op_sync,
-    fatfs_op_opendir,
-    fatfs_op_readdir,
-    fatfs_op_closedir,
-    fatfs_op_mkdir
-};
+static struct file_ops fatfs_ops = {fatfs_op_open,     fatfs_op_close,   fatfs_op_read,
+                                    fatfs_op_write,    fatfs_op_lseek,   fatfs_op_stat,
+                                    fatfs_op_unlink,   fatfs_op_rename,  NULL, /* ioctl not supported for now */
+                                    fatfs_op_sync,     fatfs_op_opendir, fatfs_op_readdir,
+                                    fatfs_op_closedir, fatfs_op_mkdir};
 
 static struct file_system fatfs_fs = {"fatfs", &fatfs_ops, NULL, 0};
 
@@ -537,43 +528,43 @@ int fatfs_init(void)
     return LOS_OK;
 }
 
-static FATFS *fatfs_ptr = NULL;
+static FATFS* fatfs_ptr = NULL;
 
-int fatfs_mount(const char *path, struct diskio_drv *drv, uint8_t *drive)
+int fatfs_mount(const char* path, struct diskio_drv* drv, uint8_t* drive)
 {
     int s_drive;
     char dpath[4] = {0};
     int ret = -1;
-    BYTE *work_buff = NULL;
+    BYTE* work_buff = NULL;
     FRESULT res;
-    FATFS *fs = NULL;
+    FATFS* fs = NULL;
 
     s_drive = fatfs_register(drv);
     if (s_drive < 0) {
         PRINT_ERR("failed to register diskio!\n");
         return s_drive;
     }
-    fs = (FATFS *)malloc(sizeof(FATFS));
+    fs = (FATFS*)malloc(sizeof(FATFS));
     if (fs == NULL) {
         PRINT_ERR("fail to malloc memory in FATFS, <malloc.c> is needed,"
-            "make sure it is added\n");
+                  "make sure it is added\n");
         goto err;
     }
     memset(fs, 0, sizeof(FATFS));
     sprintf(dpath, "%d:/", s_drive);
-    res = f_mount(fs, (const TCHAR *)dpath, 1);
+    res = f_mount(fs, (const TCHAR*)dpath, 1);
     if (res == FR_NO_FILESYSTEM) {
         printf("SD no filesystem, format...\r\n");
-        work_buff = (BYTE *)malloc(FF_MAX_SS);
+        work_buff = (BYTE*)malloc(FF_MAX_SS);
         if (work_buff == NULL) {
             goto err_free;
         }
         memset(work_buff, 0, FF_MAX_SS);
-        res = f_mkfs((const TCHAR *)dpath, FM_ANY, 0, work_buff, FF_MAX_SS);
+        res = f_mkfs((const TCHAR*)dpath, FM_ANY, 0, work_buff, FF_MAX_SS);
         if (res == FR_OK) {
             printf("SD format success\r\n");
-            res = f_mount(NULL, (const TCHAR *)dpath, 1);
-            res = f_mount(fs, (const TCHAR *)dpath, 1);
+            res = f_mount(NULL, (const TCHAR*)dpath, 1);
+            res = f_mount(fs, (const TCHAR*)dpath, 1);
         } else {
             printf("SD format fail\r\n");
         }
@@ -604,13 +595,13 @@ err:
     return ret;
 }
 
-int fatfs_unmount(const char *path, uint8_t drive)
+int fatfs_unmount(const char* path, uint8_t drive)
 {
     char dpath[10] = {0};
 
     sprintf(dpath, "%d:/", drive);
     fatfs_unregister(drive);
-    f_mount(NULL, (const TCHAR *)dpath, 1);
+    f_mount(NULL, (const TCHAR*)dpath, 1);
     los_fs_unmount(path);
     if (fatfs_ptr) {
         free(fatfs_ptr);

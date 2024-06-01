@@ -13,8 +13,9 @@ extern "C" {
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_img_decoder.h"
 #include "lv_img_buf.h"
+#include "lv_img_decoder.h"
+
 
 /*********************
  *      DEFINES
@@ -40,14 +41,14 @@ typedef struct {
 
     lv_blend_mode_t blend_mode;
 
-    uint8_t antialias       : 1;
+    uint8_t antialias : 1;
 } lv_draw_img_dsc_t;
 
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
 
-void lv_draw_img_dsc_init(lv_draw_img_dsc_t * dsc);
+void lv_draw_img_dsc_init(lv_draw_img_dsc_t* dsc);
 /**
  * Draw an image
  * @param coords the coordinates of the image
@@ -59,7 +60,7 @@ void lv_draw_img_dsc_init(lv_draw_img_dsc_t * dsc);
  * @param antialias anti-alias transformations (rotate, zoom) or not
  * @param opa_scale scale down all opacities by the factor
  */
-void lv_draw_img(const lv_area_t * coords, const lv_area_t * mask, const void * src, lv_draw_img_dsc_t * dsc);
+void lv_draw_img(const lv_area_t* coords, const lv_area_t* mask, const void* src, lv_draw_img_dsc_t* dsc);
 
 /**
  * Get the type of an image source
@@ -69,7 +70,7 @@ void lv_draw_img(const lv_area_t * coords, const lv_area_t * mask, const void * 
  *  - or a symbol (e.g. LV_SYMBOL_CLOSE)
  * @return type of the image source LV_IMG_SRC_VARIABLE/FILE/SYMBOL/UNKNOWN
  */
-lv_img_src_t lv_img_src_get_type(const void * src);
+lv_img_src_t lv_img_src_get_type(const void* src);
 
 /**
  * Get the pixel size of a color format in bits
@@ -91,7 +92,6 @@ bool lv_img_cf_is_chroma_keyed(lv_img_cf_t cf);
  * @return true: has alpha channel; false: doesn't have alpha channel
  */
 bool lv_img_cf_has_alpha(lv_img_cf_t cf);
-
 
 #ifdef __cplusplus
 } /* extern "C" */

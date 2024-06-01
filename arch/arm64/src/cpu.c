@@ -26,8 +26,9 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --------------------------------------------------------------------------- */
 
-#include "los_config.h"
 #include "arch/cpu.h"
+#include "los_config.h"
+
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -38,17 +39,15 @@ extern "C" {
 /* support cpu vendors */
 CpuVendor g_cpuTable[] = {
     /* armv8-a */
-    { 0xd03, "Cortex-A53" },
+    {0xd03, "Cortex-A53"},
     /* armv8.2-a */
-    { 0xd05, "Cortex-A55" },
+    {0xd05, "Cortex-A55"},
 };
 
 /* logical cpu mapping */
-UINT64 g_cpuMap[LOSCFG_KERNEL_CORE_NUM] = {
-    [0 ... LOSCFG_KERNEL_CORE_NUM - 1] = (UINT64)(-1)
-};
+UINT64 g_cpuMap[LOSCFG_KERNEL_CORE_NUM] = {[0 ... LOSCFG_KERNEL_CORE_NUM - 1] = (UINT64)(-1)};
 
-const CHAR *ArchCpuInfo(VOID)
+const CHAR* ArchCpuInfo(VOID)
 {
     UINT32 midr = OsMainIDGet();
     /* [15:4] is the primary part number */

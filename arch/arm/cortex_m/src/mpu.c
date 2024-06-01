@@ -72,7 +72,7 @@ STATIC UINT64 MpuGetRegionCapacity(UINT32 regionSize)
  * Input      : mpuInfo: MPU info
  * Return     : Error Information or LOS_OK
  */
-STATIC UINT32 MpuCheckParame(const MPU_REGION_INFO *mpuInfo)
+STATIC UINT32 MpuCheckParame(const MPU_REGION_INFO* mpuInfo)
 {
     UINT64 capacity;
 
@@ -152,9 +152,7 @@ STATIC VOID MpuEnable(BOOL hfnmiena)
 {
     UINT32 enable;
 
-    enable = MPU_CTRL_ENABLE_Msk |
-             MPU_CTRL_PRIVDEFENA_Msk |
-             (hfnmiena << MPU_CTRL_HFNMIENA_Pos);
+    enable = MPU_CTRL_ENABLE_Msk | MPU_CTRL_PRIVDEFENA_Msk | (hfnmiena << MPU_CTRL_HFNMIENA_Pos);
 
     MPU->CTRL = enable;
     /* Ensure MPU settings take effects */
@@ -169,24 +167,20 @@ STATIC VOID MpuEnable(BOOL hfnmiena)
  *              The base address must be in the range of RAM
  * Return     : LOS_OK or Error Information
  */
-STATIC VOID MpuRegionConfig(const MPU_REGION_INFO *mpuInfo)
+STATIC VOID MpuRegionConfig(const MPU_REGION_INFO* mpuInfo)
 {
     UINT32 attributeAndCapacity;
 
-    attributeAndCapacity = (mpuInfo->accessPermission << MPU_RASR_AP_Pos) |
-                           (mpuInfo->sharable << MPU_RASR_S_Pos) |
-                           (mpuInfo->cachable << MPU_RASR_C_Pos) |
-                           (mpuInfo->buffable << MPU_RASR_B_Pos) |
-                           (mpuInfo->xn << MPU_RASR_XN_Pos) |
-                           (mpuInfo->regionSize << MPU_RASR_SIZE_Pos) |
-                           (MPU_RASR_ENABLE_Msk);
+    attributeAndCapacity = (mpuInfo->accessPermission << MPU_RASR_AP_Pos) | (mpuInfo->sharable << MPU_RASR_S_Pos)
+                           | (mpuInfo->cachable << MPU_RASR_C_Pos) | (mpuInfo->buffable << MPU_RASR_B_Pos)
+                           | (mpuInfo->xn << MPU_RASR_XN_Pos) | (mpuInfo->regionSize << MPU_RASR_SIZE_Pos) | (MPU_RASR_ENABLE_Msk);
 
     MPU->RNR = mpuInfo->number;
     MPU->RBAR = mpuInfo->baseAddress;
     MPU->RASR = attributeAndCapacity;
 }
 
-UINT32 ArchProtectionRegionSet(MPU_REGION_INFO *mpuInfo)
+UINT32 ArchProtectionRegionSet(MPU_REGION_INFO* mpuInfo)
 {
     UINT32 ret;
     UINT32 intSave;

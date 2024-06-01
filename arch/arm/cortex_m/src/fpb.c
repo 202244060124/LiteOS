@@ -34,23 +34,23 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-#define FPB_REG_MAX         254
-#define LITERAL_REG1_INDEX  6
-#define LITERAL_REG2_INDEX  7
-#define S_POS               24
-#define FPB_BASE            0xE0002000UL
-#define REMAP_TABLE_ADDR    0x20000000UL
-#define ROM_BASE            0x02200000UL
-#define ROM_END             0x02214000UL
-#define BL_DISTANCE_MAX     (1U << 24)
-#define NOP_INSTR           0xbf00bf00
-#define FPB                 ((FpbReg *) FPB_BASE)
-#define REMAP_UNIT_SIZE     4
-#define UPPER_MASK          0xffff0000
-#define LOWER_MASK          0x0000ffff
-#define SHIFT_BITS          16
-#define LITERAL_ALIGN       3
-#define INSTR_ALIGN         2
+#define FPB_REG_MAX        254
+#define LITERAL_REG1_INDEX 6
+#define LITERAL_REG2_INDEX 7
+#define S_POS              24
+#define FPB_BASE           0xE0002000UL
+#define REMAP_TABLE_ADDR   0x20000000UL
+#define ROM_BASE           0x02200000UL
+#define ROM_END            0x02214000UL
+#define BL_DISTANCE_MAX    (1U << 24)
+#define NOP_INSTR          0xbf00bf00
+#define FPB                ((FpbReg*)FPB_BASE)
+#define REMAP_UNIT_SIZE    4
+#define UPPER_MASK         0xffff0000
+#define LOWER_MASK         0x0000ffff
+#define SHIFT_BITS         16
+#define LITERAL_ALIGN      3
+#define INSTR_ALIGN        2
 
 typedef struct {
     volatile UINT32 ctrl;
@@ -72,9 +72,9 @@ STATIC UINT32 CalcBranchWLinkInstr(UINT32 instrAddr, UINT32 targetAddr);
 
 STATIC UINT32 LittleEndian16Bit(UINT32 val);
 
-STATIC UINT32 GetInstr(UINT32 instrAddr, UINT32 targetAddr, UINT32 *newInstr, UINT8 blInstr);
+STATIC UINT32 GetInstr(UINT32 instrAddr, UINT32 targetAddr, UINT32* newInstr, UINT8 blInstr);
 
-STATIC UINT32 GetInstrRegIndex(UINT32 oldAddr, UINT8 *regComp);
+STATIC UINT32 GetInstrRegIndex(UINT32 oldAddr, UINT8* regComp);
 
 VOID FpbInit(VOID)
 {
@@ -92,7 +92,7 @@ UINT32 FpbAddPatch(UINT32 oldAddr, UINT32 patchValue, FpbCompTypeEnum fpbType)
 {
     UINT32 newInstr;
     UINT32 ret;
-    UINT8  regIndex;
+    UINT8 regIndex;
 
     if (fpbType >= FPB_TYPE_MAX) {
         PRINT_ERR("type is wrong, set fpb patch err!\r\n");
@@ -134,7 +134,7 @@ UINT32 FpbAddPatch(UINT32 oldAddr, UINT32 patchValue, FpbCompTypeEnum fpbType)
         }
 
         PRINT_DEBUG("use COMP:%d\r\n", reg_index);
-        *((UINT32 *)(UINTPTR)(REMAP_TABLE_ADDR + (regIndex * REMAP_UNIT_SIZE))) = newInstr;
+        *((UINT32*)(UINTPTR)(REMAP_TABLE_ADDR + (regIndex * REMAP_UNIT_SIZE))) = newInstr;
     }
 
     return FPB_SUCCESS;
@@ -142,7 +142,7 @@ UINT32 FpbAddPatch(UINT32 oldAddr, UINT32 patchValue, FpbCompTypeEnum fpbType)
 
 UINT32 FpbDeletePatch(UINT32 oldAddr, FpbCompTypeEnum fpbType)
 {
-    UINT8  regIndex;
+    UINT8 regIndex;
     UINT32 regValue;
     UINT32 ret;
 
@@ -176,11 +176,11 @@ UINT32 FpbDeletePatch(UINT32 oldAddr, FpbCompTypeEnum fpbType)
     return FPB_NO_COMP_ERR;
 }
 
-STATIC UINT32 GetInstrRegIndex(UINT32 oldAddr, UINT8 *regComp)
+STATIC UINT32 GetInstrRegIndex(UINT32 oldAddr, UINT8* regComp)
 {
     UINT32 regValue;
     UINT8 regCount;
-    UINT8 flag      = 0;
+    UINT8 flag = 0;
 
     for (regCount = 0; regCount < FPB_REG_MAX; regCount++) {
         if (regCount == LITERAL_REG1_INDEX) {
@@ -213,7 +213,7 @@ STATIC UINT32 GetInstrRegIndex(UINT32 oldAddr, UINT8 *regComp)
 
 STATIC UINT32 FpbRedirectLiteral(UINT32 originalLiteralAddr, UINT32 targetLiteral)
 {
-    UINT8  regIndex;
+    UINT8 regIndex;
     UINT32 ret;
     UINT32 literalAddr = originalLiteralAddr | 0x01UL;
     UINT32 literalReg1Value = FPB->comp[LITERAL_REG1_INDEX];
@@ -242,7 +242,7 @@ STATIC UINT32 FpbRedirectLiteral(UINT32 originalLiteralAddr, UINT32 targetLitera
         return ret;
     }
 
-    *((UINT32 *)(UINTPTR)(REMAP_TABLE_ADDR + (regIndex * REMAP_UNIT_SIZE))) = targetLiteral;
+    *((UINT32*)(UINTPTR)(REMAP_TABLE_ADDR + (regIndex * REMAP_UNIT_SIZE))) = targetLiteral;
     return FPB_SUCCESS;
 }
 
@@ -289,19 +289,19 @@ STATIC UINT32 CalcBranchInstr(UINT32 instrAddr, UINT32 targetAddr)
     PRINT_DEBUG("instr_addr:%x, target_addr:%x\r\n", instrAddr, targetAddr);
 
     UINT16 offset10Upper = ((offset) >> 12) & 0x03FF; // get upper 10 bits [21:12]
-    UINT16 offset11Lower = ((offset) >> 1)  & 0x07FF; // get lower 11 bits [11:1]
+    UINT16 offset11Lower = ((offset) >> 1) & 0x07FF;  // get lower 11 bits [11:1]
 
-    UINT8 s  = (offset >> S_POS) & 0x1;       // get bit 24
-    UINT8 i1 = (offset >> (S_POS - 1)) & 0x1; // get bit 23
-    UINT8 i2 = (offset >> (S_POS - 2)) & 0x1; // get bit 22
+    UINT8 s = (offset >> S_POS) & 0x1;                // get bit 24
+    UINT8 i1 = (offset >> (S_POS - 1)) & 0x1;         // get bit 23
+    UINT8 i2 = (offset >> (S_POS - 2)) & 0x1;         // get bit 22
 
     UINT8 j1 = 0x01 & ((~i1) ^ s);
     UINT8 j2 = 0x01 & ((~i2) ^ s);
 
     // upper instruction : [15:11]opcode1 0x1e [10]S [9:0] imm upper 10 bits
-    UINT32 upperBlInstr =  ((0x1E << 11) | (s << 10) | offset10Upper);
+    UINT32 upperBlInstr = ((0x1E << 11) | (s << 10) | offset10Upper);
     // lower instruction : [15:14]opcode2 0x2  [13]J1 [12]opcode3 [11]J2 [10:0] imm lower 11 bits
-    UINT32 lowerBlInstr =  ((0x02 << 14) | (j1 << 13) | (0x01 << 12) | (j2 << 11) | offset11Lower);
+    UINT32 lowerBlInstr = ((0x02 << 14) | (j1 << 13) | (0x01 << 12) | (j2 << 11) | offset11Lower);
 
     return ((upperBlInstr << SHIFT_BITS) | lowerBlInstr); // assembling 32bit instruction
 }
@@ -321,7 +321,7 @@ STATIC UINT32 LittleEndian16Bit(UINT32 val)
     return ((val & UPPER_MASK) >> SHIFT_BITS) | ((val & LOWER_MASK) << SHIFT_BITS); // little_endian swap
 }
 
-STATIC UINT32 GetInstr(UINT32 instrAddr, UINT32 targetAddr, UINT32 *newInstr, UINT8 blInstr)
+STATIC UINT32 GetInstr(UINT32 instrAddr, UINT32 targetAddr, UINT32* newInstr, UINT8 blInstr)
 {
     UINT32 tmpInstr;
 

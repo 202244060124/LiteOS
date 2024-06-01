@@ -27,32 +27,32 @@
 
  defaulted parameters:
 
-	--host localhost
-	--port 1883
-	--qos 2
-	--delimiter \n
-	--clientid stdout_subscriber
+    --host localhost
+    --port 1883
+    --qos 2
+    --delimiter \n
+    --clientid stdout_subscriber
 
-	--userid none
-	--password none
+    --userid none
+    --password none
 
  for example:
 
     stdoutsub topic/of/interest --host iot.eclipse.org
 
 */
-#include <stdio.h>
 #include <memory.h>
+#include <stdio.h>
 #include "MQTTClient.h"
 
-#include <stdio.h>
+
 #include <signal.h>
+#include <stdio.h>
+
 
 #include <sys/time.h>
 
-
 volatile int toStop = 0;
-
 
 void usage()
 {
@@ -69,41 +69,31 @@ void usage()
     exit(-1);
 }
 
-
 void cfinish(int sig)
 {
     signal(SIGINT, NULL);
     toStop = 1;
 }
 
-
-struct opts_struct
-{
-    char *clientid;
+struct opts_struct {
+    char* clientid;
     int nodelimiter;
-    char *delimiter;
+    char* delimiter;
     enum QoS qos;
-    char *username;
-    char *password;
-    char *host;
+    char* username;
+    char* password;
+    char* host;
     int port;
     int showtopics;
-} opts =
-{
-    (char *)"stdout-subscriber", 0, (char *)"\n", QOS2, NULL, NULL, (char *)"localhost", 1883, 0
-};
+} opts = {(char*)"stdout-subscriber", 0, (char*)"\n", QOS2, NULL, NULL, (char*)"localhost", 1883, 0};
 
-
-void getopts(int argc, char **argv)
+void getopts(int argc, char** argv)
 {
     int count = 2;
 
-    while (count < argc)
-    {
-        if (strcmp(argv[count], "--qos") == 0)
-        {
-            if (++count < argc)
-            {
+    while (count < argc) {
+        if (strcmp(argv[count], "--qos") == 0) {
+            if (++count < argc) {
                 if (strcmp(argv[count], "0") == 0)
                     opts.qos = QOS0;
                 else if (strcmp(argv[count], "1") == 0)
@@ -112,87 +102,67 @@ void getopts(int argc, char **argv)
                     opts.qos = QOS2;
                 else
                     usage();
-            }
-            else
+            } else
                 usage();
-        }
-        else if (strcmp(argv[count], "--host") == 0)
-        {
+        } else if (strcmp(argv[count], "--host") == 0) {
             if (++count < argc)
                 opts.host = argv[count];
             else
                 usage();
-        }
-        else if (strcmp(argv[count], "--port") == 0)
-        {
+        } else if (strcmp(argv[count], "--port") == 0) {
             if (++count < argc)
                 opts.port = atoi(argv[count]);
             else
                 usage();
-        }
-        else if (strcmp(argv[count], "--clientid") == 0)
-        {
+        } else if (strcmp(argv[count], "--clientid") == 0) {
             if (++count < argc)
                 opts.clientid = argv[count];
             else
                 usage();
-        }
-        else if (strcmp(argv[count], "--username") == 0)
-        {
+        } else if (strcmp(argv[count], "--username") == 0) {
             if (++count < argc)
                 opts.username = argv[count];
             else
                 usage();
-        }
-        else if (strcmp(argv[count], "--password") == 0)
-        {
+        } else if (strcmp(argv[count], "--password") == 0) {
             if (++count < argc)
                 opts.password = argv[count];
             else
                 usage();
-        }
-        else if (strcmp(argv[count], "--delimiter") == 0)
-        {
+        } else if (strcmp(argv[count], "--delimiter") == 0) {
             if (++count < argc)
                 opts.delimiter = argv[count];
             else
                 opts.nodelimiter = 1;
-        }
-        else if (strcmp(argv[count], "--showtopics") == 0)
-        {
-            if (++count < argc)
-            {
+        } else if (strcmp(argv[count], "--showtopics") == 0) {
+            if (++count < argc) {
                 if (strcmp(argv[count], "on") == 0)
                     opts.showtopics = 1;
                 else if (strcmp(argv[count], "off") == 0)
                     opts.showtopics = 0;
                 else
                     usage();
-            }
-            else
+            } else
                 usage();
         }
         count++;
     }
-
 }
 
-
-void messageArrived(MessageData *md)
+void messageArrived(MessageData* md)
 {
-    MQTTMessage *message = md->message;
+    MQTTMessage* message = md->message;
 
     if (opts.showtopics)
         printf("%.*s\t", md->topicName->lenstring.len, md->topicName->lenstring.data);
     if (opts.nodelimiter)
-        printf("%.*s", (int)message->payloadlen, (char *)message->payload);
+        printf("%.*s", (int)message->payloadlen, (char*)message->payload);
     else
-        printf("%.*s%s", (int)message->payloadlen, (char *)message->payload, opts.delimiter);
-    //fflush(stdout);
+        printf("%.*s%s", (int)message->payloadlen, (char*)message->payload, opts.delimiter);
+    // fflush(stdout);
 }
 
-
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     int rc = 0;
     unsigned char buf[100];
@@ -201,7 +171,7 @@ int main(int argc, char **argv)
     if (argc < 2)
         usage();
 
-    char *topic = argv[1];
+    char* topic = argv[1];
 
     if (strchr(topic, '#') || strchr(topic, '+'))
         opts.showtopics = 1;
@@ -238,8 +208,7 @@ int main(int argc, char **argv)
     rc = MQTTSubscribe(&c, topic, opts.qos, messageArrived);
     printf("Subscribed %d\n", rc);
 
-    while (!toStop)
-    {
+    while (!toStop) {
         MQTTYield(&c, 1000);
     }
 
@@ -250,5 +219,3 @@ int main(int argc, char **argv)
 
     return 0;
 }
-
-

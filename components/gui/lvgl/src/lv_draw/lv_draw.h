@@ -19,14 +19,15 @@ extern "C" {
 #include "../lv_misc/lv_txt.h"
 #include "lv_img_decoder.h"
 
-#include "lv_draw_rect.h"
-#include "lv_draw_label.h"
-#include "lv_draw_img.h"
-#include "lv_draw_line.h"
-#include "lv_draw_triangle.h"
 #include "lv_draw_arc.h"
 #include "lv_draw_blend.h"
+#include "lv_draw_img.h"
+#include "lv_draw_label.h"
+#include "lv_draw_line.h"
 #include "lv_draw_mask.h"
+#include "lv_draw_rect.h"
+#include "lv_draw_triangle.h"
+
 
 /*********************
  *      DEFINES

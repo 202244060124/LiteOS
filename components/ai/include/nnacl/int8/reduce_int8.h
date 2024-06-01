@@ -21,33 +21,33 @@
 extern "C" {
 #endif
 
-int ReduceMeanInt8(const int outer_size, const int inner_size, const int axis_size, const int32_t *src_data,
-                   int32_t *dst_data, const ReduceQuantArg *quant, const int tid, const int thread_num);
-int ReduceMeanLastAxis(const int outer_size, const int inner_size, const int axis_size, const int32_t *src_data,
-                       int8_t *dst_data, const ReduceQuantArg *quant, const int tid, const int thread_num);
-int ReduceSumInt8(const int outer_size, const int inner_size, const int axis_size, const int32_t *src_data,
-                  int32_t *dst_data, const ReduceQuantArg *quant, const int tid, const int thread_num);
-int ReduceSumLastAxis(const int outer_size, const int inner_size, const int axis_size, const int32_t *src_data,
-                      int8_t *dst_data, const ReduceQuantArg *quant, const int tid, const int thread_num);
-int ReduceMaxInt8(const int outer_size, const int inner_size, const int axis_size, const int32_t *src_data,
-                  int32_t *dst_data, const ReduceQuantArg *quant, const int tid, const int thread_num);
-int ReduceMaxLastAxis(const int outer_size, const int inner_size, const int axis_size, const int32_t *src_data,
-                      int8_t *dst_data, const ReduceQuantArg *quant, const int tid, const int thread_num);
-int ReduceMinInt8(const int outer_size, const int inner_size, const int axis_size, const int32_t *src_data,
-                  int32_t *dst_data, const ReduceQuantArg *quant, const int tid, const int thread_num);
-int ReduceMinLastAxis(const int outer_size, const int inner_size, const int axis_size, const int32_t *src_data,
-                      int8_t *dst_data, const ReduceQuantArg *quant, const int tid, const int thread_num);
-int ReduceProdLastAxis(const int outer_size, const int inner_size, const int axis_size, const int32_t *src_data,
-                       int8_t *dst_data, const ReduceQuantArg *quant, const int tid, const int thread_num);
-int ReduceProdInt8(const int outer_size, const int inner_size, const int axis_size, const int32_t *src_data,
-                   int32_t *dst_data, const ReduceQuantArg *quant, const int tid, const int thread_num);
-int ReduceSumSquareLastAxis(const int outer_size, const int inner_size, const int axis_size, const int32_t *src_data,
-                            int8_t *dst_data, const ReduceQuantArg *quant, const int tid, const int thread_num);
-int ReduceSumSquareInt8(const int outer_size, const int inner_size, const int axis_size, const int32_t *src_data,
-                        int32_t *dst_data, const ReduceQuantArg *quant, const int tid, const int thread_num);
+int ReduceMeanInt8(const int outer_size, const int inner_size, const int axis_size, const int32_t* src_data, int32_t* dst_data,
+                   const ReduceQuantArg* quant, const int tid, const int thread_num);
+int ReduceMeanLastAxis(const int outer_size, const int inner_size, const int axis_size, const int32_t* src_data, int8_t* dst_data,
+                       const ReduceQuantArg* quant, const int tid, const int thread_num);
+int ReduceSumInt8(const int outer_size, const int inner_size, const int axis_size, const int32_t* src_data, int32_t* dst_data,
+                  const ReduceQuantArg* quant, const int tid, const int thread_num);
+int ReduceSumLastAxis(const int outer_size, const int inner_size, const int axis_size, const int32_t* src_data, int8_t* dst_data,
+                      const ReduceQuantArg* quant, const int tid, const int thread_num);
+int ReduceMaxInt8(const int outer_size, const int inner_size, const int axis_size, const int32_t* src_data, int32_t* dst_data,
+                  const ReduceQuantArg* quant, const int tid, const int thread_num);
+int ReduceMaxLastAxis(const int outer_size, const int inner_size, const int axis_size, const int32_t* src_data, int8_t* dst_data,
+                      const ReduceQuantArg* quant, const int tid, const int thread_num);
+int ReduceMinInt8(const int outer_size, const int inner_size, const int axis_size, const int32_t* src_data, int32_t* dst_data,
+                  const ReduceQuantArg* quant, const int tid, const int thread_num);
+int ReduceMinLastAxis(const int outer_size, const int inner_size, const int axis_size, const int32_t* src_data, int8_t* dst_data,
+                      const ReduceQuantArg* quant, const int tid, const int thread_num);
+int ReduceProdLastAxis(const int outer_size, const int inner_size, const int axis_size, const int32_t* src_data, int8_t* dst_data,
+                       const ReduceQuantArg* quant, const int tid, const int thread_num);
+int ReduceProdInt8(const int outer_size, const int inner_size, const int axis_size, const int32_t* src_data, int32_t* dst_data,
+                   const ReduceQuantArg* quant, const int tid, const int thread_num);
+int ReduceSumSquareLastAxis(const int outer_size, const int inner_size, const int axis_size, const int32_t* src_data, int8_t* dst_data,
+                            const ReduceQuantArg* quant, const int tid, const int thread_num);
+int ReduceSumSquareInt8(const int outer_size, const int inner_size, const int axis_size, const int32_t* src_data, int32_t* dst_data,
+                        const ReduceQuantArg* quant, const int tid, const int thread_num);
 bool isAddOverflow(int32_t x, int32_t y);
 bool isMulOverflow(int32_t x, int32_t y);
 #ifdef __cplusplus
 }
 #endif
-#endif  // MINDSPORE_LITE_NNACL_INT8_REDUCE_INT8_H_
+#endif // MINDSPORE_LITE_NNACL_INT8_REDUCE_INT8_H_

@@ -21,12 +21,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void BatchToSpaceNoCropForNHWCInt8(const int8_t *input, int8_t *output, const int *in_shape, int out_n,
-                                   const int *block, QuantArg *in_quant_arg, QuantArg *out_quant_arg);
-void BatchToSpaceForNHWCInt8(const int8_t *input, int8_t *output, const int *in_shape, int out_n, const int *block,
-                             const int *crops, QuantArg *in_quant_arg, QuantArg *out_quant_arg);
+void BatchToSpaceNoCropForNHWCInt8(const int8_t* input, int8_t* output, const int* in_shape, int out_n, const int* block,
+                                   QuantArg* in_quant_arg, QuantArg* out_quant_arg);
+void BatchToSpaceForNHWCInt8(const int8_t* input, int8_t* output, const int* in_shape, int out_n, const int* block, const int* crops,
+                             QuantArg* in_quant_arg, QuantArg* out_quant_arg);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_INT8_BATCH_TO_SPACE_INT8_H_
+#endif // MINDSPORE_LITE_NNACL_INT8_BATCH_TO_SPACE_INT8_H_

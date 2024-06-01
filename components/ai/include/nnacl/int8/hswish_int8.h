@@ -17,27 +17,28 @@
 #define MINDSPORE_LITE_NNACL_INT8_HSWISH_INT8_H_
 
 #include <math.h>
-#include "nnacl/op_base.h"
 #include "nnacl/errorcode.h"
+#include "nnacl/op_base.h"
 #include "nnacl/quantization/fixed_point.h"
 
+
 typedef struct HswishQuantArg {
-  double input_scale;
-  int32_t input_zp;
-  double output_scale;
-  int32_t output_zp;
-  int16_t relu6_multiplier_fixedpoint_int16;
-  int32_t relu6_multiplier_exponent;
-  int16_t output_multiplier_fixedpoint_int16;
-  int32_t output_multiplier_exponent;
+    double input_scale;
+    int32_t input_zp;
+    double output_scale;
+    int32_t output_zp;
+    int16_t relu6_multiplier_fixedpoint_int16;
+    int32_t relu6_multiplier_exponent;
+    int16_t output_multiplier_fixedpoint_int16;
+    int32_t output_multiplier_exponent;
 } HswishQuantArg;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-int HSwishInt8(const int8_t *src, int length, int8_t *dst, HswishQuantArg *arg);
+int HSwishInt8(const int8_t* src, int length, int8_t* dst, HswishQuantArg* arg);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_INT8_HSWISH_INT8_H_
+#endif // MINDSPORE_LITE_NNACL_INT8_HSWISH_INT8_H_

@@ -19,20 +19,20 @@
 #include "nnacl/op_base.h"
 
 typedef struct WhereParameter {
-  OpParameter op_parameter_;
-  int num_;
-  int num1_;
-  int num2_;
-  int number_;
-  int thread_num_;
+    OpParameter op_parameter_;
+    int num_;
+    int num1_;
+    int num2_;
+    int number_;
+    int thread_num_;
 } WhereParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-void Where(bool *input, float *input1, float *input2, float *output, WhereParameter *where_param_, int task_id);
+void Where(bool* input, float* input1, float* input2, float* output, WhereParameter* where_param_, int task_id);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_WHERE_H_
+#endif // MINDSPORE_LITE_NNACL_WHERE_H_

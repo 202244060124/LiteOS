@@ -20,30 +20,26 @@
 #include "nnacl/op_base.h"
 
 typedef struct TransposeParameter {
-  OpParameter op_parameter_;
-  int perm_[8];
-  bool conjugate_;
-  int num_axes_;
-  int strides_[8];
-  int out_strides_[8];
-  int data_size_;
+    OpParameter op_parameter_;
+    int perm_[8];
+    bool conjugate_;
+    int num_axes_;
+    int strides_[8];
+    int out_strides_[8];
+    int data_size_;
 } TransposeParameter;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-int DoTranspose(float *in_data, float *out_data, int *input_shape, int *output_shape,
-                TransposeParameter *transpose_param, int h_start, int h_end);
-void TransposeDim2(float *in_data, float *out_data, int *strides, int *out_strides, int *perm, int *output_shape,
-                   int h_start, int h_end);
-void TransposeDim3(float *in_data, float *out_data, int *strides, int *out_strides, int *perm, int *output_shape,
-                   int h_start, int h_end);
-void TransposeDim4(float *in_data, float *out_data, int *strides, int *out_strides, int *perm, int *output_shape,
-                   int h_start, int h_end);
-void TransposeDim5(float *in_data, float *out_data, int *strides, int *out_strides, int *perm, int *output_shape,
-                   int h_start, int h_end);
+int DoTranspose(float* in_data, float* out_data, int* input_shape, int* output_shape, TransposeParameter* transpose_param, int h_start,
+                int h_end);
+void TransposeDim2(float* in_data, float* out_data, int* strides, int* out_strides, int* perm, int* output_shape, int h_start, int h_end);
+void TransposeDim3(float* in_data, float* out_data, int* strides, int* out_strides, int* perm, int* output_shape, int h_start, int h_end);
+void TransposeDim4(float* in_data, float* out_data, int* strides, int* out_strides, int* perm, int* output_shape, int h_start, int h_end);
+void TransposeDim5(float* in_data, float* out_data, int* strides, int* out_strides, int* perm, int* output_shape, int h_start, int h_end);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_TRANSPOSE_H_
+#endif // MINDSPORE_LITE_NNACL_TRANSPOSE_H_

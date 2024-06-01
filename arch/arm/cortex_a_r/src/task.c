@@ -26,9 +26,10 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --------------------------------------------------------------------------- */
 
-#include "los_task_pri.h"
-#include "arch/task.h"
 #include "arch/cache.h"
+#include "arch/task.h"
+#include "los_task_pri.h"
+
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -60,13 +61,13 @@ VOID OsTaskEntrySetupLoopFrame(UINT32 arg0)
 }
 #endif
 
-LITE_OS_SEC_TEXT_INIT VOID *OsTaskStackInit(UINT32 taskId, UINT32 stackSize, VOID *topStack)
+LITE_OS_SEC_TEXT_INIT VOID* OsTaskStackInit(UINT32 taskId, UINT32 stackSize, VOID* topStack)
 {
     UINT32 index = 1;
-    TaskContext *taskContext = NULL;
+    TaskContext* taskContext = NULL;
 
     OsStackInit(topStack, stackSize);
-    taskContext = (TaskContext *)(((UINTPTR)topStack + stackSize) - sizeof(TaskContext));
+    taskContext = (TaskContext*)(((UINTPTR)topStack + stackSize) - sizeof(TaskContext));
 
     /* initialize the task context */
 #ifdef LOSCFG_GDB
@@ -74,9 +75,9 @@ LITE_OS_SEC_TEXT_INIT VOID *OsTaskStackInit(UINT32 taskId, UINT32 stackSize, VOI
 #else
     taskContext->PC = (UINTPTR)OsTaskEntry;
 #endif
-    taskContext->LR = (UINTPTR)OsTaskExit;  /* LR should be kept, to distinguish it's THUMB or ARM instruction */
-    taskContext->R[0] = taskId;             /* R0 */
-    taskContext->R[index++] = 0x01010101;   /* R1, 0x01010101 : reg initialed magic word */
+    taskContext->LR = (UINTPTR)OsTaskExit; /* LR should be kept, to distinguish it's THUMB or ARM instruction */
+    taskContext->R[0] = taskId;            /* R0 */
+    taskContext->R[index++] = 0x01010101;  /* R1, 0x01010101 : reg initialed magic word */
     for (; index < GEN_REGS_NUM; index++) {
         taskContext->R[index] = taskContext->R[index - 1] + taskContext->R[1]; /* R2 - R12 */
     }
@@ -84,7 +85,7 @@ LITE_OS_SEC_TEXT_INIT VOID *OsTaskStackInit(UINT32 taskId, UINT32 stackSize, VOI
 #ifdef LOSCFG_INTERWORK_THUMB
     taskContext->regPSR = PSR_MODE_SVC_THUMB; /* CPSR (Disable IRQ and FIQ interrupts, THUMNB-mode) */
 #else
-    taskContext->regPSR = PSR_MODE_SVC_ARM;   /* CPSR (Disable IRQ and FIQ interrupts, ARM-mode) */
+    taskContext->regPSR = PSR_MODE_SVC_ARM; /* CPSR (Disable IRQ and FIQ interrupts, ARM-mode) */
 #endif
 
 #if !defined(LOSCFG_ARCH_FPU_DISABLE)
@@ -96,7 +97,7 @@ LITE_OS_SEC_TEXT_INIT VOID *OsTaskStackInit(UINT32 taskId, UINT32 stackSize, VOI
     taskContext->regFPEXC = FP_EN;
 #endif
 
-    return (VOID *)taskContext;
+    return (VOID*)taskContext;
 }
 
 #ifdef __cplusplus

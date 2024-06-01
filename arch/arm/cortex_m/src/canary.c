@@ -45,7 +45,7 @@ UINTPTR __stack_chk_guard = 0x000a0dff;
  * value to replace the function implementation template shown as below.
  */
 #pragma GCC push_options
-#pragma GCC optimize ("-fno-stack-protector")
+#pragma GCC optimize("-fno-stack-protector")
 LITE_OS_SEC_TEXT_INIT WEAK VOID ArchStackGuardInit(VOID)
 {
 }

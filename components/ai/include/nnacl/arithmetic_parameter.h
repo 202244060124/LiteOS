@@ -19,4 +19,4 @@
 
 #include "nnacl/op_attribute.h"
 
-#endif  // MINDSPORE_LITE_NNACL_ARTITHMETIC_PARAMETER_H_
+#endif // MINDSPORE_LITE_NNACL_ARTITHMETIC_PARAMETER_H_

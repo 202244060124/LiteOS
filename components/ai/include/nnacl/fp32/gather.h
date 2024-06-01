@@ -22,12 +22,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-int Gather(float *input, int outer_size, int inner_size, int limit, int *indices, int indices_element_size,
-           float *output);
-int GatherInt32(const int32_t *input, int outer_size, int inner_size, int limit, int *indices, int indices_element_size,
-                int32_t *output);
+int Gather(float* input, int outer_size, int inner_size, int limit, int* indices, int indices_element_size, float* output);
+int GatherInt32(const int32_t* input, int outer_size, int inner_size, int limit, int* indices, int indices_element_size, int32_t* output);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_GATHER_H_
+#endif // MINDSPORE_LITE_NNACL_GATHER_H_

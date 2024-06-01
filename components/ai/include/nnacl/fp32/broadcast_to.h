@@ -24,24 +24,24 @@
 #define BROADCAST_TO_SHAPE_MAX_SIZE 4
 
 typedef struct BroadcastToParameter {
-  OpParameter op_parameter_;
-  int shape_[BROADCAST_TO_SHAPE_MAX_SIZE];
-  size_t shape_size_;
+    OpParameter op_parameter_;
+    int shape_[BROADCAST_TO_SHAPE_MAX_SIZE];
+    size_t shape_size_;
 } BroadcastToParameter;
 
 typedef struct BroadcastShapeInfo {
-  int input_shape_[BROADCAST_TO_SHAPE_MAX_SIZE];
-  int input_shape_size_;
-  int output_shape_[BROADCAST_TO_SHAPE_MAX_SIZE];
-  int output_shape_size_;
+    int input_shape_[BROADCAST_TO_SHAPE_MAX_SIZE];
+    int input_shape_size_;
+    int output_shape_[BROADCAST_TO_SHAPE_MAX_SIZE];
+    int output_shape_size_;
 } BroadcastShapeInfo;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-int BroadcastTo(const float *input, BroadcastShapeInfo *shape_info, float *output);
+int BroadcastTo(const float* input, BroadcastShapeInfo* shape_info, float* output);
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // MINDSPORE_LITE_NNACL_FP32_BROADCAST_TO_H_
+#endif // MINDSPORE_LITE_NNACL_FP32_BROADCAST_TO_H_

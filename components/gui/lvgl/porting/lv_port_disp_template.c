@@ -3,7 +3,7 @@
  *
  */
 
- /*Copy this file as "lv_port_disp.c" and set this value to "1" to enable content*/
+/*Copy this file as "lv_port_disp.c" and set this value to "1" to enable content*/
 #if 0
 
 /*********************
@@ -187,9 +187,9 @@ static void gpu_fill(lv_disp_drv_t * disp_drv, lv_color_t * dest_buf, lv_coord_t
     }
 }
 
-#endif  /*LV_USE_GPU*/
+#endif /*LV_USE_GPU*/
 
-#else /* Enable this file at the top */
+#else  /* Enable this file at the top */
 
 /* This dummy typedef exists purely to silence -Wpedantic. */
 typedef int keep_pedantic_happy;

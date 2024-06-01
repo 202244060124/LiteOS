@@ -21,9 +21,9 @@
 #include "nnacl/quantization/quantize.h"
 
 typedef struct ReshapeParameter {
-  OpParameter op_parameter_;
-  ReshapeQuantArg quant_para_;
-  int thread_count_;
+    OpParameter op_parameter_;
+    ReshapeQuantArg quant_para_;
+    int thread_count_;
 } ReshapeParameter;
 
-#endif  // MINDSPORE_LITE_NNACL_RESHAHPE_PARAMETER_H_
+#endif // MINDSPORE_LITE_NNACL_RESHAHPE_PARAMETER_H_

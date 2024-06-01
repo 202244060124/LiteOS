@@ -23,15 +23,14 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *---------------------------------------------------------------------------*/
-#include "main.h"
-#include "sys_init.h"
+#include "gpio.h"
 #include "los_base.h"
+#include "los_sys.h"
 #include "los_task_pri.h"
 #include "los_typedef.h"
-#include "los_sys.h"
+#include "main.h"
+#include "sys_init.h"
 #include "uart.h"
-#include "gpio.h"
-
 
 VOID HardwareInit(VOID)
 {
@@ -43,10 +42,9 @@ VOID HardwareInit(VOID)
     dwt_delay_init(SystemCoreClock);
 }
 
-
 UINT32 LED1_init(VOID)
 {
-    while(1) {
+    while (1) {
         HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_9); // 需要和“创建裸机工程”中配置的LED灯引脚对应
         LOS_TaskDelay(500000);
     }
@@ -55,7 +53,7 @@ UINT32 LED1_init(VOID)
 
 UINT32 LED2_init(VOID)
 {
-    while(1) {
+    while (1) {
         HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_10); // 需要和“创建裸机工程”中配置的LED灯引脚对应
         LOS_TaskDelay(1000000);
     }
@@ -67,7 +65,7 @@ STATIC UINT32 LED1TaskCreate(VOID)
     UINT32 taskId;
     TSK_INIT_PARAM_S LEDTask;
 
-    (VOID)memset_s(&LEDTask, sizeof(TSK_INIT_PARAM_S), 0, sizeof(TSK_INIT_PARAM_S));
+    (VOID) memset_s(&LEDTask, sizeof(TSK_INIT_PARAM_S), 0, sizeof(TSK_INIT_PARAM_S));
     LEDTask.pfnTaskEntry = (TSK_ENTRY_FUNC)LED1_init;
     LEDTask.uwStackSize = LOSCFG_BASE_CORE_TSK_DEFAULT_STACK_SIZE;
     LEDTask.pcName = "LED1_Task";
@@ -81,7 +79,7 @@ STATIC UINT32 LED2TaskCreate(VOID)
     UINT32 taskId;
     TSK_INIT_PARAM_S LEDTask;
 
-    (VOID)memset_s(&LEDTask, sizeof(TSK_INIT_PARAM_S), 0, sizeof(TSK_INIT_PARAM_S));
+    (VOID) memset_s(&LEDTask, sizeof(TSK_INIT_PARAM_S), 0, sizeof(TSK_INIT_PARAM_S));
     LEDTask.pfnTaskEntry = (TSK_ENTRY_FUNC)LED2_init;
     LEDTask.uwStackSize = LOSCFG_BASE_CORE_TSK_DEFAULT_STACK_SIZE;
     LEDTask.pcName = "LED2_Task";
@@ -97,7 +95,6 @@ UINT32 app_init(VOID)
 
     return 0;
 }
-
 
 INT32 main(VOID)
 {

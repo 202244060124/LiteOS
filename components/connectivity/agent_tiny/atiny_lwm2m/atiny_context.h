@@ -28,14 +28,15 @@
 
 #ifndef _ATINY_CONTEXT_H
 #define _ATINY_CONTEXT_H
-#include "liblwm2m.h"
 #include "atiny_lwm2m/agenttiny.h"
+#include "liblwm2m.h"
 #include "object_comm.h"
 
-#define SERVER_URI_MAX_LEN      (64)
-#define MAX_PACKET_SIZE         (1024)
-#define SERVER_ID               (123)
-#define BIND_TIMEOUT            (10)
+
+#define SERVER_URI_MAX_LEN (64)
+#define MAX_PACKET_SIZE    (1024)
+#define SERVER_ID          (123)
+#define BIND_TIMEOUT       (10)
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -64,15 +65,15 @@ enum {
 };
 
 typedef struct {
-    lwm2m_context_t *lwm2m_context;
+    lwm2m_context_t* lwm2m_context;
     atiny_param_t atiny_params;
     client_data_t client_data;
-    lwm2m_object_t *obj_array[OBJ_MAX_NUM];
+    lwm2m_object_t* obj_array[OBJ_MAX_NUM];
     int atiny_quit;
     int reconnect_flag;
-    void *quit_sem;
+    void* quit_sem;
     int reboot_flag;
-    uint8_t *recv_buffer;
+    uint8_t* recv_buffer;
 } handle_data_t;
 
 #ifdef __cplusplus
